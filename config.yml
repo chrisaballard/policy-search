@@ -1,0 +1,8 @@
+attributes:
+  - source_name
+  - source_policy_id
+  - policy_name
+  - policy_type
+  - country_code
+  - url
+  - language

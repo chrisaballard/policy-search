@@ -130,3 +130,6 @@ dmypy.json
 
 # Ignore data files
 /data/**
+
+# Ignore mlflow tracking backend store
+/mlruns

@@ -1,0 +1,28 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+farm-haystack = "*"
+pandas = "*"
+click = "*"
+pyyaml = "*"
+tqdm = "*"
+jupyter = "*"
+dagster = "*"
+layoutparser = "*"
+opencv-python = "*"
+pymupdf = "*"
+torchvision = "*"
+install = "*"
+sortedcontainers = "*"
+setuptools = "*"
+wheel = "*"
+spacy = "*"
+"pdfminer.six" = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.8"
