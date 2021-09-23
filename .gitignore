@@ -136,3 +136,6 @@ dmypy.json
 
 # Ignore docker directory
 /docker
+
+# Ignore vscode config
+.vscode/*
