@@ -1,17 +1,19 @@
+import os
 from pathlib import Path
 
 import click
 from click.core import batch
 from click.decorators import pass_context
 import yaml
-from haystack.document_store import ElasticsearchDocumentStore
-from haystack.retriever.sparse import ElasticsearchRetriever
-from haystack.pipeline import ExtractiveQAPipeline
-from haystack.reader import FARMReader
-from haystack.utils import print_answers
+# from haystack.document_store import ElasticsearchDocumentStore
+# from haystack.retriever.sparse import ElasticsearchRetriever
+# from haystack.pipeline import ExtractiveQAPipeline
+# from haystack.reader import FARMReader
+# from haystack.utils import print_answers
 
-from pipeline.load_documents import load_documents_from_csv, fetch_docs_from_files, get_doc_list_from_csv
-from search.results import format_policy_search_results, pretty_print_answers
+from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
+from policy_search.pipeline.dynamo import PolicyDynamoDBTable
+from policy_search.search.results import format_policy_search_results, pretty_print_answers
 
 
 DOC_FILEAME_ATTRIBUTE = 'policy_txt_file'
@@ -20,7 +22,7 @@ DOC_FILEAME_ATTRIBUTE = 'policy_txt_file'
 @click.pass_context
 def main(ctx):
     ctx.ensure_object(dict)
-    ctx.obj['document_store'] = ElasticsearchDocumentStore(index='policy', name_field='policy_name')
+    #ctx.obj['document_store'] = ElasticsearchDocumentStore(index='policy', name_field='policy_name')
 
 @main.command()
 @click.pass_context
@@ -30,21 +32,32 @@ def main(ctx):
     help='name of column in csv containing text filename'
 )
 def load(ctx, doc_path: Path, csv_filename: Path, doc_filename_attribute: str):
-    """Load policy documents into elastic search"""
+    """Load policy documents into dynamodb and elastic search"""
     doc_path = Path(doc_path)
     csv_filename = Path(csv_filename)
     with open('./config.yml', 'rt') as config_f:
         config = yaml.load(config_f)
 
     # Get initialised document store from click context
-    document_store = ctx.obj['document_store']
-    load_documents_from_csv(
-        csv_filename,
-        doc_path,
-        doc_filename_attribute,
-        document_store,
-        config['attributes']
-    )
+    # document_store = ctx.obj['document_store']
+    # load_documents_from_csv(
+    #     csv_filename,
+    #     doc_path,
+    #     doc_filename_attribute,
+    #     document_store,
+    #     config['attributes']
+    # )
+
+    dynamodb_host = os.environ.get('dynamodb_host', 'localhost')
+    dynamodb_port = os.environ.get('dynamodb_port', '8000')
+    dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
+
+    cclw_attributes = config['sources']['cclw']['attributes']
+    fetcher = CSVDocumentSourceFetcher(csv_filename, DOC_FILEAME_ATTRIBUTE, cclw_attributes)
+
+    policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
+    policy_table.load(fetcher)
+
 
 @main.command()
 @click.pass_context
@@ -56,6 +69,7 @@ def query(ctx):
     policy_search_pipeline = ExtractiveQAPipeline(reader, retriever)
     search_prediction = policy_search_pipeline.run(query='what incentives are used to encourage ev takeup')
     pretty_print_answers(format_policy_search_results(search_prediction))
+
 
 if __name__ == '__main__':
     main(obj={})

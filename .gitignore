@@ -133,3 +133,6 @@ dmypy.json
 
 # Ignore mlflow tracking backend store
 /mlruns
+
+# Ignore docker directory
+/docker

@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  dynamodb-local:
+    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
+    image: "amazon/dynamodb-local:latest"
+    container_name: dynamodb-local
+    ports:
+      - "8000:8000"
+    volumes:
+      - "~/data/dynamodb:/home/dynamodblocal/data"
+    working_dir: /home/dynamodblocal
+  api:
+    build:
+      context: .
+      args:
+          api_host: 0.0.0.0
+          api_port: 8001
+          aws_access_key_id: ${AWS_ACCESS_KEY_ID}
+          aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+          dynamodb_host: db
+          dynamodb_port: ${dynamodb_port}
+    volumes:
+      - "./data:/home/data"
+    container_name: cpr-policy-api
+    ports:
+      - "8001:8001"
+    links:
+      - "dynamodb-local:db"

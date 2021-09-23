@@ -4,23 +4,20 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-farm-haystack = "*"
 pandas = "*"
 click = "*"
 pyyaml = "*"
 tqdm = "*"
-jupyter = "*"
-dagster = "*"
-layoutparser = "*"
-opencv-python = "*"
 pymupdf = "*"
-torchvision = "*"
 install = "*"
 sortedcontainers = "*"
 setuptools = "*"
 wheel = "*"
 spacy = "*"
-"pdfminer.six" = "*"
+boto3 = "*"
+mangum = "*"
+uvicorn = "*"
+fastapi = "*"
 
 [dev-packages]
 
