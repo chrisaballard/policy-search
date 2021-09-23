@@ -13,10 +13,13 @@ import yaml
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable
+from policy_search.pipeline.elasticsearch import ElasticSearchIndex
+from policy_search.parser.pdf_parser import PDFParser
 from policy_search.search.results import format_policy_search_results, pretty_print_answers
 
 
-DOC_FILEAME_ATTRIBUTE = 'policy_txt_file'
+TXT_FILEAME_ATTRIBUTE = 'policy_txt_file'
+DOC_FILENAME_ATTRIBUTE = 'policy_content_file'
 
 @click.group()
 @click.pass_context
@@ -26,15 +29,16 @@ def main(ctx):
 
 @main.command()
 @click.pass_context
-@click.argument('doc-path', type=click.Path(exists=True))
-@click.argument('csv-filename', type=click.Path(exists=True))
-@click.option('-d', '--doc-filename-attribute', default=DOC_FILEAME_ATTRIBUTE, 
+@click.argument('data-path', type=click.Path(exists=True))
+@click.argument('csv-filename', type=click.Path(exists=False))
+@click.option('-d', '--doc-filename-attribute', default=DOC_FILENAME_ATTRIBUTE, 
     help='name of column in csv containing text filename'
 )
-def load(ctx, doc_path: Path, csv_filename: Path, doc_filename_attribute: str):
+def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     """Load policy documents into dynamodb and elastic search"""
-    doc_path = Path(doc_path)
-    csv_filename = Path(csv_filename)
+    data_path = Path(data_path)
+    csv_filename = data_path / csv_filename
+
     with open('./config.yml', 'rt') as config_f:
         config = yaml.load(config_f)
 
@@ -53,10 +57,21 @@ def load(ctx, doc_path: Path, csv_filename: Path, doc_filename_attribute: str):
     dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
     cclw_attributes = config['sources']['cclw']['attributes']
-    fetcher = CSVDocumentSourceFetcher(csv_filename, DOC_FILEAME_ATTRIBUTE, cclw_attributes)
+    doc_fetcher = CSVDocumentSourceFetcher(csv_filename, doc_filename_attribute, cclw_attributes)
 
+    # Load policy documents into dynamodb
     policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
-    policy_table.load(fetcher)
+    policy_table.load(doc_fetcher)
+
+    # Load policy text into elastic search document store
+
+    doc_parser = PDFParser(data_path, 'content', 'text_new', save_pdf_text=True)
+    es = ElasticSearchIndex()
+    es.load_documents(doc_fetcher, doc_parser)
+
+
+
+
 
 
 @main.command()

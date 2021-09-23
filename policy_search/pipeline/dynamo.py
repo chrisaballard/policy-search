@@ -54,9 +54,10 @@ class DynamoDBTable():
     ):
         with self._table.batch_writer() as batch:
             for doc_ix, doc in enumerate(tqdm(document_source_fetcher.get_docs())):
-                batch.put_item(
-                    Item=self._get_item_for_create(doc, doc_ix)
-                )
+                item = self._get_item_for_create(doc, doc_ix)
+                item_key = item[self._key_name]
+                batch.put_item(Item=item)
+                doc[self._key_name] = item_key
 
     def scan(
         self,

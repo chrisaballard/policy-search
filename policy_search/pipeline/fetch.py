@@ -6,6 +6,9 @@ from typing import List
 
 import pandas as pd
 
+from .models.policy import Policy
+
+
 LINE_SEPARATOR = '\n'
 
 class DocumentSourceFetcher():
@@ -93,35 +96,17 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
 
     def get_text(
         self,
-        doc_path: Path, 
+        doc_parser,
     ) -> dict:
-        """Given a path to a set of documents, yields dictionaries containing document text and metadata.
-        Optionally accepts a dictionary specifying a mapping between attribute names and functions used to return formatted
-        attributes when loading document metadata.
-
-        Args:
-            doc_path (Path): full path to directory containing documents
-            doc_dict (List[dict]): list of dictionaries containing document text and attributes
-            doc_attribute_mapping (dict): optional dictionary mapping attributes to transformation functions
-
-        Returns:
-            yields a dictionary element for each document
-        """
 
         if self._doc_dict is None:
             self.get_docs()
 
         for doc in self._doc_dict:
-            doc_text = ''
-            doc_filename = doc[self._csv_filename_col]
-            with open(doc_path / doc_filename, 'rt') as doc_f:
-                for l in doc_f:
-                    doc_text = doc_text + LINE_SEPARATOR + l
+            doc_filename = Path(doc[self._csv_filename_col])
+            doc_structure, text_filename = doc_parser.extract_text(doc_filename, 'string')
+            doc['policy_txt_file'] = text_filename
+            doc = Policy(**doc)
 
-            yield {
-                    'text': doc_text,
-                    'meta': self._filter_attributes(doc)
-            }
-                
-
-
+            yield doc, doc_structure
+        

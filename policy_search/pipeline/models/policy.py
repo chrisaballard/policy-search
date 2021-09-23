@@ -12,8 +12,7 @@ class Policy(BaseModel):
     source_policy_id: Optional[int] = Field(alias='sourcePolicyId')
     url: HttpUrl
     policy_type: Optional[str] = Field(alias='policyType')
-    policy_txt_file: str
-
+    policy_txt_file: Optional[str] = Field(alias='policyTxtFile')
 
 class PolicyList(BaseModel):
     policies: List[Policy]

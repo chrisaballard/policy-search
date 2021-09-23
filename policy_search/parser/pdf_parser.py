@@ -4,17 +4,14 @@
 from pathlib import Path
 import re
 from operator import itemgetter
-from itertools import groupby
-from typing import List, AnyStr
+from typing import List
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.preprocess import clean_text
 
 import fitz
 import spacy
-import numpy as np
 from sortedcontainers import SortedKeyList
-import yaml
 
 
 MIN_WORDS_SPAN = 0
@@ -47,34 +44,28 @@ regex_span_sub = [
 regex_line_endings = re.compile(r'[?|.|!|;]\Z')
 
 
-class PolicyPDFTextExtractor():
+class PDFParser():
     def __init__(
         self,
         data_path: Path,
         content_dir: str,
         text_dir: str,
-        save_text: bool=False
+        save_pdf_text: bool
     ):
         self.data_path = data_path
         self.content_path = data_path / content_dir
         self.text_path = data_path / text_dir
-        self.save_text = save_text
+        self.save_pdf_text = save_pdf_text
 
         self.nlp = spacy.load('en_core_web_sm')
 
-    def apply_regex_subs(
-        self, 
-        string,
-    ):
+    def apply_regex_subs(self, string):
         for regex_pattern, repl_string in regex_span_sub:
             string = re.sub(regex_pattern, repl_string, string)
         
         return string
 
-    def flags_decomposer(
-        self, 
-        flags,
-    ):
+    def flags_decomposer(self, flags):
         """Make font flags human readable."""
         l = []
         if flags & 2 ** 0:
@@ -94,10 +85,7 @@ class PolicyPDFTextExtractor():
         
         return l
 
-    def block_line_spacing(
-        self, 
-        ptb_y1,
-    ):
+    def block_line_spacing(self, ptb_y1):
         ly_diff = []
         if len(ly_diff) > 1:
             for ly_ix, ly in enumerate(ptb_y1):
@@ -109,18 +97,13 @@ class PolicyPDFTextExtractor():
             return ptb_y1[0][1] - ptb_y1[0][0]
 
 
-    def extract_text_blocks_on_page(
-        self, 
-        document: fitz.Document, 
-        page_ix: int,
-    ):
+    def extract_text_blocks_on_page(self, document: fitz.Document, page_ix: int):
         # Fetch all text blocks (approximately paragraphs) from the page
         blocks = document[page_ix].get_text('dict', flags=fitz.TEXT_DEHYPHENATE)['blocks']
         page_text_blocks = []
         for b in blocks:
             if b['type'] == 0:
                 ptb = []
-                ptb_y1 = []
                 for l in b['lines']:
                     ptb_l =[]
                     for s in l['spans']:
@@ -162,28 +145,21 @@ class PolicyPDFTextExtractor():
 
         return page_text
 
-    def open(
-        self, 
-        pdf_filename,
-    ):
+    def open(self, pdf_filename):
         return fitz.open(self.content_path / pdf_filename)
 
-    def sentence_segmenter(
-        self, 
-        page_text, 
-        min_line_length=MIN_WORDS_LINE
-    ):
+    def sentence_segmenter(self, page_text, min_line_length=MIN_WORDS_LINE):
         doc = self.nlp(page_text)
 
-        return [sent.text for sent in doc.sents if len(sent.text.split(WORD_SEPARATOR)) >= min_line_length]
+        return [sent.text for sent in doc.sents if len(sent.text.split(WORD_SEPARATOR)) >= MIN_WORDS_LINE]
 
     def _convert_structure_to_string(
         self,
         doc_structure: List[dict]
     ):
         doc_string = ''
-        for page in doc_structure:
-            for sent in page:
+        for page_ix in doc_structure.keys():
+            for sent in doc_structure[page_ix]:
                 sent = sent + '\n'
                 doc_string += sent
 
@@ -215,28 +191,30 @@ class PolicyPDFTextExtractor():
 
         doc.close()
 
-        if self.save_text:
-            self.save_text(doc_structure, pdf_filename)
+        text_filename = None
+        if self.save_pdf_text:
+            text_filename = self.save_text(doc_structure, pdf_filename)
 
         if not extract_structure:
-            return self._convert_structure_to_string(doc_structure)
+            return self._convert_structure_to_string(doc_structure), text_filename
         else:
-            return doc_structure
+            return doc_structure, text_filename
 
-    def save_text(
-        self, 
-        doc_structure, 
-        pdf_filename
-    ):
-        text_filename = self.text_path / f'{pdf_filename.stem}.txt'
-        with open(text_filename, 'wt') as text_f:
+    def save_text(self, doc_structure, pdf_filename):
+        text_filename = f'{pdf_filename.stem}.txt'
+        text_path = self.text_path / text_filename
+        with open(text_path, 'wt') as text_f:
             for page_ix in doc_structure:
                 for sent in doc_structure[page_ix]:
                     text_f.write(sent + '\n')
 
+        return text_filename
+
     def process_pdfs(
         self, 
-        doc_fetcher: CSVDocumentSourceFetcher
+        doc_fetcher: CSVDocumentSourceFetcher,
+        save_text: bool=False,
+        yield_text: bool=True,
     ):
         content_filename_col = 'policy_content_file'
         docs = doc_fetcher.get_docs()
@@ -245,50 +223,8 @@ class PolicyPDFTextExtractor():
         for doc in docs:
             pdf_filename = Path(doc[content_filename_col])
 
-            doc_text = self.extract_text(pdf_filename, save_text=True)
+            doc_text = self.extract_text(pdf_filename, )
 
+            if yield_text:
+                yield doc_text
 
-def main(csv_filename: Path, data_path: Path):
-    pdf_extractor = PolicyPDFTextExtractor(data_path, 'content', 'text_new')
-
-    # Test 1 - multiple figures, charts and tables
-    # "Gear Change, A bold vision for cycling and walking"
-    #pdf_filename = Path('cclw-9487-328f4a0991ba45d2b2bcc127fde4ea28.pdf')
-    # Test 2 - more conventional doc structure with bulleted lists
-    # "National home retrofit scheme 2020"
-    #pdf_filename = Path('cclw-10000-99686d8409b541ec98b6938af58af923.pdf')
-    # Test 3 - 2 column layout
-    #pdf_filename = Path('cclw-10046-169a288207764ad0bdd5598cedd1d5d0.pdf')
-
-    # Test 4 - multiple tables + multi-column layout
-    pdf_filename = Path('cclw-10086-357cef7658b8440b823e4c76c0b09745.pdf')
-    # In this document, text from the separate columns is flowing together into individual lines because the columns are close together
-
-    # Test 5 - standard document layout
-    #pdf_filename = Path('cclw-9999-0e15395e46754c6c96fcfc19815a6fd8.pdf')
-
-    # Load config and get attributes to map
-    with open('./config.yml', 'rt') as config_f:
-        config = yaml.load(config_f)
-
-    DOC_FILEAME_ATTRIBUTE = 'policy_txt_file'
-    cclw_attributes = config['sources']['cclw']['attributes']
-    # Initialise document fetcher
-    fetcher = CSVDocumentSourceFetcher(csv_filename, DOC_FILEAME_ATTRIBUTE, cclw_attributes)
-
-    # cclw-9487-328f4a0991ba45d2b2bcc127fde4ea28.txt
-    #doc_structure = pdf_extractor.extract_text(pdf_filename)
-    doc = pdf_extractor.open(pdf_filename)
-    #extracted_text_blocks = pdf_extractor.extract_text_blocks_on_page(doc, 3)
-    doc_structure = pdf_extractor.extract_text(pdf_filename, save_text=True)
-
-    # Process all pdfs
-    #pdf_extractor.process_pdfs(csv_filename)
-    print(doc_structure)
-    
-
-if __name__ == '__main__':
-    csv_filename = Path('./data/corpus_20210701/processed_policies.csv')
-    data_path = Path('./data/corpus_20210701')
-
-    main(csv_filename, data_path)
