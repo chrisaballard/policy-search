@@ -2,6 +2,7 @@ from typing import Optional
 import os
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
@@ -17,6 +18,15 @@ policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
 
 app = FastAPI()
 
+# Add CORS middleware to allow cross origin requests from any port on localhost
+# Note: this is likely to need changing for deployment
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex='https?:\/\/localhost:?[0-9]*',
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get('/policies/{policy_id}/', response_model=Policy)
 def read_policy(
