@@ -18,11 +18,13 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 
 WORKDIR /usr/src/app
 
-RUN pip install pipenv
+RUN pip install poetry
 
 COPY . ./
 
-RUN pipenv install --ignore-pipfile
+RUN poetry config virtualenvs.create false
+RUN poetry install
+RUN poetry run python -m spacy download en_core_web_sm
 
 # Make sure script has execute permissions
 RUN chmod +x ./scripts/start_api.sh
