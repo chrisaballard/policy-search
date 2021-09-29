@@ -30,7 +30,7 @@ services:
           dynamodb_host: db
           dynamodb_port: ${dynamodb_port}
     volumes:
-      - "./data:/home/data"
+      - "./:/usr/src/app"
     container_name: cpr-policy-api
     ports:
       - "8001:8001"
