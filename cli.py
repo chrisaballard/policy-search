@@ -64,14 +64,10 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     policy_table.load(doc_fetcher)
 
     # Load policy text into elastic search document store
-
-    doc_parser = PDFParser(data_path, 'content', 'text_new', save_pdf_text=True)
-    es = ElasticSearchIndex()
+    elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
+    doc_parser = PDFParser(data_path, 'content', 'text', save_pdf_text=True)
+    es = ElasticSearchIndex(es_url=elastic_host)
     es.load_documents(doc_fetcher, doc_parser)
-
-
-
-
 
 
 @main.command()

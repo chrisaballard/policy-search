@@ -97,6 +97,7 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
     def get_text(
         self,
         doc_parser,
+        extract_type: str = 'string',
     ) -> dict:
 
         if self._doc_dict is None:
@@ -104,9 +105,16 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
 
         for doc in self._doc_dict:
             doc_filename = Path(doc[self._csv_filename_col])
-            doc_structure, text_filename = doc_parser.extract_text(doc_filename, 'string')
+            doc_structure, text_filename = doc_parser.extract_text(doc_filename, extract_type)
             doc['policy_txt_file'] = text_filename
             doc = Policy(**doc)
 
             yield doc, doc_structure
+
+    def get_text_by_page(
+        self,
+        doc_parser,
+    ) -> dict:
+        return self.get_text(doc_parser, extract_type='structure')
+
         

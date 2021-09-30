@@ -2,13 +2,10 @@
 """
 
 
-from pathlib import Path
-from typing import List
+from typing import List, Optional, Generator
 
-import pandas as pd
 from tqdm import tqdm
-#from haystack.document_store.base import BaseDocumentStore
-#from haystack.preprocessor import PreProcessor
+from elasticsearch import Elasticsearch, helpers
 
 from .fetch import DocumentSourceFetcher
 from ..parser.pdf_parser import PDFParser
@@ -17,9 +14,34 @@ from .models.policy import Policy
 
 class ElasticSearchIndex():
     def __init__(
-        self
+        self,
+        es_url: Optional[str] = None,
+        es_user: Optional[str] = None,
+        es_password: Optional[str] = None,
+        es_connector_kwargs: dict = {},
     ):
-        self.index_name = 'Policies'
+        self.index_name = 'policies'
+        
+        if es_url:
+            if es_user and es_password:
+                self.es = Elasticsearch(
+                    [es_url], http_auth=(es_user, es_password), **es_connector_kwargs
+                )
+            else:
+                self.es = Elasticsearch([es_url], **es_connector_kwargs)
+            
+        else:
+            self.es = Elasticsearch(**es_connector_kwargs)
+            
+        self.create_index()
+            
+    def create_index(self):
+        """
+        Creates index. Deletes any existing index of the same name first.
+        """
+        
+        self.es.indices.delete(index=self.index_name, ignore=[400, 404])
+        self.es.indices.create(index=self.index_name)
 
     def load_documents(
         self,
@@ -30,46 +52,65 @@ class ElasticSearchIndex():
         """Loads documents in a given path into a document store
         """
 
-        # Preprocess docs to split into sentences
-        # preprocessor = PreProcessor(
-        #     clean_empty_lines=True,
-        #     clean_whitespace=True,
-        #     clean_header_footer=True,
-        #     split_by="word",
-        #     split_length=100,
-        #     split_respect_sentence_boundary=True,
-        # )
-
         processed_docs = []
         print('Loading and preprocessing documents...')
-
-        for doc, doc_structure in tqdm(doc_source_fetcher.get_text(doc_parser), unit='docs'):
-            #processed_docs.append(preprocessor.process(doc))
-            processed_docs.append(
-                self._create_doc_dict(doc, doc_structure)
-            )
-        processed_docs = [d for x in processed_docs for d in x]
+        for doc, doc_structure in tqdm(doc_source_fetcher.get_text_by_page(doc_parser), unit='docs'):
+            processed_docs += self._create_page_dicts_from_doc(doc, doc_structure)
 
         # Write the documents into the document store
         print('Writing documents to the document store...')
-        # document_store.write_documents(
-        #     processed_docs,
-        #     index='policy',
-        #     batch_size=100,
-        #     duplicate_documents='skip'
-        # )
-    
-    def _create_doc_dict(
+        bulk_loader = helpers.streaming_bulk(
+            client=self.es,
+            index=self.index_name,
+            actions=iter(processed_docs),
+            raise_on_error=True
+        )
+        
+        successes = 0
+        errs = []
+        
+        for ok, action in tqdm(bulk_loader, total=len(processed_docs)):
+            if not ok:
+                errs.append(action)
+                
+            successes += ok
+            
+    def _create_page_dicts_from_doc(
         self,
         doc: Policy,
         doc_structure: dict
-    ):
-        return {
-            'text': doc_structure,
-            'meta': {
+    ) -> List[dict]:
+        """
+        For use with `doc_source_fetcher.get_text_by_page`
+        """
+        
+        page_docs = []
+
+        for page_num, page_text in doc_structure.items():
+            page_docs.append({
+                "_id": f"{doc.policy_id}_page{page_num}",
+                'text': page_text,
                 'policy_id': doc.policy_id,
                 'policy_name': doc.policy_name,
                 'country_code': doc.country_code,     
-                'source_name': doc.source_name
-            }
+                'source_name': doc.source_name,
+            })
+
+        return page_docs
+
+    def _create_doc_dict(
+        self,
+        doc: Policy,
+        doc_structure: str
+    ) -> dict:
+        """
+        For use with `doc_source_fetcher.get_text`
+        """
+
+        return {
+            'text': doc_structure,
+            'policy_id': doc.policy_id,
+            'policy_name': doc.policy_name,
+            'country_code': doc.country_code,     
+            'source_name': doc.source_name,
         }
