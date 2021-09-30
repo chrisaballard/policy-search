@@ -1,7 +1,9 @@
 const Header = () => {
   return (
-    <header className="flex justify-center my-12">
-      <div className="text-3xl text-gray-400">Climate Policy Radar</div>
+    <header>
+      <div className="container flex justify-center my-12">
+        <div className="text-2xl md:text-3xl text-gray-400 text-center">Climate Policy Radar</div>
+      </div>
     </header>
   )
 }

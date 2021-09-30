@@ -4,9 +4,7 @@ module.exports = {
   theme: {
     container: {
       center: true,
-      padding: {
-        default: '1rem',
-      },
+      padding: '1rem'
     },
     extend: {
       fontFamily: {
@@ -18,10 +16,3 @@ module.exports = {
   variants: {},
   plugins: [],
 }
-
-/*
-main colors:
-purple-500
-pink-600
-indigo-400
-*/
