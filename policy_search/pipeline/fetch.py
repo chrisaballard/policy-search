@@ -2,7 +2,7 @@
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Dict, Tuple
 
 import pandas as pd
 
@@ -16,11 +16,14 @@ class DocumentSourceFetcher():
 
     def __init__(
         self,
-        attribute_mapping:List=None
+        attribute_mapping:List=None,
+        fetch_count: int=None
     ):
-        self._doc_dict = {}
+        self._docs = []
         self._attribute_mapping = attribute_mapping
         self._attribute_col_names = self.attribute_col_names(attribute_mapping)
+        
+        self.fetch_count = fetch_count
 
     def get_docs(self):
         raise NotImplementedError
@@ -51,15 +54,16 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
         csv_filename: Path,
         csv_filename_col: str,
         attribute_mapping: dict=None,
+        fetch_count: int=None
     ):
-        super().__init__(attribute_mapping)
+        super().__init__(attribute_mapping, fetch_count)
 
         self._csv_filename = csv_filename
         self._csv_filename_col = csv_filename_col
 
     def get_docs(
         self,
-    ) -> List[dict]:
+    ) -> List[Dict[str, str]]:
         """Reads a csv to get a list of policy documents to process and returns a list of dictionaries containing policy
         documents and metadata.
 
@@ -72,6 +76,11 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
             self._csv_filename,
             dtype={'source_policy_id': int}
         )
+
+        # Retain at most fetch_count documents if defined
+        if self.fetch_count is not None:
+            documents_df = documents_df.head(self.fetch_count)
+
         selected_cols = [self._csv_filename_col]
         if self._attribute_mapping is not None:
             selected_cols += list(self._attribute_col_names)
@@ -86,26 +95,28 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
         documents_df.rename(columns=self._attribute_mapping, inplace=True)
 
         # Transform dataframe to list of dictionaries
-        self._doc_dict = documents_df.to_dict(orient='records')
-        self._doc_dict = [
+        self._docs = documents_df.to_dict(orient='records')
+        self._docs = [
             {k: v for k, v in d.items() if pd.notnull(v)}
-            for d in self._doc_dict
+            for d in self._docs
         ]
 
-        return self._doc_dict
+        return self._docs
 
     def get_text(
         self,
         doc_parser,
         extract_type: str = 'string',
-    ) -> dict:
+    ) -> Tuple[Policy, List[Dict[str, str]]]:
 
-        if self._doc_dict is None:
+        if len(self._docs) == 0:
             self.get_docs()
 
-        for doc in self._doc_dict:
+        for doc_ix, doc in enumerate(self._docs):
+            print(doc['policyName'])
             doc_filename = Path(doc[self._csv_filename_col])
             doc_structure, text_filename = doc_parser.extract_text(doc_filename, extract_type)
+            doc['policyId'] = doc_ix
             doc['policy_txt_file'] = text_filename
             doc = Policy(**doc)
 
