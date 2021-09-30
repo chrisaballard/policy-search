@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Layout from '../components/Layout'
 import Head from 'next/head';
 import { SearchArea, SearchResults } from '../components/search';
+import Loader from '../components/Loader';
 
 export default function Home() {
   const [ policies, setPolicies ] = useState([]);
@@ -33,6 +34,7 @@ export default function Home() {
         query={query} 
         processing={processing}
       />
+      {/* <Loader /> */}
     </Layout>
   )
 }
