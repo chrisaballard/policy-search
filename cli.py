@@ -46,7 +46,6 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
         csv_filename, 
         doc_filename_attribute, 
         cclw_attributes,
-        50
     )
 
     # Initialise dynamodb table
@@ -56,7 +55,7 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     doc_parser = PDFParser(data_path, 'content', 'text', save_pdf_text=True)
 
     # Initialise policy text dataset
-    dataset = PolicyTextDataset(Path('./data/policy_dataset.csv'))
+    dataset = PolicyTextDataset(Path('./data/policy_dataset.csv'), is_batched=True)
 
     # Initialise elastic search
     elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
@@ -64,7 +63,7 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     es.delete_and_create_index()
 
     # Initialise document processor, add callback objects and process text
-    doc_processor = DocumentProcessor(doc_fetcher, doc_parser)
+    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)
     doc_processor.add_callback(dataset)
     doc_processor.add_callback(dynamodb_table)
     #doc_processor.add_callback(es)

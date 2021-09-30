@@ -20,6 +20,7 @@ class DocumentSourceFetcher():
         fetch_count: int=None
     ):
         self._docs = []
+        self.n_docs = 0
         self._attribute_mapping = attribute_mapping
         self._attribute_col_names = self.attribute_col_names(attribute_mapping)
         
@@ -101,6 +102,8 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
             for d in self._docs
         ]
 
+        self.n_docs = len(self._docs)
+
         return self._docs
 
     def get_text(
@@ -113,7 +116,6 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
             self.get_docs()
 
         for doc_ix, doc in enumerate(self._docs):
-            print(doc['policyName'])
             doc_filename = Path(doc[self._csv_filename_col])
             doc_structure, text_filename = doc_parser.extract_text(doc_filename, extract_type)
             doc['policyId'] = doc_ix
