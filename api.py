@@ -1,11 +1,14 @@
 from typing import Optional
 import os
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from elasticsearch import NotFoundError as ElasticNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
+from policy_search.pipeline.elasticsearch import ElasticSearchIndex
+from policy_search.pipeline.models.policy import PolicyPageText
 
 
 POLICIES_TABLE = 'Policies'
@@ -15,6 +18,9 @@ dynamodb_port = os.environ.get('dynamodb_port', '8000')
 dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
+
+elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
+es = ElasticSearchIndex(es_url=elastic_host)
 
 app = FastAPI()
 
@@ -54,6 +60,26 @@ def search_policies(
     "Search for policies given a specified query"
 
     return {'search': 'foo'}
+
+@app.get('/policy/{policy_id}/text/', response_model=PolicyPageText)
+def get_policy_text_by_page(
+    policy_id: int,
+    page: int,
+):
+    """Get the text of one page of a policy document"""
+
+    doc_id = f"{policy_id}_page{page}"
+
+    try:
+        es_doc = es.get_doc_by_id(doc_id)
+        page_text = es_doc["_source"]["text"]
+        return {
+            "documentMetadata": {},
+            "pageText": page_text,
+        }
+
+    except ElasticNotFoundError:
+        raise HTTPException(status_code=404, detail="Policy document or page within it not found")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
