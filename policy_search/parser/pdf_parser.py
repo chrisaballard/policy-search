@@ -183,8 +183,6 @@ class PDFParser():
 
         try:
             doc = self.open(pdf_filename)
-            # Remove hidden and sensitive text
-            doc.scrub()
             
             for doc_page_ix in range(0, doc.page_count):
                 page_text = self.extract_text_blocks_on_page(doc, doc_page_ix)
