@@ -1,12 +1,11 @@
 import axios from 'axios';
+import { Policy } from '../model/policy';
 
-export async function getPolicies() {
-  const response = await axios.get('http://localhost:8001/policies/?limit=10')
-  // .then((response) => {
-  //   console.log(response.data)
+const baseUrl = 'http://localhost:8001';
 
-  // })
-  const data = await response.data;
+export const getPolicies = async (): Promise<Policy[]> => {
+  const response = await axios.get(`${baseUrl}/policies/?limit=10`);
+  const data = await response.data.policies;
   return data;
 
 }

@@ -10,6 +10,7 @@ export default function Home() {
   const [ policies, setPolicies ] = useState([])
   const handleChange = async () => {
     const list = await getPolicies();
+    console.log(list)
     setPolicies(list);
   }
   return (
