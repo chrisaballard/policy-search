@@ -139,3 +139,6 @@ dmypy.json
 
 # Ignore vscode config
 .vscode/*
+
+# Ignore vscode development contain config files
+.devcontainer/*
