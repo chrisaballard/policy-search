@@ -36,7 +36,7 @@ dynamodb-local   java -jar DynamoDBLocal.ja ...   Up      0.0.0.0:8000->8000/tcp
 Execute the following command from the host machine:
 
 ```
-docker exec cpr-policy-api pipenv run python cli.py load /home/data/corpus/text /home/data/corpus/processed_policies.csv
+docker exec cpr-policy-api pipenv run python cli.py load /usr/src/app/data/corpus/text /usr/src/app/data/corpus/processed_policies.csv
 ```
 
 This will create a table called ```Policies``` in dynamodb.
@@ -57,7 +57,7 @@ The swagger UI may be used to test the API and view the API schema
 ### Testing the API
 To verify that the API is functional, execute the following in a terminal on the host:
 
-```curl "http://localhost:8001/policies/?limit=10```
+```curl "http://localhost:8001/policies/?limit=10"```
 
 ## Stopping search service docker containers
 If you need to stop the policy search service and database, execute the following command in a terminal on the host:
