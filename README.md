@@ -36,7 +36,7 @@ dynamodb-local   java -jar DynamoDBLocal.ja ...   Up      0.0.0.0:8000->8000/tcp
 Execute the following command from the host machine:
 
 ```
-docker exec cpr-policy-api pipenv run python cli.py load /home/data/corpus/text /home/data/corpus/processed_policies.csv
+docker exec cpr-policy-api poetry run python cli.py load /home/data/corpus/text /home/data/corpus/processed_policies.csv
 ```
 
 This will create a table called ```Policies``` in dynamodb.
