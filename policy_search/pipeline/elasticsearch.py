@@ -32,10 +32,8 @@ class ElasticSearchIndex():
             
         else:
             self.es = Elasticsearch(**es_connector_kwargs)
-            
-        self.create_index()
-            
-    def create_index(self):
+                        
+    def delete_and_create_index(self):
         """
         Creates index. Deletes any existing index of the same name first.
         """
@@ -74,6 +72,17 @@ class ElasticSearchIndex():
                 errs.append(action)
                 
             successes += ok
+
+    def get_doc_by_id(
+        self,
+        _id: str,
+    ) -> dict:
+        """Get document by its '_id' field."""
+
+        return self.es.get(
+            index=self.index_name, 
+            id=_id,
+        )
             
     def _create_page_dicts_from_doc(
         self,

@@ -5,11 +5,6 @@ import click
 from click.core import batch
 from click.decorators import pass_context
 import yaml
-# from haystack.document_store import ElasticsearchDocumentStore
-# from haystack.retriever.sparse import ElasticsearchRetriever
-# from haystack.pipeline import ExtractiveQAPipeline
-# from haystack.reader import FARMReader
-# from haystack.utils import print_answers
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable
@@ -17,7 +12,6 @@ from policy_search.pipeline.elasticsearch import ElasticSearchIndex
 from policy_search.parser.pdf_parser import PDFParser
 from policy_search.pipeline.processor import DocumentProcessor
 from policy_search.pipeline.dataset import PolicyTextDataset
-from policy_search.search.results import format_policy_search_results, pretty_print_answers
 
 
 TXT_FILEAME_ATTRIBUTE = 'policy_txt_file'
@@ -66,7 +60,8 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
 
     # Initialise elastic search
     elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
-    #es = ElasticSearchIndex(es_url=elastic_host)
+    es = ElasticSearchIndex(es_url=elastic_host)
+    es.delete_and_create_index()
 
     # Initialise document processor, add callback objects and process text
     doc_processor = DocumentProcessor(doc_fetcher, doc_parser)
