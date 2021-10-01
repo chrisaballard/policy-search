@@ -10,15 +10,18 @@ import pandas as pd
 
 from .fetch import DocumentSourceFetcher, CSVDocumentSourceFetcher
 from .models.policy import PolicyList, Policy
+from .base import BaseCallback
 
 
-class DynamoDBTable():
+class DynamoDBTable(BaseCallback):
     def __init__(
         self,
         dynamodb: Union[int, str],
         key_name: str,
         table_name: str,
     ):
+        super().__init__('dynamodb')
+
         if dynamodb is not int:
             self._dynamodb = boto3.resource(
                 'dynamodb',
@@ -48,7 +51,7 @@ class DynamoDBTable():
     ):
         raise NotImplementedError
 
-    def load(
+    def batch_load(
         self,
         document_source_fetcher: DocumentSourceFetcher
     ):
@@ -58,6 +61,13 @@ class DynamoDBTable():
                 item_key = item[self._key_name]
                 batch.put_item(Item=item)
                 doc[self._key_name] = item_key
+
+    def add(
+        self,
+        **kwargs
+    ):
+        doc, _ = super().add(**kwargs)
+        self._table.put_item(Item=doc.dict(by_alias=True, exclude_none=True))
 
     def scan(
         self,

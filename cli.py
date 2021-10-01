@@ -5,27 +5,25 @@ import click
 from click.core import batch
 from click.decorators import pass_context
 import yaml
-# from haystack.document_store import ElasticsearchDocumentStore
-# from haystack.retriever.sparse import ElasticsearchRetriever
-# from haystack.pipeline import ExtractiveQAPipeline
-# from haystack.reader import FARMReader
-# from haystack.utils import print_answers
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable
 from policy_search.pipeline.elasticsearch import ElasticSearchIndex
 from policy_search.parser.pdf_parser import PDFParser
-from policy_search.search.results import format_policy_search_results, pretty_print_answers
+from policy_search.pipeline.processor import DocumentProcessor
+from policy_search.pipeline.dataset import PolicyTextDataset
 
 
 TXT_FILEAME_ATTRIBUTE = 'policy_txt_file'
 DOC_FILENAME_ATTRIBUTE = 'policy_content_file'
 
+with open('./config.yml', 'rt') as config_f:
+    config = yaml.load(config_f)
+
 @click.group()
 @click.pass_context
 def main(ctx):
     ctx.ensure_object(dict)
-    #ctx.obj['document_store'] = ElasticsearchDocumentStore(index='policy', name_field='policy_name')
 
 @main.command()
 @click.pass_context
@@ -39,48 +37,39 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     data_path = Path(data_path)
     csv_filename = data_path / csv_filename
 
-    with open('./config.yml', 'rt') as config_f:
-        config = yaml.load(config_f)
-
-    # Get initialised document store from click context
-    # document_store = ctx.obj['document_store']
-    # load_documents_from_csv(
-    #     csv_filename,
-    #     doc_path,
-    #     doc_filename_attribute,
-    #     document_store,
-    #     config['attributes']
-    # )
-
     dynamodb_host = os.environ.get('dynamodb_host', 'localhost')
     dynamodb_port = os.environ.get('dynamodb_port', '8000')
     dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
     cclw_attributes = config['sources']['cclw']['attributes']
-    doc_fetcher = CSVDocumentSourceFetcher(csv_filename, doc_filename_attribute, cclw_attributes)
+    doc_fetcher = CSVDocumentSourceFetcher(
+        csv_filename, 
+        doc_filename_attribute, 
+        cclw_attributes,
+    )
 
-    # Load policy documents into dynamodb
-    policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
-    policy_table.load(doc_fetcher)
+    # Initialise dynamodb table
+    dynamodb_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
 
-    # Load policy text into elasticsearch document store
-    elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
+    # Initialise pdf document parser
     doc_parser = PDFParser(data_path, 'content', 'text', save_pdf_text=True)
+
+    # Initialise policy text dataset
+    dataset = PolicyTextDataset(Path('./data/policy_dataset.csv'), is_batched=True)
+
+    # Initialise elastic search
+    elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
     es = ElasticSearchIndex(es_url=elastic_host)
     es.delete_and_create_index()
-    es.load_documents(doc_fetcher, doc_parser)
 
-
-@main.command()
-@click.pass_context
-def query(ctx):
-    # Get initialised document store from click context
-    document_store = ctx.obj['document_store']
-    retriever = ElasticsearchRetriever(document_store=document_store)
-    reader = FARMReader(model_name_or_path="deepset/roberta-base-squad2", use_gpu=False)
-    policy_search_pipeline = ExtractiveQAPipeline(reader, retriever)
-    search_prediction = policy_search_pipeline.run(query='what incentives are used to encourage ev takeup')
-    pretty_print_answers(format_policy_search_results(search_prediction))
+    # Initialise document processor, add callback objects and process text
+    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)
+    doc_processor.add_callback(dataset)
+    doc_processor.add_callback(dynamodb_table)
+    #doc_processor.add_callback(es)
+    doc_processor.process_text()
+    
+    # es.load_documents(doc_fetcher, doc_parser)
 
 
 if __name__ == '__main__':
