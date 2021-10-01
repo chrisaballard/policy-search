@@ -8,7 +8,6 @@ interface SearchAreaProps {
 }
 const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
-  // const [ query, setQuery ] = useState('');
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -19,7 +18,7 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
     setSearchOpen(!searchOpen);
   }
   useEffect(() => {
-    setProcessing(true);
+    if(query.length) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {

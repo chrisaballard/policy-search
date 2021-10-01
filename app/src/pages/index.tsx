@@ -13,10 +13,12 @@ export default function Home() {
 
   const handleChange = async () => {
     if(query.trim().length === 0) return;
+    setQuery(query);
+    setPolicies([]);
     const list = await getPolicies();
     setProcessing(false);
     setPolicies(list);
-    setQuery(query);
+    
   }
   return (
     <Layout>
@@ -34,7 +36,11 @@ export default function Home() {
         query={query} 
         processing={processing}
       />
-      {/* <Loader /> */}
+      {processing ? 
+        <Loader />
+        : null
+      }
+      
     </Layout>
   )
 }

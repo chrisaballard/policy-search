@@ -17,13 +17,14 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
     }
     return (
       <div className="text-2xl">
-        <span className="text-gray-400">{policies.length}</span> results for <span className="font-bold font-italic">"{query}"</span>
+        Results for <span className="font-bold text-gray-500">"{query}"</span>:
       </div>
     )
   }
   return (
     <section>
       <div className="container">
+        
 
         {query.length ?
           <div className="mt-4">
@@ -31,10 +32,19 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
           </div>
           : null
         }
+        {policies.length ?
+          <div className="grid grid-cols-6 gap-x-4 mt-8">
+            <div className="font-bold col-span-3">Policy</div>
+            <div className="font-bold">Type</div>
+            <div className="font-bold">Source</div>
+            <div className="font-bold">Country</div>
+          </div>
+        :
+        null}
         
-        <ul className="mt-8">
-          {policies.map((policy) => (
-            <li className="mb-4" key={policy.policyId}>
+        <ul className="mt-4">
+          {policies.map((policy, index) => (
+            <li className={`py-4 px-2 rounded-lg text-gray-500 ${index%2 ? '' : 'bg-gray-100'}`} key={policy.policyId}>
               <SearchResultItem policy={policy} />
             </li>
         ))}
