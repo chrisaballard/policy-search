@@ -109,7 +109,7 @@ def read_policy(
 
     return policy_table.get_document(policy_id)
 
-@app.get('/policy/{policy_id}/text/', response_model=PolicyPageText)
+@app.get('/policies/{policy_id}/text/', response_model=PolicyPageText)
 def get_policy_text_by_page(
     policy_id: int,
     page: int,
