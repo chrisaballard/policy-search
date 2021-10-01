@@ -1,7 +1,7 @@
-from typing import Optional
+from typing import Optional, List
 import os
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from elasticsearch import NotFoundError as ElasticNotFoundError
@@ -34,13 +34,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/policies/{policy_id}/', response_model=Policy)
-def read_policy(
-    policy_id: int,
-):
-    """Fetch a specific policy by id"""
-
-    return policy_table.get_document(policy_id)
 
 @app.get('/policies/', response_model=PolicyList)
 async def read_policies(
@@ -54,12 +47,33 @@ async def read_policies(
 @app.get('/policies/search/')
 def search_policies(
     query: str, 
-    start: int=0, 
-    limit: int=100
+    start: Optional[int]=0, 
+    limit: Optional[int]=100,
+    geography: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
-    return {'search': 'foo'}
+    if geography:
+        kwd_filters = {
+            "country_code.keyword": geography
+        }
+    else:
+        kwd_filters = None
+
+    return es.search(
+        query,
+        limit=limit,
+        start=start,
+        keyword_filters=kwd_filters,
+    )
+
+@app.get('/policies/{policy_id}/', response_model=Policy)
+def read_policy(
+    policy_id: int,
+):
+    """Fetch a specific policy by id"""
+
+    return policy_table.get_document(policy_id)
 
 @app.get('/policy/{policy_id}/text/', response_model=PolicyPageText)
 def get_policy_text_by_page(

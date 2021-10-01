@@ -83,6 +83,67 @@ class ElasticSearchIndex():
             index=self.index_name, 
             id=_id,
         )
+
+    def search(
+        self,
+        query: str,
+        limit: Optional[int] = None,
+        start: Optional[int] = 0,
+        keyword_filters: Optional[dict] = None,
+    ) -> List[dict]:
+        """
+        Search for `query`, starting at result `start` and returning up to `limit` results.
+        
+        `keyword_filters` should be a dictionary, where each key is the field to be filtered, and each value is a list of strings to filter on. In
+        Elasticsearch, keywords are datatypes that are only searchable by their exact value, therefore are useful for filtering.
+
+        If `limit` is not provided, the index default will be used.
+        """
+
+        fields_to_search = ["text", "policy_name"]
+
+        es_query = {
+            "from": start,
+            "query": { 
+                "bool": {
+                    "should": [
+                        {
+                            "multi_match": {
+                                "query": query,
+                                "fields": fields_to_search
+                            }
+                        }
+                    ],
+                }
+            },
+            "highlight": {
+                "fields": {
+                    "text": {}
+                } 
+            }
+        }
+
+        if limit:
+            es_query["size"] = limit
+
+        if keyword_filters:
+            terms_clauses = []
+            
+            for field, values in keyword_filters.items():
+                terms_clauses.append(
+                    {
+                        "terms": {
+                            field: values
+                        }
+                    }
+                )
+
+            es_query["query"]["bool"]["must"] = terms_clauses
+
+        return self.es.search(
+            body=es_query,
+            index=self.index_name
+        )
             
     def _create_page_dicts_from_doc(
         self,
