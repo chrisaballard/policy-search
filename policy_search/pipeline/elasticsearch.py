@@ -122,7 +122,9 @@ class ElasticSearchIndex(BaseCallback):
             },
             "highlight": {
                 "fields": {
-                    "text": {}
+                    "text": {
+                        "number_of_fragments": 0
+                    }
                 } 
             },
             "aggs": {
@@ -138,7 +140,9 @@ class ElasticSearchIndex(BaseCallback):
                         "top_hits": {
                             "highlight": {
                                 "fields": {
-                                    "text": {}
+                                    "text": {
+                                        "number_of_fragments": 0
+                                    }
                                 } 
                             }
                         }
