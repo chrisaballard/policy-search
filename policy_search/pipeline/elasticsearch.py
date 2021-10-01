@@ -124,6 +124,34 @@ class ElasticSearchIndex(BaseCallback):
                 "fields": {
                     "text": {}
                 } 
+            },
+            "aggs": {
+                "top_docs": {
+                "terms": {
+                    "field": "policy_id",
+                    "order": {
+                    "top_hit": "desc"
+                    }
+                },
+                "aggs": {
+                    "top_tags_hits": {
+                        "top_hits": {
+                            "highlight": {
+                                "fields": {
+                                    "text": {}
+                                } 
+                            }
+                        }
+                    },
+                    "top_hit" : {
+                    "max": {
+                        "script": {
+                        "source": "_score"
+                        }
+                    }
+                    }
+                }
+                }
             }
         }
 
