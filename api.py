@@ -44,7 +44,7 @@ async def read_policies(
 
     return policy_table.scan(start, limit)
 
-@app.get('/policies/search/')#, response_model=PolicySearchResponse)
+@app.get('/policies/search/', response_model=PolicySearchResponse)
 def search_policies(
     query: str, 
     start: Optional[int]=0, 
@@ -84,6 +84,9 @@ def search_policies(
                 # Only return a page if there is at least one text match in the page
                 document_response.append({
                     "pageNumber": hit["_source"]["page_number"],
+                    "policyName": hit["_source"]["policy_name"],
+                    "countryCode": hit["_source"]["country_code"],
+                    "sourceName": hit["_source"]["source_name"],
                     "text": hit["highlight"]["text"],
                 })
 

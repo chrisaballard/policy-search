@@ -29,6 +29,9 @@ class PolicyPageText(BaseModel):
 
 class PolicyPageSearchResult(BaseModel):
     page_number: int = Field(alias="pageNumber")
+    policy_name: str = Field(alias="policyName")
+    country_code: str = Field(alias="countryCode")
+    source_name: str = Field(alias="sourceName")
     highlighted_text: List[str] = Field(alias="text")
 
 class PolicySearchResult(BaseModel):
