@@ -92,8 +92,9 @@ class ElasticSearchIndex(BaseCallback):
         self,
         query: str,
         limit: Optional[int] = None,
-        start: Optional[int] = 0,
+        # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
+        max_pages_per_doc: Optional[int] = 10
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
@@ -102,12 +103,12 @@ class ElasticSearchIndex(BaseCallback):
         Elasticsearch, keywords are datatypes that are only searchable by their exact value, therefore are useful for filtering.
 
         If `limit` is not provided, the index default will be used.
+        If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
         """
 
         fields_to_search = ["text", "policy_name"]
 
         es_query = {
-            "from": start,
             "query": { 
                 "bool": {
                     "should": [
@@ -129,38 +130,39 @@ class ElasticSearchIndex(BaseCallback):
             },
             "aggs": {
                 "top_docs": {
-                "terms": {
-                    "field": "policy_id",
-                    "order": {
-                    "top_hit": "desc"
-                    }
-                },
-                "aggs": {
-                    "top_tags_hits": {
-                        "top_hits": {
-                            "highlight": {
-                                "fields": {
-                                    "text": {
-                                        "number_of_fragments": 0
-                                    }
-                                } 
+                    "terms": {
+                        "field": "policy_id",
+                        "order": {
+                            "top_hit": "desc"
+                        },
+                    },
+                    "aggs": {
+                        "top_passage_hits": {
+                            "top_hits": {
+                                "highlight": {
+                                    "fields": {
+                                        "text": {
+                                            "number_of_fragments": 0
+                                        }
+                                    } 
+                                },
+                                "size": max_pages_per_doc,
+                            }
+                        },
+                        "top_hit" : {
+                            "max": {
+                                "script": {
+                                "source": "_score"
+                                }
                             }
                         }
-                    },
-                    "top_hit" : {
-                    "max": {
-                        "script": {
-                        "source": "_score"
-                        }
                     }
-                    }
-                }
                 }
             }
         }
 
         if limit:
-            es_query["size"] = limit
+            es_query["aggs"]["top_docs"]["terms"]["size"] = limit
 
         if keyword_filters:
             terms_clauses = []
@@ -198,6 +200,7 @@ class ElasticSearchIndex(BaseCallback):
                 'text': page_text,
                 'policy_id': doc.policy_id,
                 'policy_name': doc.policy_name,
+                'page_number': page_num,
                 'country_code': doc.country_code,     
                 'source_name': doc.source_name,
             })

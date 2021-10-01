@@ -8,7 +8,7 @@ from elasticsearch import NotFoundError as ElasticNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
 from policy_search.pipeline.elasticsearch import ElasticSearchIndex
-from policy_search.pipeline.models.policy import PolicyPageText
+from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
 
 
 POLICIES_TABLE = 'Policies'
@@ -44,7 +44,7 @@ async def read_policies(
 
     return policy_table.scan(start, limit)
 
-@app.get('/policies/search/')
+@app.get('/policies/search/', response_model=PolicySearchResponse)
 def search_policies(
     query: str, 
     start: Optional[int]=0, 
@@ -60,12 +60,46 @@ def search_policies(
     else:
         kwd_filters = None
 
-    return es.search(
+    # There is no option to offset results for terms aggregation queries, so instead we 
+    # get the first `start+limit` results and offset them by `start`.
+    search_result = es.search(
         query,
-        limit=limit,
-        start=start,
+        limit=start+limit,
         keyword_filters=kwd_filters,
     )
+
+    results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
+
+    query_results_by_doc = []
+
+    for result in results_by_doc[start : start+limit]:
+        hits_by_page = result["top_passage_hits"]["hits"]["hits"]
+        # num_pages_with_hit = result["doc_count"]
+        policy_id = result["key"]
+
+        document_response = []
+
+        for hit in hits_by_page:
+            document_response.append({
+                "pageNumber": hit["_source"]["page_number"],
+                "text": hit["highlight"]["text"],
+            })
+
+        query_results_by_doc.append(
+            {   
+                "policyId": policy_id,
+                "resultsByPage": document_response,
+            }
+        )
+
+    response = {
+        "metadata": {
+            "numDocsReturned": len(results_by_doc[start : start+limit]),
+        },
+        "resultsByDocument": query_results_by_doc,
+    }
+
+    return response
 
 @app.get('/policies/{policy_id}/', response_model=Policy)
 def read_policy(

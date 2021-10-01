@@ -26,3 +26,15 @@ class PolicyPageMetadata(BaseModel):
 class PolicyPageText(BaseModel):
     document_metadata: dict = Field(alias="documentMetadata")  # TODO: change type to PolicyPageMetadata when methods to get its field values are implemented
     page_text: List[str] = Field(alias="pageText")
+
+class PolicyPageSearchResult(BaseModel):
+    page_number: int = Field(alias="pageNumber")
+    highlighted_text: List[str] = Field(alias="text")
+
+class PolicySearchResult(BaseModel):
+    policy_id: int = Field(alias="policyId")
+    resultsByPage: List[PolicyPageSearchResult]
+
+class PolicySearchResponse(BaseModel):
+    metadata: dict = Field(alias="metadata")
+    resultsByDocument: List[PolicySearchResult]
