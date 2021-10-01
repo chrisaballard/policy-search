@@ -4,22 +4,23 @@
 
 from typing import List, Optional, Generator
 
-from tqdm import tqdm
 from elasticsearch import Elasticsearch, helpers
 
 from .fetch import DocumentSourceFetcher
 from ..parser.pdf_parser import PDFParser
 from .models.policy import Policy
+from .base import BaseCallback
 
 
-class ElasticSearchIndex():
+class ElasticSearchIndex(BaseCallback):
     def __init__(
         self,
         es_url: Optional[str] = None,
         es_user: Optional[str] = None,
         es_password: Optional[str] = None,
         es_connector_kwargs: dict = {},
-    ):
+    ):  
+        super().__init__('elasticsearch')
         self.index_name = 'policies'
         
         if es_url:
@@ -32,6 +33,8 @@ class ElasticSearchIndex():
             
         else:
             self.es = Elasticsearch(**es_connector_kwargs)
+
+        self._docs_to_load = []
                         
     def delete_and_create_index(self):
         """
@@ -41,33 +44,34 @@ class ElasticSearchIndex():
         self.es.indices.delete(index=self.index_name, ignore=[400, 404])
         self.es.indices.create(index=self.index_name)
 
-    def load_documents(
+    def add(
         self,
-        doc_source_fetcher: DocumentSourceFetcher,
-        doc_parser: PDFParser,
-        #document_store: BaseDocumentStore,
+        **kwargs,
     ):
-        """Loads documents in a given path into a document store
+        """
+        Add document to an in-memory store of Elasticsearch documents ready for load.
+        """
+        doc, doc_structure = super().add(**kwargs)
+        self._docs_to_load += self._create_page_dicts_from_doc(doc, doc_structure)
+
+    def finalise(self):
+        """
+        Load documents in the in-memory store into Elasticsearch.
         """
 
-        processed_docs = []
-        print('Loading and preprocessing documents...')
-        for doc, doc_structure in tqdm(doc_source_fetcher.get_text_by_page(doc_parser), unit='docs'):
-            processed_docs += self._create_page_dicts_from_doc(doc, doc_structure)
+        # print('Writing documents to Elasticsearch...')
 
-        # Write the documents into the document store
-        print('Writing documents to the document store...')
         bulk_loader = helpers.streaming_bulk(
             client=self.es,
             index=self.index_name,
-            actions=iter(processed_docs),
+            actions=iter(self._docs_to_load),
             raise_on_error=True
         )
         
         successes = 0
         errs = []
         
-        for ok, action in tqdm(bulk_loader, total=len(processed_docs)):
+        for ok, action in bulk_loader:
             if not ok:
                 errs.append(action)
                 

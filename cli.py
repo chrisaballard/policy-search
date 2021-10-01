@@ -57,7 +57,7 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     # Initialise policy text dataset
     dataset = PolicyTextDataset(Path('./data/policy_dataset.csv'), is_batched=True)
 
-    # Initialise elastic search
+    # Initialise elasticsearch
     elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
     es = ElasticSearchIndex(es_url=elastic_host)
     es.delete_and_create_index()
@@ -66,11 +66,9 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)
     doc_processor.add_callback(dataset)
     doc_processor.add_callback(dynamodb_table)
-    #doc_processor.add_callback(es)
+    doc_processor.add_callback(es)
     doc_processor.process_text()
     
-    # es.load_documents(doc_fetcher, doc_parser)
-
 
 if __name__ == '__main__':
     main(obj={})
