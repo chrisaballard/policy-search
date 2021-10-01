@@ -5,6 +5,7 @@ import Layout from '../components/Layout'
 import Head from 'next/head';
 import { SearchArea, SearchResults } from '../components/search';
 import Loader from '../components/Loader';
+import PageNavigation from '../components/page-navigation/PageNavigation';
 
 export default function Home() {
   const [ policies, setPolicies ] = useState([]);
@@ -36,6 +37,12 @@ export default function Home() {
         query={query} 
         processing={processing}
       />
+      
+      {policies.length ?
+      <PageNavigation />
+      : null
+      }
+
       {processing ? 
         <Loader />
         : null
