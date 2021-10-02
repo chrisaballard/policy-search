@@ -3,6 +3,9 @@
 @tailwind utilities;
 
 body {
+  em {
+    @apply font-bold text-black;
+  }
   .image-wrapper {
     // height: 200px;
     // width: 200px;

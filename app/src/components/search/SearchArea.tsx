@@ -55,7 +55,7 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
                 ref={searchInput}
                 onChange={(event: React.FormEvent<HTMLInputElement>): void => setQuery((event.target as HTMLInputElement).value)}
                 value={query}
-                className={`search-input h-full w-full text-xl text-gray-500 outline-none focus:outline-none`} 
+                className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 
               />
           </div>
           
