@@ -1,25 +1,41 @@
 import { useState, useEffect } from 'react';
 import { getPolicies } from '../api';
-import Link from 'next/link';
+import { Policy } from '../model/policy';
 import Layout from '../components/Layout'
 import Head from 'next/head';
-import { SearchArea, SearchResults } from '../components/search';
+import { SearchArea, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
-import PageNavigation from '../components/page-navigation/PageNavigation';
+import { PER_PAGE } from '../constants';
 
-export default function Home() {
+
+export default function Home(): JSX.Element {
   const [ policies, setPolicies ] = useState([]);
   const [ query, setQuery ] = useState('');
+  const [ first, setFirst ] = useState(1)
   const [ processing, setProcessing ] = useState(false);
 
-  const handleChange = async () => {
-    if(query.trim().length === 0) return;
-    setQuery(query);
-    setPolicies([]);
-    const list = await getPolicies();
+  const loadPolicies = async (start?: number): Promise<void> => {
+    const data = await getPolicies(start);
+    const list = data.policies;
     setProcessing(false);
-    setPolicies(list);
-    
+    setPolicies(updateList(list, start));
+    setFirst(PER_PAGE + first);
+  }
+  const updateList = (list: Policy[], start?: number): Policy[] => {
+    if(start) {
+      return policies.concat(list);
+    }
+    return list;
+  }
+  const handleChange = async (): Promise<void> => {
+    if(query.trim().length === 0) return;
+    setPolicies([]);
+    setQuery(query);
+    setFirst(0)
+    loadPolicies();
+  }
+  const handleNavigation = (): void => {
+    loadPolicies(first);
   }
   return (
     <Layout>
@@ -39,7 +55,7 @@ export default function Home() {
       />
 
       {policies.length ?
-      <PageNavigation />
+      <SearchNavigation onClick={handleNavigation} />
       : null
       }
       {processing ? 

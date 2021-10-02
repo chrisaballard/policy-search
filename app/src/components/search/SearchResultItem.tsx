@@ -3,7 +3,7 @@ import { Policy } from "../../model/policy";
 interface SearchResultItemProps {
   policy: Policy
 }
-const SearchResultItem = ({policy}: SearchResultItemProps) => {
+const SearchResultItem = ({policy}: SearchResultItemProps): JSX.Element => {
   return (
     <div className="grid grid-cols-6 gap-x-4">
       <a

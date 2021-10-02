@@ -44,7 +44,11 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
         
         <ul className="mt-4">
           {policies.map((policy, index) => (
-            <li className={`py-4 px-2 rounded-lg text-gray-500 ${index%2 ? '' : 'bg-gray-100'}`} key={policy.policyId}>
+            <li 
+              className={`py-4 px-2 rounded-lg text-gray-500 ${index%2 ? '' : 'bg-gray-100'}`}
+              key={`${index}-${policy.policyId}`}
+              id={`${index}-${policy.policyId}`}
+            >
               <SearchResultItem policy={policy} />
             </li>
         ))}
