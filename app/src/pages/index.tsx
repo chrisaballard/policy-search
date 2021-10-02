@@ -37,12 +37,11 @@ export default function Home() {
         query={query} 
         processing={processing}
       />
-      
+
       {policies.length ?
       <PageNavigation />
       : null
       }
-
       {processing ? 
         <Loader />
         : null
