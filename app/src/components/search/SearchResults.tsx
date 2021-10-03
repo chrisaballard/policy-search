@@ -33,11 +33,10 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
           : null
         }
         {policies.length ?
-          <div className="text-lg text-gray-500 grid grid-cols-6 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
-            <div className="font-bold col-span-3">Policy</div>
-            <div className="font-bold">Type</div>
-            <div className="font-bold">Source</div>
-            <div className="font-bold">Country</div>
+          <div className="font-bold md:text-lg text-gray-500 grid grid-cols-6 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
+            <div className="col-span-4 md:col-span-3">Policy</div>
+            <div className="hidden md:block">Source</div>
+            <div>Country</div>
           </div>
         :
         null}
@@ -45,7 +44,7 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
         <ul className="mt-4">
           {policies.map((policy, index) => (
             <li 
-              className={`border-b border-gray-300 border-dotted py-6 px-2 rounded-lg ${index%2 ? '' : ''}`}
+              className={`border-b border-gray-300 border-dotted py-6 ${index%2 ? '' : ''}`}
               key={`${index}-${policy.policyId}`}
               id={`${index}-${policy.policyId}`}
             >

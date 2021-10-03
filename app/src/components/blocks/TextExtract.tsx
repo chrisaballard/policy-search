@@ -10,12 +10,12 @@ const TextExtract = ({ name, text }: TextExtractProps): JSX.Element => {
 
   }
   return (
-    <div className="bg-gray-200 rounded-lg p-4 my-2">
+    <blockquote className="bg-gray-200 rounded-lg p-4 my-2">
       <span className="text-sm text-gray-600" dangerouslySetInnerHTML={{__html: text}} />
       <div className="text-right mt-2">
         <Button onClick={handleClick} size="small" text="Go to page >" />
       </div>
-    </div>
+    </blockquote>
   )
 }
 export default TextExtract;

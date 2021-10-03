@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import { AppProps } from 'next/app'
 import '../styles/main.scss'
+import '../styles/flag-icon.css'
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (

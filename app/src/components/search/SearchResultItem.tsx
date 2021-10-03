@@ -48,28 +48,30 @@ const SearchResultItem = ({policy}: SearchResultItemProps): JSX.Element => {
   }
   return (
     <div>
-      <div className="grid grid-cols-6 gap-x-4">
-        <div className="font-bold col-span-3 pr-6">
-          {policy.policyName}
+      <div className="grid grid-cols-6 md:grid-cols-5 gap-x-4">
+        <div className="col-span-4 md:col-span-3 pr-6">
+          <h3 className="font-bold">{policy.policyName}</h3>
+          
         </div>
-        <div>
-          {policy.policyType}
-        </div>
-        <div>
+        <div className="hidden md:block">
           {policy.sourceName}
         </div>
-        <div>
-          {policy.countryCode}
+        <div className="relative">
+            <div className="absolute top-0 left-0">
+              <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+              <span className="text-xs text-gray-500">{policy.countryCode}</span>
+            </div>
         </div>
       </div>
-      <div className="text-gray-500 text-sm mt-2">
+      <div className="text-black text-sm mt-2">
         <button
           onClick={toggleExtracts}
-          className="focus:outline-none text-black hover:text-gray-500 transition duration-300"
+          className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
         >
           {texts.length} matches 
         </button> in this policy.
       </div>
+
       <div className={`${!showExtracts ? 'hidden' : ''}`}>
         {texts.map((item) => (
           <TextExtract name={policy.policyName} text={item.text.join(',').replace(/\.\,/g, '. ')} />

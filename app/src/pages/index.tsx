@@ -23,7 +23,7 @@ export default function Home(): JSX.Element {
   }
   const updateList = (list: Policy[], start?: number): Policy[] => {
     if(start) {
-      return policies.concat(list);
+      return [...policies, ...list]
     }
     return list;
   }
