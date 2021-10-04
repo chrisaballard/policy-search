@@ -10,6 +10,9 @@ AWS_SECRET_ACCESS_KEY=[AWS_SECRET_ACCESS_KEY]
 AWS_DEFAULT_REGION=eu-west-2
 dynamodb_host=db
 dynamodb_port=8000
+elasticsearch_cluster=elasticsearch:9200
+elasticsearch_user=elastic
+elasticsearch_password=[ES_PASSWORD]
 ```
 
 where: ```[AWS_ACCESS_KEY_ID]``` and ```[AWS_SECRET_ACCESS_KEY]``` are the access keys that you have been provided with.
@@ -57,7 +60,7 @@ The swagger UI may be used to test the API and view the API schema
 ### Testing the API
 To verify that the API is functional, execute the following in a terminal on the host:
 
-```curl "http://localhost:8001/policies/?limit=10```
+```curl "http://localhost:8001/policies/?limit=10"```
 
 ## Stopping search service docker containers
 If you need to stop the policy search service and database, execute the following command in a terminal on the host:

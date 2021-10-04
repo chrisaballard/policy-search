@@ -20,6 +20,7 @@ boto3 = "*"
 mangum = "*"
 uvicorn = "*"
 fastapi = "*"
+elasticsearch = "*"
 
 
 

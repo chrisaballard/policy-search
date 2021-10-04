@@ -1,0 +1,215 @@
+- id: 0
+  name: CAPACITY BUILDING
+  levels:
+  - id: 0
+    name: Knowledge generation
+    keywords:
+    - demonstration project
+    - joint research
+    - knowledge generation
+    - research and development
+    - research body
+    - research collaboration
+    - research funding
+    - research programme
+    - research scheme
+    - scientific inquiries
+    - technology
+  - id: 1
+    name: Knowledge sharing and dissemination
+    keywords:
+    - advice
+    - consultation
+    - education
+    - indigenous knowledge
+    - knowledge distribution
+    - knowledge sharing and dissemination
+    - professional training
+    - projections
+    - public information
+    - reporting information
+    - technical assistance
+    - training
+  - id: 2
+    name: Structures and processes
+    keywords:
+    - environmental assessment
+    - federal adaptation programme
+    - national adaptation service
+    - processes
+    - public-private partnerships
+    - resource management
+    - risk assessments
+    - stakeholder engagement
+    - structures
+- id: 1
+  name: DIRECT INVESTMENT
+  levels:
+  - id: 0
+    name: Finance
+    keywords:
+    - climate fund
+    - debt support
+    - finance
+    - financial flows
+    - financial regulation
+    - funding
+    - grants
+    - green finance
+    - interest
+    - international climate finance
+    - loan
+    - low-carbon finance
+  - id: 1
+    name: Infrastructure
+    keywords:
+    - infrastructure
+    - investment
+    - procurement
+    - public infrastructure
+    - public spending
+    - resilience funding
+    - social safety nets
+  - id: 2
+    name: Public goods
+    keywords:
+    - commons
+    - early warning systems
+    - public goods
+- id: 2
+  name: GOVERNANCE AND PLANNING
+  levels:
+  - id: 0
+    name: Creating bodies/institutions
+    keywords:
+    - advisory body
+    - bodies
+    - capacity-building body
+    - co-ordinating body
+    - committee
+    - educational body
+    - insitutions
+    - inter-agency body
+    - organisation
+    - planning body
+    - regulatory body
+    - strategic body
+  - id: 1
+    name: Designing processes
+    keywords:
+    - carbon budget
+    - guidelines
+    - processes
+    - protocol
+  - id: 2
+    name: Developing plans and stratgegies
+    keywords:
+    - adaptation plan
+    - national strategy
+    - plan
+    - political strategy
+    - strategic plan
+    - strategy
+    - white paper
+  - id: 3
+    name: Multi-level governance
+    keywords:
+    - local authority
+    - multi-level governance
+    - municipal government
+    - national government
+    - sub-national government
+  - id: 4
+    name: Setting targets
+    keywords:
+    - amending target
+    - duty to set target
+    - legally binding target
+    - target
+- id: 3
+  name: INCENTIVES
+  levels:
+  - id: 0
+    name: Fiscal or financial incentives
+    keywords:
+    - accelerated depreciation
+    - auction
+    - feed-in tariff
+    - financial incentives
+    - financing structure
+    - fiscal incentives
+    - fossil fuel subsidy
+    - levy
+    - smart subsidy
+    - split incentives
+    - subsidy
+    - tariff
+    - tax advantages
+    - tax credits
+    - tax relief
+    - tax system
+    - taxes
+  - id: 1
+    name: Market-based instruments
+    keywords:
+    - cap and trade
+    - carbon pricing
+    - credits
+    - emissions trading
+    - market-based instruments
+    - permits
+- id: 4
+  name: REGULATION
+  levels:
+  - id: 0
+    name: Labelling and information
+    keywords:
+    - consumer information
+    - energy efficiency rating
+    - information
+    - labelling
+    - packaging
+    - product information
+  - id: 1
+    name: Management and planning
+    keywords:
+    - management
+    - methane leak management
+    - planning
+    - spatial zoning
+    - zoning
+  - id: 2
+    name: Monitoring and evaluation
+    keywords:
+    - assessment
+    - auditing
+    - climate risk
+    - climate vulnerabiliy
+    - disclosure
+    - evaluation
+    - monitoring
+    - reporting
+    - risk screening
+    - site selection
+  - id: 3
+    name: Obligations
+    keywords:
+    - disclosure
+    - mandates
+    - obligations
+    - responsibility
+    - technical requirements
+  - id: 4
+    name: Standards
+    keywords:
+    - codes
+    - equity in adaptation
+    - guideline
+    - licensing
+    - limit
+    - maximum
+    - minimum
+    - regulation
+    - resilient infrastructure policy
+    - specification of grid standards
+    - standards
