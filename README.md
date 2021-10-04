@@ -10,6 +10,9 @@ AWS_SECRET_ACCESS_KEY=[AWS_SECRET_ACCESS_KEY]
 AWS_DEFAULT_REGION=eu-west-2
 dynamodb_host=db
 dynamodb_port=8000
+elasticsearch_cluster=elasticsearch:9200
+elasticsearch_user=elastic
+elasticsearch_password=[ES_PASSWORD]
 ```
 
 where: ```[AWS_ACCESS_KEY_ID]``` and ```[AWS_SECRET_ACCESS_KEY]``` are the access keys that you have been provided with.
@@ -36,7 +39,7 @@ dynamodb-local   java -jar DynamoDBLocal.ja ...   Up      0.0.0.0:8000->8000/tcp
 Execute the following command from the host machine:
 
 ```
-docker exec cpr-policy-api pipenv run python cli.py load /usr/src/app/data/corpus/ /usr/src/app/data/corpus/processed_policies.csv
+docker exec cpr-policy-api poetry run python cli.py load /home/data/corpus/text /home/data/corpus/processed_policies.csv
 ```
 
 This will create a table called ```Policies``` in dynamodb.

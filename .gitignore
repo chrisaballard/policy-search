@@ -1,3 +1,10 @@
+# Node dependencies
+/app/node_modules
+
+# next.js
+/app/.next/
+/app/out/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -139,3 +146,6 @@ dmypy.json
 
 # Ignore vscode config
 .vscode/*
+
+# Ignore vscode development contain config files
+.devcontainer/*

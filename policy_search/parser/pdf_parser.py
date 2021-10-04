@@ -13,6 +13,9 @@ import fitz
 import spacy
 from sortedcontainers import SortedKeyList
 
+# Supress fitz layout errors
+#fitz.TOOLS.mupdf_display_errors(False)
+
 
 MIN_WORDS_SPAN = 0
 MIN_WORDS_LINE = 2
@@ -178,18 +181,19 @@ class PDFParser():
 
         doc_structure = {}
 
-        doc = self.open(pdf_filename)
-        # Remove hidden and sensitive text
-        doc.scrub()
-        
-        for doc_page_ix in range(0, doc.page_count):
-            page_text = self.extract_text_blocks_on_page(doc, doc_page_ix)
+        try:
+            doc = self.open(pdf_filename)
+            
+            for doc_page_ix in range(0, doc.page_count):
+                page_text = self.extract_text_blocks_on_page(doc, doc_page_ix)
 
-            # If we extracted text, then add to doc structure
-            if len(page_text) > 0:
-                doc_structure[doc_page_ix] = self.sentence_segmenter(page_text)
+                # If we extracted text, then add to doc structure
+                if len(page_text) > 0:
+                    doc_structure[doc_page_ix] = [sent.strip() for sent in self.sentence_segmenter(page_text)]
 
-        doc.close()
+            doc.close()
+        except Exception as e:
+            return doc_structure, None
 
         text_filename = None
         if self.save_pdf_text:
