@@ -60,7 +60,7 @@ The swagger UI may be used to test the API and view the API schema
 ### Testing the API
 To verify that the API is functional, execute the following in a terminal on the host:
 
-```curl "http://localhost:8001/policies/?limit=10```
+```curl "http://localhost:8001/policies/?limit=10"```
 
 ## Stopping search service docker containers
 If you need to stop the policy search service and database, execute the following command in a terminal on the host:
