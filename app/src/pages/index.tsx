@@ -12,7 +12,7 @@ export default function Home(): JSX.Element {
   const [ policies, setPolicies ] = useState([]);
   const [ endOfList, setEndOfList ] = useState(false);
   const [ query, setQuery ] = useState('');
-  const [ next, setNext ] = useState(0)
+  const [ next, setNext ] = useState(1)
   const [ processing, setProcessing ] = useState(false);
   const [ geographies, setGeographies ] = useState([]);
 

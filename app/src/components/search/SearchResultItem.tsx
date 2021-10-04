@@ -21,6 +21,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
     const name = await getCountryNameFromCode(policy.countryCode, geographies);
     setCountry(name);
   }
+  
   useEffect(() => {
     getCountryName();
   }, [])
@@ -43,7 +44,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
           onClick={toggleExtracts}
           className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
         >
-          {texts.length} matches 
+          {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
         </button> in this policy.
       </div>
 
@@ -51,7 +52,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
         {texts.map((item, index) => (
           <TextExtract
             key={`${index}_${item.pageNumber}`}
-            text={item.text.join(',').replace(/\.\,/g, '. ')}
+            texts={item.text}
             page={item.pageNumber}
           />
         ))}
