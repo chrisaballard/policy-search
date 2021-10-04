@@ -78,6 +78,10 @@ def search_policies(
         hits_by_page = result["top_passage_hits"]["hits"]["hits"]
         # num_pages_with_hit = result["doc_count"]
         policy_id = result["key"]
+        if hits_by_page:
+            policy_name = hits_by_page[0]["_source"]["policy_name"]
+            policy_country_code = hits_by_page[0]["_source"]["country_code"]
+            policy_source_name = hits_by_page[0]["_source"]["source_name"]
 
         document_response = []
 
@@ -86,15 +90,15 @@ def search_policies(
                 # Only return a page if there is at least one text match in the page
                 document_response.append({
                     "pageNumber": hit["_source"]["page_number"],
-                    "policyName": hit["_source"]["policy_name"],
-                    "countryCode": hit["_source"]["country_code"],
-                    "sourceName": hit["_source"]["source_name"],
                     "text": hit["highlight"]["text"],
                 })
 
         query_results_by_doc.append(
             {   
                 "policyId": policy_id,
+                "policyName": policy_name,
+                "countryCode": policy_country_code,
+                "sourceName": policy_source_name,
                 "resultsByPage": document_response,
             }
         )
