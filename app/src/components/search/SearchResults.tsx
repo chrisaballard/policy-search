@@ -1,12 +1,15 @@
+import { Geography } from "../../model/geography";
 import { Policy } from "../../model/policy";
+import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
 
 interface SearchResultsProps {
-  policies: Policy[];
+  policies: ResultByDocument[];
+  geographies: Geography[];
   query: string;
   processing: boolean;
 }
-const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
+const SearchResults = ({policies, query, processing, geographies}: SearchResultsProps) => {
   const renderMessage = () => {
     if(!policies.length) {
       return (
@@ -34,8 +37,7 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
         }
         {policies.length ?
           <div className="font-bold md:text-lg text-gray-500 grid grid-cols-6 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
-            <div className="col-span-4 md:col-span-3">Policy</div>
-            <div className="hidden md:block">Source</div>
+            <div className="col-span-5 md:col-span-4">Policy</div>
             <div>Country</div>
           </div>
         :
@@ -48,7 +50,7 @@ const SearchResults = ({policies, query, processing}: SearchResultsProps) => {
               key={`${index}-${policy.policyId}`}
               id={`${index}-${policy.policyId}`}
             >
-              <SearchResultItem policy={policy} />
+              <SearchResultItem policy={policy} geographies={geographies} texts={policy.resultsByPage} />
             </li>
         ))}
         </ul>

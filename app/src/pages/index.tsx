@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getPolicies } from '../api';
+import { loadGeographies, getPolicies, searchQuery } from '../api';
 import { Policy } from '../model/policy';
 import Layout from '../components/Layout'
 import Head from 'next/head';
@@ -10,16 +10,26 @@ import { PER_PAGE } from '../constants';
 
 export default function Home(): JSX.Element {
   const [ policies, setPolicies ] = useState([]);
+  const [ endOfList, setEndOfList ] = useState(false);
   const [ query, setQuery ] = useState('');
-  const [ first, setFirst ] = useState(1)
+  const [ next, setNext ] = useState(0)
   const [ processing, setProcessing ] = useState(false);
+  const [ geographies, setGeographies ] = useState([]);
 
   const loadPolicies = async (start?: number): Promise<void> => {
     const data = await getPolicies(start);
     const list = data.policies;
     setProcessing(false);
     setPolicies(updateList(list, start));
-    setFirst(PER_PAGE + first);
+    setNext(PER_PAGE + next);
+  }
+  const loadResults = async (query: string, start?: number): Promise<void> => {
+    const data = await searchQuery(query, start);
+    const list = data.resultsByDocument;
+    setProcessing(false);
+    setPolicies(updateList(list, start));
+    setNext(PER_PAGE + next);
+    checkIfEnd(data.metadata);
   }
   const updateList = (list: Policy[], start?: number): Policy[] => {
     if(start) {
@@ -27,16 +37,27 @@ export default function Home(): JSX.Element {
     }
     return list;
   }
+  const checkIfEnd = (metadata) => {
+    const end = metadata.numDocsReturned < PER_PAGE;
+    setEndOfList(end);
+  }
   const handleChange = async (): Promise<void> => {
     if(query.trim().length === 0) return;
     setPolicies([]);
     setQuery(query);
-    setFirst(0)
-    loadPolicies();
+    setNext(0);
+    loadResults(query);
   }
   const handleNavigation = (): void => {
-    loadPolicies(first);
+    loadResults(query, next);
   }
+  const getGeographies = async () => {
+    const geos = await loadGeographies();
+    setGeographies(geos);
+  }
+  useEffect(() => {
+    getGeographies();
+  }, [])
   return (
     <Layout>
       <Head>
@@ -52,9 +73,10 @@ export default function Home(): JSX.Element {
         policies={policies} 
         query={query} 
         processing={processing}
+        geographies={geographies}
       />
 
-      {policies.length ?
+      {policies.length && !endOfList ?
       <SearchNavigation onClick={handleNavigation} />
       : null
       }
