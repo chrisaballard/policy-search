@@ -60,7 +60,7 @@ def load(ctx, data_path: Path, csv_filename: Path, doc_filename_attribute: str):
     # Initialise elasticsearch
     elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
     es = ElasticSearchIndex(es_url=elastic_host)
-    es.delete_and_create_index()
+    # es.delete_and_create_index()
 
     # Initialise document processor, add callback objects and process text
     doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)

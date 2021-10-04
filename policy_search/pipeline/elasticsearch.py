@@ -22,19 +22,32 @@ class ElasticSearchIndex(BaseCallback):
     ):  
         super().__init__('elasticsearch')
         self.index_name = 'policies'
+
+        self.es_url = es_url
+        self.es_login = (es_user, es_password)
+        self.es_connector_kwargs = es_connector_kwargs
+
+        self._connect_to_elasticsearch()
         
-        if es_url:
-            if es_user and es_password:
+        self._docs_to_load = []
+
+    def _connect_to_elasticsearch(
+        self,
+        ):
+
+        if self.es_url:
+            if all(self.es_login):
                 self.es = Elasticsearch(
-                    [es_url], http_auth=(es_user, es_password), **es_connector_kwargs
+                    [self.es_url], http_auth=self.es_login, **self.es_connector_kwargs
                 )
             else:
-                self.es = Elasticsearch([es_url], **es_connector_kwargs)
+                self.es = Elasticsearch([self.es_url], **self.es_connector_kwargs)
             
         else:
-            self.es = Elasticsearch(**es_connector_kwargs)
+            self.es = Elasticsearch(**self.es_connector_kwargs)
 
-        self._docs_to_load = []
+    def _is_connected_to_elasticsearch(self) -> bool:
+        return self.es.ping()
                         
     def delete_and_create_index(self):
         """
@@ -59,7 +72,12 @@ class ElasticSearchIndex(BaseCallback):
         Load documents in the in-memory store into Elasticsearch.
         """
 
-        # print('Writing documents to Elasticsearch...')
+        # We check the connection here in case there have been any issues since 
+        # creation of the instance of this class.
+        if not self._is_connected_to_elasticsearch():
+            self._connect_to_elasticsearch()
+
+        self.delete_and_create_index()
 
         bulk_loader = helpers.streaming_bulk(
             client=self.es,
