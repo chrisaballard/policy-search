@@ -1,5 +1,4 @@
 import { Geography } from "../../model/geography";
-import { Policy } from "../../model/policy";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
 
@@ -38,7 +37,7 @@ const SearchResults = ({policies, query, processing, geographies}: SearchResults
         {policies.length ?
           <div className="font-bold md:text-lg text-gray-500 grid grid-cols-6 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
             <div className="col-span-5 md:col-span-4">Policy</div>
-            <div>Country</div>
+            <div className="text-center">Country</div>
           </div>
         :
         null}
@@ -46,7 +45,7 @@ const SearchResults = ({policies, query, processing, geographies}: SearchResults
         <ul className="mt-4">
           {policies.map((policy, index) => (
             <li 
-              className={`border-b border-gray-300 border-dotted py-6 ${index%2 ? '' : ''}`}
+              className={`border-b border-gray-300 border-dotted last:border-none py-6 ${index%2 ? '' : ''}`}
               key={`${index}-${policy.policyId}`}
               id={`${index}-${policy.policyId}`}
             >

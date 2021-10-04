@@ -1,3 +1,4 @@
+import Footer from "./Footer";
 import Header from "./Header";
 
 interface LayoutProps {
@@ -6,9 +7,13 @@ interface LayoutProps {
 
 const Layout = ({children}: LayoutProps): JSX.Element => {
   return (
-    <div>
+    <div className="flex flex-col justify-start min-h-screen">
       <Header />
-      {children}
+      <div className="flex-grow">
+        {children}
+      </div>
+      
+      <Footer />
     </div>
   )
 }
