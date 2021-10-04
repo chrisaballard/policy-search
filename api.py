@@ -1,5 +1,6 @@
 from typing import Optional, List
 import os
+from pathlib import Path
 
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,6 +10,7 @@ from elasticsearch import NotFoundError as ElasticNotFoundError
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
 from policy_search.pipeline.elasticsearch import ElasticSearchIndex
 from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
+from temp_geographies.load_geographies_data import Geography, load_geographies_data
 
 
 POLICIES_TABLE = 'Policies'
@@ -133,6 +135,15 @@ def get_policy_text_by_page(
 
     except ElasticNotFoundError:
         raise HTTPException(status_code=404, detail="Policy document or page within it not found")
+
+@app.get("/geographies", response_model=List[Geography])
+def get_geographies():
+    """Get information on geographies. Currently from a static CSV.""" 
+
+    GEOGRAPHIES_CSV_PATH = Path("./temp_geographies/geographies.csv")
+
+    return load_geographies_data(GEOGRAPHIES_CSV_PATH)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
