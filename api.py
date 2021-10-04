@@ -1,11 +1,16 @@
-from typing import Optional
+from typing import Optional, List
 import os
+from pathlib import Path
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+from elasticsearch import NotFoundError as ElasticNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
+from policy_search.pipeline.elasticsearch import ElasticSearchIndex
+from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
+from temp_geographies.load_geographies_data import Geography, load_geographies_data
 
 
 POLICIES_TABLE = 'Policies'
@@ -15,6 +20,9 @@ dynamodb_port = os.environ.get('dynamodb_port', '8000')
 dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
+
+elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
+es = ElasticSearchIndex(es_url=elastic_host)
 
 app = FastAPI()
 
@@ -28,13 +36,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.get('/policies/{policy_id}/', response_model=Policy)
-def read_policy(
-    policy_id: int,
-):
-    """Fetch a specific policy by id"""
-
-    return policy_table.get_document(policy_id)
 
 @app.get('/policies/', response_model=PolicyList)
 async def read_policies(
@@ -45,15 +46,108 @@ async def read_policies(
 
     return policy_table.scan(start, limit)
 
-@app.get('/policies/search/')
+@app.get('/policies/search/', response_model=PolicySearchResponse)
 def search_policies(
     query: str, 
-    start: int=0, 
-    limit: int=100
+    start: Optional[int]=0, 
+    limit: Optional[int]=100,
+    geography: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
-    return {'search': 'foo'}
+    if geography:
+        kwd_filters = {
+            "country_code.keyword": geography
+        }
+    else:
+        kwd_filters = None
+
+    # There is no option to offset results for terms aggregation queries, so instead we 
+    # get the first `start+limit` results and offset them by `start`.
+    search_result = es.search(
+        query,
+        limit=start+limit,
+        keyword_filters=kwd_filters,
+    )
+
+    results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
+
+    query_results_by_doc = []
+
+    for result in results_by_doc[start : start+limit]:
+        hits_by_page = result["top_passage_hits"]["hits"]["hits"]
+        # num_pages_with_hit = result["doc_count"]
+        policy_id = result["key"]
+        if hits_by_page:
+            policy_name = hits_by_page[0]["_source"]["policy_name"]
+            policy_country_code = hits_by_page[0]["_source"]["country_code"]
+            policy_source_name = hits_by_page[0]["_source"]["source_name"]
+
+        document_response = []
+
+        for hit in hits_by_page:
+            if "highlight" in hit:
+                # Only return a page if there is at least one text match in the page
+                document_response.append({
+                    "pageNumber": hit["_source"]["page_number"],
+                    "text": hit["highlight"]["text"],
+                })
+
+        query_results_by_doc.append(
+            {   
+                "policyId": policy_id,
+                "policyName": policy_name,
+                "countryCode": policy_country_code,
+                "sourceName": policy_source_name,
+                "resultsByPage": document_response,
+            }
+        )
+
+    response = {
+        "metadata": {
+            "numDocsReturned": len(results_by_doc[start : start+limit]),
+        },
+        "resultsByDocument": query_results_by_doc,
+    }
+
+    return response
+
+@app.get('/policies/{policy_id}/', response_model=Policy)
+def read_policy(
+    policy_id: int,
+):
+    """Fetch a specific policy by id"""
+
+    return policy_table.get_document(policy_id)
+
+@app.get('/policies/{policy_id}/text/', response_model=PolicyPageText)
+def get_policy_text_by_page(
+    policy_id: int,
+    page: int,
+):
+    """Get the text of one page of a policy document"""
+
+    doc_id = f"{policy_id}_page{page}"
+
+    try:
+        es_doc = es.get_doc_by_id(doc_id)
+        page_text = es_doc["_source"]["text"]
+        return {
+            "documentMetadata": {},
+            "pageText": page_text,
+        }
+
+    except ElasticNotFoundError:
+        raise HTTPException(status_code=404, detail="Policy document or page within it not found")
+
+@app.get("/geographies", response_model=List[Geography])
+def get_geographies():
+    """Get information on geographies. Currently from a static CSV.""" 
+
+    GEOGRAPHIES_CSV_PATH = Path("./temp_geographies/geographies.csv")
+
+    return load_geographies_data(GEOGRAPHIES_CSV_PATH)
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

@@ -10,6 +10,9 @@ AWS_SECRET_ACCESS_KEY=[AWS_SECRET_ACCESS_KEY]
 AWS_DEFAULT_REGION=eu-west-2
 dynamodb_host=db
 dynamodb_port=8000
+elasticsearch_cluster=elasticsearch:9200
+elasticsearch_user=elastic
+elasticsearch_password=[ES_PASSWORD]
 ```
 
 where: ```[AWS_ACCESS_KEY_ID]``` and ```[AWS_SECRET_ACCESS_KEY]``` are the access keys that you have been provided with.

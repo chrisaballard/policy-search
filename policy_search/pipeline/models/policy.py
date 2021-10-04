@@ -18,3 +18,26 @@ class PolicyList(BaseModel):
     policies: List[Policy]
     last_key: int
     count: int
+
+class PolicyPageMetadata(BaseModel):
+    page_count: int = Field(alias="pageCount"),
+    content_url: str = Field(alias="contentUrl")
+
+class PolicyPageText(BaseModel):
+    document_metadata: dict = Field(alias="documentMetadata")  # TODO: change type to PolicyPageMetadata when methods to get its field values are implemented
+    page_text: List[str] = Field(alias="pageText")
+
+class PolicyPageSearchResult(BaseModel):
+    page_number: int = Field(alias="pageNumber")
+    highlighted_text: List[str] = Field(alias="text")
+
+class PolicySearchResult(BaseModel):
+    policy_id: int = Field(alias="policyId")
+    policy_name: str = Field(alias="policyName")
+    country_code: str = Field(alias="countryCode")
+    source_name: str = Field(alias="sourceName")
+    resultsByPage: List[PolicyPageSearchResult]
+
+class PolicySearchResponse(BaseModel):
+    metadata: dict = Field(alias="metadata")
+    resultsByDocument: List[PolicySearchResult]
