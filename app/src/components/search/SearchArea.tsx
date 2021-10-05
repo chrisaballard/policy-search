@@ -43,7 +43,10 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
     <section>
       <div className="search-area container flex flex-col justify-center items-center relative">
         <h1 className="text-4xl md:text-6xl font-bold text-black transform-uppercase text-center">Policy Search</h1>
-        <form className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto">
+        <form 
+          onSubmit={e => { e.preventDefault() }}
+          className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto"
+        >
           <label 
             ref={searchLabel}
             className={`block pr-16 absolute top-0 left-0 right-0 text-gray-400 text-2xl text-center z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
@@ -60,6 +63,7 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
           </div>
           
           <button
+            type="button"
             onClick={handleClick} ref={searchButton}
             className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchOpen ? 'collapsed' : ''}`}>
             <img 
