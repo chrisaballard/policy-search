@@ -80,7 +80,7 @@ If you need to stop the policy search service and database, execute the followin
 
 ## Running the front end
 
-The front end is not yet set up to run inside the container. So to view it, run the following commands:
+The front end is not yet set up to run inside the container. So to view it, in your terminal, cd inside the 'app' directory and run the following commands:
 
 `npm install`
 
