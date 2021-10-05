@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-interface SearchAreaProps {
+interface SearchInputProps {
   handleChange(): void;
   query: string;
   setQuery(query: string): void;
   setProcessing(boolean: boolean): void;
 }
-const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaProps): JSX.Element => {
+const SearchInput = ({handleChange, query, setQuery, setProcessing}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
   
   const searchButton = useRef<HTMLButtonElement>(null);
@@ -66,10 +66,10 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
             type="button"
             onClick={handleClick} ref={searchButton}
             className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchOpen ? 'collapsed' : ''}`}>
-            <img 
-              src="/images/close.svg" 
-              alt="Close icon"
-              className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
+              <img 
+                src="/images/close.svg" 
+                alt="Close icon"
+                className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
@@ -81,4 +81,4 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
   )
 
 }
-export default SearchArea;
+export default SearchInput;

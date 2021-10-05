@@ -3,7 +3,7 @@ import { loadGeographies, getPolicies, searchQuery } from '../api';
 import { Policy } from '../model/policy';
 import Layout from '../components/Layout'
 import Head from 'next/head';
-import { SearchArea, SearchResults, SearchNavigation } from '../components/search';
+import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
 import { PER_PAGE } from '../constants';
 
@@ -56,7 +56,7 @@ export default function Home(): JSX.Element {
       <Head>
         <title>Policy Search</title>
       </Head>
-      <SearchArea 
+      <SearchInput 
         handleChange={handleChange}
         query={query}
         setQuery={setQuery}
