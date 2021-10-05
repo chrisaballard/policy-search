@@ -150,13 +150,6 @@ dmypy.json
 # Ignore vscode config
 .vscode/*
 
-# dependencies
-/app/node_modules
-
-# next.js
-/app/.next/
-/app/out/
-
 # Ignore vscode development contain config files
 .devcontainer/*
 
