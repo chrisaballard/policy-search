@@ -12,23 +12,16 @@ export default function Home(): JSX.Element {
   const [ policies, setPolicies ] = useState([]);
   const [ endOfList, setEndOfList ] = useState(false);
   const [ query, setQuery ] = useState('');
-  const [ next, setNext ] = useState(1)
+  const [ next, setNext ] = useState(0);
   const [ processing, setProcessing ] = useState(false);
   const [ geographies, setGeographies ] = useState([]);
 
-  const loadPolicies = async (start?: number): Promise<void> => {
-    const data = await getPolicies(start);
-    const list = data.policies;
-    setProcessing(false);
-    setPolicies(updateList(list, start));
-    setNext(PER_PAGE + next);
-  }
-  const loadResults = async (query: string, start?: number): Promise<void> => {
+  const loadResults = async (query: string, start: number = 0): Promise<void> => {
     const data = await searchQuery(query, start);
     const list = data.resultsByDocument;
     setProcessing(false);
     setPolicies(updateList(list, start));
-    setNext(PER_PAGE + next);
+    setNext(PER_PAGE + start);
     checkIfEnd(data.metadata);
   }
   const updateList = (list: Policy[], start?: number): Policy[] => {

@@ -538,6 +538,12 @@
 .flag-icon-eth.flag-icon-squared {
   background-image: url(/images/flags/1x1/eth.svg);
 }
+.flag-icon-eue {
+  background-image: url(/images/flags/4x3/eue.svg);
+}
+.flag-icon-eue.flag-icon-squared {
+  background-image: url(/images/flags/1x1/eue.svg);
+}
 
 .flag-icon-eun {
   background-image: url(/images/flags/4x3/eun.svg);

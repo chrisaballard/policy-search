@@ -25,7 +25,6 @@ export const searchQuery = async (query: string, start?: number) => {
   }
   return await axios.get(req)
     .then( response => {
-      console.log(response.data)
       return response.statusText =='OK'
         ? response.data
         : Promise.reject(Error('Unsuccessful response'));

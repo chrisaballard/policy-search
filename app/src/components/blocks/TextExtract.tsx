@@ -26,8 +26,8 @@ const TextExtract = ({ texts, page }: TextExtractProps): JSX.Element => {
   return (
     <blockquote className="bg-gray-200 rounded-lg p-4 my-2">
       <div className="text-sm font-bold">Page {page}:</div>
-        {textsSummary.map((text) => (
-          <p className="mt-4 text-sm text-gray-600" dangerouslySetInnerHTML={{__html: text}} />
+        {textsSummary.map((text, index) => (
+          <p className="mt-4 text-sm text-gray-600" key={`txt_${index}`} dangerouslySetInnerHTML={{__html: text}} />
         ))}
         {texts.length > 3 ? 
           <p className="text-sm mt-4 text-gray-400 italic">Showing first {textsSummary.length} of {texts.length} sentence matches on this page.</p>

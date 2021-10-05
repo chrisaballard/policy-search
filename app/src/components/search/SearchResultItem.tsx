@@ -18,6 +18,10 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
     setShowExtracts(!showExtracts);
   }
   const getCountryName = async () => {
+    if (policy.countryCode === 'EUE') {
+      setCountry('European Union');
+      return;
+    }
     const name = await getCountryNameFromCode(policy.countryCode, geographies);
     setCountry(name);
   }
@@ -35,7 +39,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
         <div className="relative">
             <div className="absolute top-0 left-0 flex flex-col items-center w-full">
               <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
-              <span className="text-xs text-gray-500 mt-2">{country}</span>
+              <span className="text-xs text-center text-gray-500 mt-2">{country}</span>
             </div>
         </div>
       </div>
