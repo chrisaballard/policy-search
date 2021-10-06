@@ -8,6 +8,7 @@ export interface State {
   policies: Policies;
   searchResult: SearchResult;
   geographies: Geography[];
+  geographyFilters: Geography[];
 }
 
 const initialState = {
@@ -19,6 +20,7 @@ const initialState = {
     metadata: {},
     resultsByDocument: []
   },
-  geographies: []
+  geographies: [],
+  geographyFilters: []
 }
 export default initialState;

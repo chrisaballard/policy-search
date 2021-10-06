@@ -1,22 +1,24 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
+import Filters from '../components/blocks/Filters/Filters';
 import { PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGetGeographies from '../hooks/useGetGeographies';
 import useSetStatus from '../hooks/useSetStatus';
 
 
-export default function Home(): JSX.Element {
+const Home = (): JSX.Element => {
 
   const [ endOfList, setEndOfList ] = useState(false);
   const [ query, setQuery ] = useState('');
+  const [ searchQuery, setSearchQuery ] = useState('');
   const [ next, setNext ] = useState(0);
 
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
-  const [ geographies, setGeographies ] = useGetGeographies();
+  const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
   const [ status, setProcessing ] = useSetStatus();
   const { processing } = status;
   const { metadata, resultsByDocument } = searchResult;
@@ -31,19 +33,19 @@ export default function Home(): JSX.Element {
     const end = metadata.numDocsReturned < PER_PAGE;
     setEndOfList(end);
   }
-  const newSearch = () => {
-    if(query.trim().length === 0) return;
-    setQuery(query);
+  const newSearch = (queryString) => {
+    const sq = document.getElementById('search-input').value;
+    if(sq.trim().length === 0) return;
+    setSearchQuery(queryString);
     setNext(0);
     if (resultsByDocument.length) {
       clearResult();
     }
-    
-    loadResults(`query=${query}`);
+    loadResults(queryString);
   }
   const handleNavigation = (): void => {
     setProcessing(true);
-    loadResults(`query=${query}&start=${next}`);
+    loadResults(`${searchQuery}&start=${next}`);
   }
 
   useEffect(() => {
@@ -61,16 +63,27 @@ export default function Home(): JSX.Element {
         setQuery={setQuery}
         setProcessing={setProcessing}
       />
+      <div className="container md:flex">
+      {resultsByDocument.length ?
+          <Filters 
+            geographies={geographies}
+            newSearch={newSearch}
+            setProcessing={setProcessing}
+            setQuery={setQuery}
+            query={query}
+            geographyFilters={geographyFilters}
+            setGeographyFilters={setGeographyFilters}
+          />
+          : null
+        }
       <SearchResults 
         policies={resultsByDocument} 
         query={query} 
         processing={processing}
         geographies={geographies}
-        loadResults={loadResults}
-        newSearch={newSearch}
-        setProcessing={setProcessing}
-        setQuery={setQuery}
       />
+      </div>
+      
       {processing ? 
         <Loader />
         : null
@@ -85,3 +98,5 @@ export default function Home(): JSX.Element {
     </Layout>
   )
 }
+
+export default Home;

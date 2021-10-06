@@ -21,7 +21,7 @@ dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
 
-elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
+elastic_host = os.environ.get('elasticsearch_cluster', 'elasticsearch:9200')
 es = ElasticSearchIndex(es_url=elastic_host)
 
 app = FastAPI()

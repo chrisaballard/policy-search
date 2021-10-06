@@ -17,12 +17,12 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
   const toggleExtracts = () => {
     setShowExtracts(!showExtracts);
   }
-  const getCountryName = async () => {
+  const getCountryName = () => {
     if (policy.countryCode === 'EUE') {
       setCountry('European Union');
       return;
     }
-    const name = await getCountryNameFromCode(policy.countryCode, geographies);
+    const name = getCountryNameFromCode(policy.countryCode, geographies);
     setCountry(name);
   }
   

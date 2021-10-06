@@ -5,11 +5,22 @@ import FilterTag from './FilterTag';
 
 interface ByCountryProps {
   geographies: Geography[];
+  newSearch(queryString: string): void;
+  setProcessing(bool: boolean): void;
+  setQuery(query: string): void;
+  query: string;
+  geographyFilters: Geography[];
+  setGeographyFilters(filters: Geography[]): void;
 }
 
-const ByCountry = ({geographies}: ByCountryProps) => {
+const ByCountry = ({
+  geographies, 
+  newSearch, 
+  geographyFilters,
+  setGeographyFilters
+}: ByCountryProps) => {
   const [ value, setValue ] = useState('');
-  const [ filterList, setFilterList ] = useState([]);
+  const [ filterList, setFilterList ] = useState([]); // list of geographies to filter by
   const [ list, suggest ] = useCountryFilters(geographies);
   
   const handleChange = (): void => {
@@ -19,19 +30,40 @@ const ByCountry = ({geographies}: ByCountryProps) => {
     const value = (event.target as HTMLButtonElement).innerText;
     const newList = list.filter((item) => item.name === value)
     setFilterList([...filterList, ...newList]);
+    // setGeographyFilters([...geographyFilters, ...newList])
     setValue('')
+    
+  }
+  const buildQueryString = (): string => {
+    const query = document.getElementById('search-input').value;
+    let string = `query=${query}`;
+    filterList.forEach((item) => {
+      string += `&geography=${item.code}`
+    })
+    return string;
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
-    const newList = filterList.filter((item) => item.name !== value);
+    const newList = geographyFilters.filter((item) => item.name !== value);
     setFilterList(newList);
   }
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       handleChange()
+      console.log('?')
     }, 100);
     return () => clearTimeout(timeOutId);
-  }, [value])
+  }, [value]);
+
+  useEffect(() => {
+    if(filterList.length) {
+      const queryString = buildQueryString();
+      newSearch(queryString)
+      console.log('new search?')
+    }
+  }, [filterList]);
+
+
   return (
     <section>
       <div className="border-b pb-2 mb-4 uppercase">Country</div>

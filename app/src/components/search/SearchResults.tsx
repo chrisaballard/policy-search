@@ -9,7 +9,12 @@ interface SearchResultsProps {
   query: string;
   processing: boolean;
 }
-const SearchResults = ({policies, query, processing, geographies}: SearchResultsProps) => {
+const SearchResults = ({
+  policies,
+  query,
+  processing,
+  geographies,
+}: SearchResultsProps) => {
   const renderMessage = () => {
     if(!policies.length) {
       return (
@@ -26,15 +31,7 @@ const SearchResults = ({policies, query, processing, geographies}: SearchResults
   }
   return (
     <section>
-      <div className="container md:flex">
-
-        {policies.length ?
-          <Filters 
-            geographies={geographies}
-          />
-          : null
-        }
-        <div className="w-full md:w-3/4 md:pl-4">
+        <div className="w-full md:pl-4">
           {query.length ?
             <div className="mt-4">
               {query.length && !processing ? renderMessage() : null}
@@ -61,7 +58,6 @@ const SearchResults = ({policies, query, processing, geographies}: SearchResults
           ))}
           </ul>
         </div>
-      </div>
     </section>
   )
 }

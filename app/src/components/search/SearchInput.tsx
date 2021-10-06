@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 
 interface SearchInputProps {
-  handleChange(): void;
+  newSearch(queryString: string): void;
   query: string;
   setQuery(query: string): void;
   setProcessing(boolean: boolean): void;
 }
-const SearchInput = ({handleChange, query, setQuery, setProcessing}: SearchInputProps): JSX.Element => {
+const SearchInput = ({newSearch, query, setQuery, setProcessing}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
+  const [ searchTerms, setSearchTerms ] = useState('');
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -17,15 +18,18 @@ const SearchInput = ({handleChange, query, setQuery, setProcessing}: SearchInput
     e.preventDefault();
     setSearchOpen(!searchOpen);
   }
+  const handleChange = () => {
+    setSearchTerms(searchInput.current.value)
+  }
   useEffect(() => {
-    if(query.length) setProcessing(true);
+    if(searchTerms) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      handleChange()
+      newSearch(`query=${searchTerms}`)
     }, 800);
     return () => clearTimeout(timeOutId);
-  }, [query]);
+  }, [searchTerms]);
 
   useEffect(() => {
     // reset search field when clicking x
@@ -55,9 +59,11 @@ const SearchInput = ({handleChange, query, setQuery, setProcessing}: SearchInput
           <div 
             className={`search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
               <input 
+                id="search-input"
                 ref={searchInput}
-                onChange={(event: React.FormEvent<HTMLInputElement>): void => setQuery((event.target as HTMLInputElement).value)}
-                value={query}
+                // onChange={(event: React.FormEvent<HTMLInputElement>): void => setQuery((event.target as HTMLInputElement).value)}
+                onChange={handleChange}
+                value={searchTerms}
                 className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 
               />
           </div>
