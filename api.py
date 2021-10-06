@@ -130,10 +130,16 @@ def get_policy_text_by_page(
     doc_id = f"{policy_id}_page{page}"
 
     try:
+        # Get the page text for the given document and page
         es_doc = es.get_doc_by_id(doc_id)
         page_text = es_doc["_source"]["text"]
+
+        # Get the total page count for the document
+        page_count = es.get_page_count_for_doc(policy_id)
         return {
-            "documentMetadata": {},
+            "documentMetadata": {
+                "pageCount": page_count
+            },
             "pageText": page_text,
         }
 
