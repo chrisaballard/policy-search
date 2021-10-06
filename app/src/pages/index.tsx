@@ -1,82 +1,86 @@
 import { useState, useEffect } from 'react';
-import { loadGeographies, getPolicies, searchQuery } from '../api';
-import { Policy } from '../model/policy';
 import Layout from '../components/Layout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
 import { PER_PAGE } from '../constants';
+import useGetSearchResult from '../hooks/useSetSearchResult';
+import useGetGeographies from '../hooks/useGetGeographies';
+import useSetStatus from '../hooks/useSetStatus';
 
 
 export default function Home(): JSX.Element {
-  const [ policies, setPolicies ] = useState([]);
+
   const [ endOfList, setEndOfList ] = useState(false);
   const [ query, setQuery ] = useState('');
   const [ next, setNext ] = useState(0);
-  const [ processing, setProcessing ] = useState(false);
-  const [ geographies, setGeographies ] = useState([]);
 
-  const loadResults = async (query: string, start: number = 0): Promise<void> => {
-    const data = await searchQuery(query, start);
-    const list = data.resultsByDocument;
-    setProcessing(false);
-    setPolicies(updateList(list, start));
-    setNext(PER_PAGE + start);
-    checkIfEnd(data.metadata);
+  const [ searchResult, getResult, clearResult ] = useGetSearchResult();
+  const [ geographies, setGeographies ] = useGetGeographies();
+  const [ status, setProcessing ] = useSetStatus();
+  const { processing } = status;
+  const { metadata, resultsByDocument } = searchResult;
+
+  const loadResults = (queryString: string): void => {
+    getResult(queryString);
+    setNext(PER_PAGE + next);
+    checkIfEnd();
   }
-  const updateList = (list: Policy[], start?: number): Policy[] => {
-    if(start) {
-      return [...policies, ...list]
-    }
-    return list;
-  }
-  const checkIfEnd = (metadata) => {
+
+  const checkIfEnd = () => {
     const end = metadata.numDocsReturned < PER_PAGE;
     setEndOfList(end);
   }
-  const handleChange = async (): Promise<void> => {
+  const newSearch = () => {
     if(query.trim().length === 0) return;
-    setPolicies([]);
     setQuery(query);
     setNext(0);
-    loadResults(query);
+    if (resultsByDocument.length) {
+      clearResult();
+    }
+    
+    loadResults(`query=${query}`);
   }
   const handleNavigation = (): void => {
-    loadResults(query, next);
+    setProcessing(true);
+    loadResults(`query=${query}&start=${next}`);
   }
-  const getGeographies = async () => {
-    const geos = await loadGeographies();
-    setGeographies(geos);
-  }
+
   useEffect(() => {
-    getGeographies();
+    setGeographies();
   }, [])
   return (
     <Layout>
       <Head>
         <title>Policy Search</title>
       </Head>
+      {console.log(searchResult)}
       <SearchInput 
-        handleChange={handleChange}
+        newSearch={newSearch}
         query={query}
         setQuery={setQuery}
         setProcessing={setProcessing}
       />
       <SearchResults 
-        policies={policies} 
+        policies={resultsByDocument} 
         query={query} 
         processing={processing}
         geographies={geographies}
+        loadResults={loadResults}
+        newSearch={newSearch}
+        setProcessing={setProcessing}
+        setQuery={setQuery}
       />
-
-      {policies.length && !endOfList ?
-      <SearchNavigation onClick={handleNavigation} />
-      : null
-      }
       {processing ? 
         <Loader />
         : null
       }
+
+      {resultsByDocument.length && !endOfList ?
+      <SearchNavigation onClick={handleNavigation} />
+      : null
+      }
+      
       
     </Layout>
   )
