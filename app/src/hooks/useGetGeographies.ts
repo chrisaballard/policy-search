@@ -1,3 +1,4 @@
+import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getGeographies, setGeoFilters } from '../actions';
 import { State } from '../store/initialState';
@@ -6,7 +7,8 @@ import { Geography } from '../model/geography';
 const useGetGeographies = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: State ) => state)
-  const { geographies, geographyFilters } = state;
+  const { geographies, filters } = state;
+  const { geographyFilters } = filters;
 
   const setGeographies = () => {
     dispatch(getGeographies());

@@ -6,7 +6,7 @@ interface FilteredList {
   list: Geography[];
 }
 
-const useCountryFilters = (countries: Geography[]) => {
+const useGeographyFilters = (countries: Geography[]) => {
   const [ list, setList ] = useState([])
   const suggest = (input: string): void => {
     if (!input.length) {
@@ -17,8 +17,8 @@ const useCountryFilters = (countries: Geography[]) => {
       return country.name.toLowerCase().indexOf(input.toLowerCase()) > -1;
     })
 
-    setList(filteredList)
+    setList(filteredList.slice(0, 10))
   }
   return [ list, suggest ] as const;
 }
-export default useCountryFilters;
+export default useGeographyFilters;

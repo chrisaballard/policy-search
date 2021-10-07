@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Geography } from "../../../model/geography";
-import useCountryFilters from '../../../hooks/useCountryFilters';
+import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import FilterTag from './FilterTag';
 
-interface ByCountryProps {
+interface ByGeographyProps {
   geographies: Geography[];
   newSearch(queryString: string): void;
   setProcessing(bool: boolean): void;
@@ -13,65 +13,75 @@ interface ByCountryProps {
   setGeographyFilters(filters: Geography[]): void;
 }
 
-const ByCountry = ({
+const ByGeography = ({
   geographies, 
   newSearch, 
+  setProcessing,
   geographyFilters,
-  setGeographyFilters
-}: ByCountryProps) => {
+  setGeographyFilters,
+}: ByGeographyProps) => {
+  // input value
   const [ value, setValue ] = useState('');
-  const [ filterList, setFilterList ] = useState([]); // list of geographies to filter by
-  const [ list, suggest ] = useCountryFilters(geographies);
+  // list of suggested geographies based on user input
+  const [ list, suggest ] = useGeographyFilters(geographies); 
   
   const handleChange = (): void => {
     suggest(value)
   }
+
   const handleFilterSelect = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.target as HTMLButtonElement).innerText;
     const newList = list.filter((item) => item.name === value)
-    setFilterList([...filterList, ...newList]);
-    // setGeographyFilters([...geographyFilters, ...newList])
+    setGeographyFilters([...geographyFilters, ...newList])
     setValue('')
     
   }
-  const buildQueryString = (): string => {
+  const buildQueryString = (empty: boolean = false): string => {
     const query = document.getElementById('search-input').value;
     let string = `query=${query}`;
-    filterList.forEach((item) => {
-      string += `&geography=${item.code}`
-    })
+    if(!empty) {
+      geographyFilters.forEach((item) => {
+        string += `&geography=${item.code}`
+      })
+    }
+
     return string;
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
     const newList = geographyFilters.filter((item) => item.name !== value);
-    setFilterList(newList);
+    setGeographyFilters(newList);
+    setProcessing(true)
+    if(!newList.length) {
+      const queryString = buildQueryString(true);
+      newSearch(queryString)
+    }
   }
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       handleChange()
-      console.log('?')
     }, 100);
     return () => clearTimeout(timeOutId);
   }, [value]);
 
   useEffect(() => {
-    if(filterList.length) {
+    if(geographyFilters.length) {
+      setProcessing(true);
       const queryString = buildQueryString();
       newSearch(queryString)
-      console.log('new search?')
     }
-  }, [filterList]);
+  }, [geographyFilters]);
 
 
   return (
     <section>
-      <div className="border-b pb-2 mb-4 uppercase">Country</div>
+      <div className="mb-4 uppercase">Geography</div>
       <div className="relative">
         <input
-          className="h-12 w-full border rounded focus:outline-none px-2"
+          className="h-12 w-full border rounded focus:outline-none px-2 text-gray-500"
           type="text"
           value={value}
+          placeholder='start typing...'
           onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
         />
         {list.length ?
@@ -88,9 +98,9 @@ const ByCountry = ({
         :
         null
         }
-        {filterList.length ? 
+        {geographyFilters.length ? 
         <div>
-          {filterList.map((item) => (
+          {geographyFilters.map((item) => (
             <FilterTag onClick={handleFilterRemove} key={item.code} text={item.name} />
           ))}
         </div>
@@ -102,4 +112,4 @@ const ByCountry = ({
   )
 }
 
-export default ByCountry;
+export default ByGeography;

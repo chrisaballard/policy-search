@@ -17,6 +17,7 @@ const Home = (): JSX.Element => {
   const [ searchQuery, setSearchQuery ] = useState('');
   const [ next, setNext ] = useState(0);
 
+  // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
   const [ status, setProcessing ] = useSetStatus();
@@ -26,7 +27,6 @@ const Home = (): JSX.Element => {
   const loadResults = (queryString: string): void => {
     getResult(queryString);
     setNext(PER_PAGE + next);
-    checkIfEnd();
   }
 
   const checkIfEnd = () => {
@@ -49,22 +49,28 @@ const Home = (): JSX.Element => {
   }
 
   useEffect(() => {
-    setGeographies();
-  }, [])
+    if(!geographies.length) setGeographies();
+  }, []);
+  useEffect(() => {
+    setNext(PER_PAGE);
+  }, [geographyFilters])
+  useEffect(() => {
+    checkIfEnd();
+  }, [searchResult])
   return (
     <Layout>
       <Head>
         <title>Policy Search</title>
       </Head>
-      {console.log(searchResult)}
       <SearchInput 
         newSearch={newSearch}
         query={query}
         setQuery={setQuery}
         setProcessing={setProcessing}
+        processing={processing}
       />
       <div className="container md:flex">
-      {resultsByDocument.length ?
+      {resultsByDocument.length ||  geographyFilters.length ?
           <Filters 
             geographies={geographies}
             newSearch={newSearch}
@@ -78,7 +84,7 @@ const Home = (): JSX.Element => {
         }
       <SearchResults 
         policies={resultsByDocument} 
-        query={query} 
+        searchQuery={searchQuery} 
         processing={processing}
         geographies={geographies}
       />

@@ -2,13 +2,14 @@ import { Status } from "../model/status";
 import { Policies } from "../model/policies";
 import { SearchResult } from "../model/searchResult";
 import { Geography } from "../model/geography";
+import { Filters } from "../model/filters";
 
 export interface State {
   status: Status;
   policies: Policies;
   searchResult: SearchResult;
   geographies: Geography[];
-  geographyFilters: Geography[];
+  filters: Filters;
 }
 
 const initialState = {
@@ -21,6 +22,8 @@ const initialState = {
     resultsByDocument: []
   },
   geographies: [],
-  geographyFilters: []
+  filters: {
+    geographyFilters: []
+  },
 }
 export default initialState;

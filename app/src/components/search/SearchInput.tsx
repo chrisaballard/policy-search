@@ -5,8 +5,9 @@ interface SearchInputProps {
   query: string;
   setQuery(query: string): void;
   setProcessing(boolean: boolean): void;
+  processing: boolean;
 }
-const SearchInput = ({newSearch, query, setQuery, setProcessing}: SearchInputProps): JSX.Element => {
+const SearchInput = ({newSearch, query, setQuery, setProcessing, processing}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
   const [ searchTerms, setSearchTerms ] = useState('');
   
@@ -22,7 +23,7 @@ const SearchInput = ({newSearch, query, setQuery, setProcessing}: SearchInputPro
     setSearchTerms(searchInput.current.value)
   }
   useEffect(() => {
-    if(searchTerms) setProcessing(true);
+    if(searchTerms && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
