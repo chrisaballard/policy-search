@@ -2,13 +2,14 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
-import Loader from '../components/Loader';
 import Filters from '../components/blocks/Filters/Filters';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGetGeographies from '../hooks/useGetGeographies';
 import useSetStatus from '../hooks/useSetStatus';
+import useGetPolicyPage from '../hooks/useGetPolicyPage';
 import { getParameterByName } from '../helpers/queryString';
+import Overlay from '../components/pageView/Overlay';
 
 const Home = (): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
@@ -21,6 +22,7 @@ const Home = (): JSX.Element => {
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
   const [ status, setProcessing ] = useSetStatus();
+  const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
   const { processing } = status;
   const { metadata, resultsByDocument } = searchResult;
 
@@ -48,6 +50,9 @@ const Home = (): JSX.Element => {
     setProcessing(true);
     loadResults(`${searchQuery}&start=${next}`);
   }
+  const launchPolicyPage = () => {
+
+  }
 
   useEffect(() => {
     if(!geographies.length) setGeographies();
@@ -63,6 +68,7 @@ const Home = (): JSX.Element => {
       <Head>
         <title>Policy Search</title>
       </Head>
+      <Overlay />
       <SearchInput 
         newSearch={newSearch}
         setProcessing={setProcessing}
@@ -80,19 +86,14 @@ const Home = (): JSX.Element => {
           />
           : null
         }
-      <SearchResults 
-        policies={resultsByDocument} 
-        searchQuery={searchQuery} 
-        processing={processing}
-        geographies={geographies}
-      />
+        <SearchResults 
+            policies={resultsByDocument} 
+            searchQuery={searchQuery} 
+            processing={processing}
+            geographies={geographies}
+          />
       </div>
       
-      {processing ? 
-        <Loader />
-        : null
-      }
-
       {resultsByDocument.length && !endOfList ?
       <SearchNavigation onClick={handleNavigation} />
       : null

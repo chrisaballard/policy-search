@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { Policies } from '../model/policies';
+import { PolicyPage } from '../model/policyPage';
 import { PER_PAGE, API_BASE_URL } from '../constants';
 
 const fetchData = async (req: string): Promise<any> => {
@@ -27,4 +28,8 @@ export const searchQuery = async (queryString: string) => {
 
 export const loadGeographies = async () => {
   return await fetchData(`${API_BASE_URL}/geographies`)
+}
+
+export const loadPolicyPage = async (id: number, page: number): Promise<PolicyPage> => {
+  return await fetchData(`${API_BASE_URL}/policies/${id}/text/?page=${page}`);
 }

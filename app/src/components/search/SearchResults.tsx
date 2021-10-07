@@ -4,6 +4,7 @@ import { ResultByDocument } from "../../model/resultByDocument";
 import Filters from "../blocks/Filters/Filters";
 import SearchResultItem from "./SearchResultItem";
 import { API_BASE_URL } from '../../constants';
+import Loader from '../../components/Loader';
 
 interface SearchResultsProps {
   policies: ResultByDocument[];
@@ -37,6 +38,7 @@ const SearchResults = ({
   return (
     <section className="w-full">
         <div className="md:pl-4">
+          
           {searchQuery.length ?
             <div className="mt-4">
               {searchQuery.length && !processing ? renderMessage() : null}
@@ -63,7 +65,10 @@ const SearchResults = ({
             </>
           :
           null}
-          
+          {processing && searchQuery.length ? 
+            <Loader />
+            : null
+          }
           
         </div>
     </section>
