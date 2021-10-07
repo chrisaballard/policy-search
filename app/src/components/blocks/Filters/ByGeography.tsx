@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../../../constants';
 import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
+import { getParameterByName } from '../../../helpers/queryString';
 import FilterTag from './FilterTag';
 
 interface ByGeographyProps {
@@ -21,6 +23,10 @@ const ByGeography = ({
 }: ByGeographyProps) => {
   // input value
   const [ value, setValue ] = useState('');
+
+  // checks if all filters have been removed to trigger a new search
+  const [ filtersRemoved, setFiltersRemoved ] = useState(false);
+
   // list of suggested geographies based on user input
   const [ list, suggest ] = useGeographyFilters(geographies); 
 
@@ -34,11 +40,20 @@ const ByGeography = ({
     const value = (event.target as HTMLButtonElement).innerText;
     const newList = list.filter((item) => item.name === value)
     setGeographyFilters([...geographyFilters, ...newList])
+    setFiltersRemoved(false)
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
     const newList = geographyFilters.filter((item) => item.name !== value);
     setGeographyFilters(newList);
+    setFiltersRemoved(true)
+  }
+
+  const applyFilters = () => {
+    const queryString = buildQueryString(document.getElementById('search-input').value);
+    setProcessing(true);
+    newSearch(queryString);
+    setValue('');
   }
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -48,12 +63,12 @@ const ByGeography = ({
   }, [value]);
 
   useEffect(() => {
-    const queryString = buildQueryString(document.getElementById('search-input').value);
-    setProcessing(true);
-    newSearch(queryString);
-    setValue('');
+    
+    if(geographyFilters.length || filtersRemoved) {
+      applyFilters();
+    }
 
-  }, [geographyFilters]);
+  }, [geographyFilters, filtersRemoved]);
 
 
   return (

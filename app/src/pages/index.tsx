@@ -11,7 +11,6 @@ import useSetStatus from '../hooks/useSetStatus';
 import { getParameterByName } from '../helpers/queryString';
 
 const Home = (): JSX.Element => {
-
   const [ endOfList, setEndOfList ] = useState(false);
   // query=xxx
   const [ searchQuery, setSearchQuery ] = useState('');
@@ -37,8 +36,8 @@ const Home = (): JSX.Element => {
   const newSearch = (queryString) => {
     const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
     if(sq?.trim().length === 0) return;
-    setSearchQuery(queryString);
     
+    setSearchQuery(queryString);
     setNext(0);
     if (resultsByDocument.length) {
       clearResult();
@@ -64,8 +63,6 @@ const Home = (): JSX.Element => {
       <Head>
         <title>Policy Search</title>
       </Head>
-      {console.log(searchQuery)}
-      
       <SearchInput 
         newSearch={newSearch}
         setProcessing={setProcessing}
