@@ -200,6 +200,35 @@ class ElasticSearchIndex(BaseCallback):
             body=es_query,
             index=self.index_name
         )
+
+    def get_page_count_for_doc(
+        self,
+        policy_id: int
+    ) -> int:
+        """Return the total number of pages in the elastic search index for a given document
+        """
+
+        es_query = {
+            "query": {
+                "match": {
+                    "policy_id": policy_id
+                }
+            },
+            "size": 0,
+            "aggs": {
+                "page_count": {"max": {"field": "page_number"}}
+            }
+        }
+
+        query_result = self.es.search(
+            body=es_query,
+            index=self.index_name
+        )
+
+        doc_page_count = query_result['aggregations']['page_count']['value']
+
+        return doc_page_count
+
             
     def _create_page_dicts_from_doc(
         self,
