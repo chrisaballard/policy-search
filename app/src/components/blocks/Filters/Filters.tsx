@@ -5,8 +5,6 @@ interface FiltersProps {
   geographies: Geography[];
   newSearch(searchQuery: string): void;
   setProcessing(bool: boolean): void;
-  setQuery(query: string): void;
-  query: string;
   geographyFilters: Geography[];
   setGeographyFilters(filters: Geography[]): void;
 }
@@ -15,8 +13,6 @@ const Filters = ({
   geographies, 
   newSearch, 
   setProcessing, 
-  setQuery, 
-  query,
   geographyFilters,
   setGeographyFilters
 }: FiltersProps) => {
@@ -28,8 +24,6 @@ const Filters = ({
         geographies={geographies}
         newSearch={newSearch}
         setProcessing={setProcessing}
-        setQuery={setQuery}
-        query={query}
         geographyFilters={geographyFilters}
         setGeographyFilters={setGeographyFilters}
       />

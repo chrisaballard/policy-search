@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
+import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import FilterTag from './FilterTag';
 
 interface ByGeographyProps {
   geographies: Geography[];
   newSearch(queryString: string): void;
   setProcessing(bool: boolean): void;
-  setQuery(query: string): void;
-  query: string;
   geographyFilters: Geography[];
   setGeographyFilters(filters: Geography[]): void;
 }
@@ -24,6 +23,8 @@ const ByGeography = ({
   const [ value, setValue ] = useState('');
   // list of suggested geographies based on user input
   const [ list, suggest ] = useGeographyFilters(geographies); 
+
+  const [ buildQueryString ] = useBuildQueryString();
   
   const handleChange = (): void => {
     suggest(value)
@@ -33,29 +34,11 @@ const ByGeography = ({
     const value = (event.target as HTMLButtonElement).innerText;
     const newList = list.filter((item) => item.name === value)
     setGeographyFilters([...geographyFilters, ...newList])
-    setValue('')
-    
-  }
-  const buildQueryString = (empty: boolean = false): string => {
-    const query = document.getElementById('search-input').value;
-    let string = `query=${query}`;
-    if(!empty) {
-      geographyFilters.forEach((item) => {
-        string += `&geography=${item.code}`
-      })
-    }
-
-    return string;
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
     const newList = geographyFilters.filter((item) => item.name !== value);
     setGeographyFilters(newList);
-    setProcessing(true)
-    if(!newList.length) {
-      const queryString = buildQueryString(true);
-      newSearch(queryString)
-    }
   }
   useEffect(() => {
     const timeOutId = setTimeout(() => {
@@ -65,11 +48,11 @@ const ByGeography = ({
   }, [value]);
 
   useEffect(() => {
-    if(geographyFilters.length) {
-      setProcessing(true);
-      const queryString = buildQueryString();
-      newSearch(queryString)
-    }
+    const queryString = buildQueryString(document.getElementById('search-input').value);
+    setProcessing(true);
+    newSearch(queryString);
+    setValue('');
+
   }, [geographyFilters]);
 
 

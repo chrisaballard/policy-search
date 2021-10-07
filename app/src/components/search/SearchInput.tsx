@@ -1,15 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Geography } from '../../model/geography';
+import useBuildQueryString from '../../hooks/useBuildQueryString';
 
 interface SearchInputProps {
   newSearch(queryString: string): void;
-  query: string;
-  setQuery(query: string): void;
   setProcessing(boolean: boolean): void;
   processing: boolean;
+  geographyFilters: Geography[];
 }
-const SearchInput = ({newSearch, query, setQuery, setProcessing, processing}: SearchInputProps): JSX.Element => {
+const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
   const [ searchTerms, setSearchTerms ] = useState('');
+
+  const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -22,28 +25,28 @@ const SearchInput = ({newSearch, query, setQuery, setProcessing, processing}: Se
   const handleChange = () => {
     setSearchTerms(searchInput.current.value)
   }
+ 
   useEffect(() => {
     if(searchTerms && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      newSearch(`query=${searchTerms}`)
+      const str = buildQueryString(searchTerms);
+      newSearch(str);
+      // newSearch(`query=${searchTerms}`);
     }, 800);
     return () => clearTimeout(timeOutId);
   }, [searchTerms]);
 
   useEffect(() => {
-    // reset search field when clicking x
-    if(searchInput.current && !searchOpen) {
-      setQuery('');
-    }
     // toggle open/close of search field
       setTimeout(() => {
         if(searchInput.current && searchOpen) {
           searchInput.current.focus();
         }
       }, 800);
-  }, [searchOpen])
+  }, [searchOpen]);
+
   return (
     <section>
       <div className="search-area container flex flex-col justify-center items-center relative">
@@ -62,7 +65,6 @@ const SearchInput = ({newSearch, query, setQuery, setProcessing, processing}: Se
               <input 
                 id="search-input"
                 ref={searchInput}
-                // onChange={(event: React.FormEvent<HTMLInputElement>): void => setQuery((event.target as HTMLInputElement).value)}
                 onChange={handleChange}
                 value={searchTerms}
                 className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 

@@ -4,17 +4,18 @@ import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
 import Filters from '../components/blocks/Filters/Filters';
-import { PER_PAGE } from '../constants';
+import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGetGeographies from '../hooks/useGetGeographies';
 import useSetStatus from '../hooks/useSetStatus';
-
+import { getParameterByName } from '../helpers/queryString';
 
 const Home = (): JSX.Element => {
 
   const [ endOfList, setEndOfList ] = useState(false);
-  const [ query, setQuery ] = useState('');
+  // query=xxx
   const [ searchQuery, setSearchQuery ] = useState('');
+  // next number to start on when paging through
   const [ next, setNext ] = useState(0);
 
   // hooks
@@ -34,9 +35,10 @@ const Home = (): JSX.Element => {
     setEndOfList(end);
   }
   const newSearch = (queryString) => {
-    const sq = document.getElementById('search-input').value;
-    if(sq.trim().length === 0) return;
+    const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
+    if(sq?.trim().length === 0) return;
     setSearchQuery(queryString);
+    
     setNext(0);
     if (resultsByDocument.length) {
       clearResult();
@@ -62,21 +64,20 @@ const Home = (): JSX.Element => {
       <Head>
         <title>Policy Search</title>
       </Head>
+      {console.log(searchQuery)}
+      
       <SearchInput 
         newSearch={newSearch}
-        query={query}
-        setQuery={setQuery}
         setProcessing={setProcessing}
         processing={processing}
+        geographyFilters={geographyFilters}
       />
       <div className="container md:flex">
-      {resultsByDocument.length ||  geographyFilters.length ?
+      {searchQuery ?
           <Filters 
             geographies={geographies}
             newSearch={newSearch}
             setProcessing={setProcessing}
-            setQuery={setQuery}
-            query={query}
             geographyFilters={geographyFilters}
             setGeographyFilters={setGeographyFilters}
           />

@@ -1,4 +1,4 @@
-import getParameterByName from "../../helpers/queryString";
+import { getParameterByName } from "../../helpers/queryString";
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import Filters from "../blocks/Filters/Filters";
@@ -23,7 +23,7 @@ const SearchResults = ({
   const renderMessage = () => {
     if(!policies.length) {
       return (
-      <div className="text-red-500 text-2xl text-center">
+      <div className="text-red-500 text-2xl">
         There are no results for your query, please try a different search.
       </div>
       )

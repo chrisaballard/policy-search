@@ -1,4 +1,3 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getGeographies, setGeoFilters } from '../actions';
 import { State } from '../store/initialState';
