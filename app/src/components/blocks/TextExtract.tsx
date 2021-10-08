@@ -39,7 +39,7 @@ const TextExtract = ({ texts, page, id }: TextExtractProps): JSX.Element => {
         
       <div className="text-right mt-2">
         <Link href={`/policy/${id}?page=${page}`}>
-          <a className="text-sm inline-block bg-black text-white py-2 px-6 rounded-lg">
+          <a className="text-sm inline-block bg-black text-white py-2 px-6 rounded-lg hover:bg-gray-600 duration-300 transition">
             Go to page &raquo;
           </a>
         </Link>
