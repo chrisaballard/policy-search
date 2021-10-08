@@ -45,7 +45,7 @@ class Schema:
         return np.array(all_kw)
     
     @property
-    def _keyword_subsector_mapping(self):
+    def keyword_subsector_mapping(self):
         kwd_subsector_mapping = []
 
         for subsector, kwd_list in self.subsector_keyword_mapping.items():
