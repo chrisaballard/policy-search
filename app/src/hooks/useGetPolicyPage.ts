@@ -7,7 +7,7 @@ const useGetPolicyPage = () => {
   const state = useSelector((state: State ) => state)
   const { policyPage } = state;
 
-  const getPage = (id: number, page: number): void => {
+  const getPage = (id: string | string[], page: string | string[]): void => {
     dispatch(getPolicyPage(id, page))
   }
   const clearPage = (): void => {

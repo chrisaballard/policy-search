@@ -65,6 +65,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
             key={`${index}_${item.pageNumber}`}
             texts={item.text}
             page={item.pageNumber}
+            id={policy.policyId}
           />
         ))}
       </div>

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { API_BASE_URL } from '../../../constants';
 import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
-import { getParameterByName } from '../../../helpers/queryString';
 import FilterTag from './FilterTag';
 
 interface ByGeographyProps {
@@ -14,7 +12,7 @@ interface ByGeographyProps {
   setGeographyFilters(filters: Geography[]): void;
 }
 
-const ByGeography = ({
+const ByGeography = React.memo(({
   geographies, 
   newSearch, 
   setProcessing,
@@ -108,6 +106,6 @@ const ByGeography = ({
       </div>
     </section>
   )
-}
+});
 
 export default ByGeography;

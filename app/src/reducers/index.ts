@@ -8,6 +8,8 @@ import policyPageReducer from './policyPage';
 import statusReducer from './status';
 import { Filters } from '../model/filters';
 import { PolicyPage } from '../model/policyPage';
+import { Policy } from '../model/policy';
+import { policyReducer } from './policies';
 
 // interface of entire redux store
 export interface StoreState {
@@ -16,11 +18,13 @@ export interface StoreState {
   geographies: Geography[];
   filters: Filters,
   policyPage: PolicyPage;
+  policy: Policy;
 }
 export default combineReducers<StoreState>({
   status: statusReducer,
   searchResult: searchResultReducer,
   geographies: geographiesReducer,
   filters: geographyFiltersReducer,
-  policyPage: policyPageReducer
+  policyPage: policyPageReducer,
+  policy: policyReducer
 });

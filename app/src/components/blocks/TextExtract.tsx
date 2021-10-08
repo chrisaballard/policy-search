@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import Button from "../elements/buttons/Button";
 
 interface TextExtractProps {
   texts: string[];
   page: number;
+  id: number;
 }
 
-const TextExtract = ({ texts, page }: TextExtractProps): JSX.Element => {
+const TextExtract = ({ texts, page, id }: TextExtractProps): JSX.Element => {
   const [ textsSummary, setTextsSummary ] = useState([]);
   const handleClick = (): void => {
 
@@ -36,7 +38,11 @@ const TextExtract = ({ texts, page }: TextExtractProps): JSX.Element => {
         }
         
       <div className="text-right mt-2">
-        <Button onClick={handleClick} size="small" text="Go to page >" />
+        <Link href={`/policy/${id}?page=${page}`}>
+          <a className="text-sm inline-block bg-black text-white py-2 px-6 rounded-lg">
+            Go to page &raquo;
+          </a>
+        </Link>
       </div>
     </blockquote>
   )
