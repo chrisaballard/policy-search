@@ -544,6 +544,12 @@
 .flag-icon-eue.flag-icon-squared {
   background-image: url(/images/flags/1x1/eue.svg);
 }
+.flag-icon-eur {
+  background-image: url(/images/flags/4x3/eur.svg);
+}
+.flag-icon-eur.flag-icon-squared {
+  background-image: url(/images/flags/1x1/eur.svg);
+}
 
 .flag-icon-eun {
   background-image: url(/images/flags/4x3/eun.svg);

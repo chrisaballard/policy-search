@@ -1,83 +1,106 @@
-import { useState, useEffect } from 'react';
-import { loadGeographies, getPolicies, searchQuery } from '../api';
-import { Policy } from '../model/policy';
+import React, { useState, useEffect, useMemo } from 'react';
 import Layout from '../components/Layout'
 import Head from 'next/head';
-import { SearchArea, SearchResults, SearchNavigation } from '../components/search';
+import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
 import Loader from '../components/Loader';
-import { PER_PAGE } from '../constants';
+import Filters from '../components/blocks/Filters/Filters';
+import { API_BASE_URL, PER_PAGE } from '../constants';
+import useGetSearchResult from '../hooks/useSetSearchResult';
+import useGetGeographies from '../hooks/useGetGeographies';
+import useSetStatus from '../hooks/useSetStatus';
+import { getParameterByName } from '../helpers/queryString';
 
-
-export default function Home(): JSX.Element {
-  const [ policies, setPolicies ] = useState([]);
+const Home = (): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
-  const [ query, setQuery ] = useState('');
+  // query=xxx
+  const [ searchQuery, setSearchQuery ] = useState('');
+  // next number to start on when paging through
   const [ next, setNext ] = useState(0);
-  const [ processing, setProcessing ] = useState(false);
-  const [ geographies, setGeographies ] = useState([]);
 
-  const loadResults = async (query: string, start: number = 0): Promise<void> => {
-    const data = await searchQuery(query, start);
-    const list = data.resultsByDocument;
-    setProcessing(false);
-    setPolicies(updateList(list, start));
-    setNext(PER_PAGE + start);
-    checkIfEnd(data.metadata);
+  // hooks
+  const [ searchResult, getResult, clearResult ] = useGetSearchResult();
+  const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
+  const [ status, setProcessing ] = useSetStatus();
+  const { processing } = status;
+  const { metadata, resultsByDocument } = searchResult;
+
+  const loadResults = (queryString: string): void => {
+    getResult(queryString);
+    setNext(PER_PAGE + next);
   }
-  const updateList = (list: Policy[], start?: number): Policy[] => {
-    if(start) {
-      return [...policies, ...list]
-    }
-    return list;
-  }
-  const checkIfEnd = (metadata) => {
+
+  const checkIfEnd = () => {
     const end = metadata.numDocsReturned < PER_PAGE;
     setEndOfList(end);
   }
-  const handleChange = async (): Promise<void> => {
-    if(query.trim().length === 0) return;
-    setPolicies([]);
-    setQuery(query);
+  const newSearch = (queryString) => {
+    const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
+    if(sq?.trim().length === 0) return;
+    
+    setSearchQuery(queryString);
     setNext(0);
-    loadResults(query);
+    if (resultsByDocument.length) {
+      clearResult();
+    }
+    loadResults(queryString);
   }
   const handleNavigation = (): void => {
-    loadResults(query, next);
+    setProcessing(true);
+    loadResults(`${searchQuery}&start=${next}`);
   }
-  const getGeographies = async () => {
-    const geos = await loadGeographies();
-    setGeographies(geos);
-  }
+
   useEffect(() => {
-    getGeographies();
-  }, [])
+    if(!geographies.length) setGeographies();
+  }, []);
+  useEffect(() => {
+    setNext(PER_PAGE);
+  }, [geographyFilters])
+  useEffect(() => {
+    checkIfEnd();
+  }, [searchResult])
   return (
     <Layout>
       <Head>
         <title>Policy Search</title>
       </Head>
-      <SearchArea 
-        handleChange={handleChange}
-        query={query}
-        setQuery={setQuery}
+      <SearchInput 
+        newSearch={newSearch}
         setProcessing={setProcessing}
+        processing={processing}
+        geographyFilters={geographyFilters}
       />
+      <div className="container md:flex">
+      {searchQuery ?
+          <Filters 
+            geographies={geographies}
+            newSearch={newSearch}
+            setProcessing={setProcessing}
+            geographyFilters={geographyFilters}
+            setGeographyFilters={setGeographyFilters}
+          />
+          : null
+        }
       <SearchResults 
-        policies={policies} 
-        query={query} 
+        policies={resultsByDocument} 
+        searchQuery={searchQuery} 
         processing={processing}
         geographies={geographies}
       />
-
-      {policies.length && !endOfList ?
-      <SearchNavigation onClick={handleNavigation} />
-      : null
-      }
+      </div>
+      
       {processing ? 
         <Loader />
         : null
       }
+
+      {resultsByDocument.length && !endOfList ?
+      <SearchNavigation onClick={handleNavigation} />
+      : null
+      }
+      
       
     </Layout>
   )
 }
+
+export default Home;

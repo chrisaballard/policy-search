@@ -1,13 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { Geography } from '../../model/geography';
+import useBuildQueryString from '../../hooks/useBuildQueryString';
 
-interface SearchAreaProps {
-  handleChange(): void;
-  query: string;
-  setQuery(query: string): void;
+interface SearchInputProps {
+  newSearch(queryString: string): void;
   setProcessing(boolean: boolean): void;
+  processing: boolean;
+  geographyFilters: Geography[];
 }
-const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaProps): JSX.Element => {
+const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
+  const [ searchTerms, setSearchTerms ] = useState('');
+
+  const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -17,33 +22,39 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
     e.preventDefault();
     setSearchOpen(!searchOpen);
   }
+  const handleChange = () => {
+    setSearchTerms(searchInput.current.value)
+  }
+ 
   useEffect(() => {
-    if(query.length) setProcessing(true);
+    if(searchTerms && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      handleChange()
+      const str = buildQueryString(searchTerms);
+      newSearch(str);
+      // newSearch(`query=${searchTerms}`);
     }, 800);
     return () => clearTimeout(timeOutId);
-  }, [query]);
+  }, [searchTerms]);
 
   useEffect(() => {
-    // reset search field when clicking x
-    if(searchInput.current && !searchOpen) {
-      setQuery('');
-    }
     // toggle open/close of search field
       setTimeout(() => {
         if(searchInput.current && searchOpen) {
           searchInput.current.focus();
         }
       }, 800);
-  }, [searchOpen])
+  }, [searchOpen]);
+
   return (
     <section>
       <div className="search-area container flex flex-col justify-center items-center relative">
         <h1 className="text-4xl md:text-6xl font-bold text-black transform-uppercase text-center">Policy Search</h1>
-        <form className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto">
+        <form 
+          onSubmit={e => { e.preventDefault() }}
+          className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto"
+        >
           <label 
             ref={searchLabel}
             className={`block pr-16 absolute top-0 left-0 right-0 text-gray-400 text-2xl text-center z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
@@ -52,20 +63,22 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
           <div 
             className={`search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
               <input 
+                id="search-input"
                 ref={searchInput}
-                onChange={(event: React.FormEvent<HTMLInputElement>): void => setQuery((event.target as HTMLInputElement).value)}
-                value={query}
+                onChange={handleChange}
+                value={searchTerms}
                 className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 
               />
           </div>
           
           <button
+            type="button"
             onClick={handleClick} ref={searchButton}
             className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchOpen ? 'collapsed' : ''}`}>
-            <img 
-              src="/images/close.svg" 
-              alt="Close icon"
-              className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
+              <img 
+                src="/images/close.svg" 
+                alt="Close icon"
+                className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
@@ -77,4 +90,4 @@ const SearchArea = ({handleChange, query, setQuery, setProcessing}: SearchAreaPr
   )
 
 }
-export default SearchArea;
+export default SearchInput;

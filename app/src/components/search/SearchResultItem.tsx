@@ -17,12 +17,12 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
   const toggleExtracts = () => {
     setShowExtracts(!showExtracts);
   }
-  const getCountryName = async () => {
+  const getCountryName = () => {
     if (policy.countryCode === 'EUE') {
       setCountry('European Union');
       return;
     }
-    const name = await getCountryNameFromCode(policy.countryCode, geographies);
+    const name = getCountryNameFromCode(policy.countryCode, geographies);
     setCountry(name);
   }
   
@@ -31,7 +31,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
   }, [])
   return (
     <div>
-      <div className="grid grid-cols-6 md:grid-cols-5 gap-x-4">
+      <div className="grid grid-cols-7 md:grid-cols-5 gap-x-4">
         <div className="col-span-5 md:col-span-4 pr-6">
           <h3 className="font-bold">{policy.policyName}</h3>
           
