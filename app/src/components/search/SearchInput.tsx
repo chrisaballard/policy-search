@@ -48,6 +48,10 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
       }, 800);
   }, [searchOpen]);
 
+  useEffect(() => {
+    // setInput(searchTerms)
+  }, [])
+
   return (
     <section>
       <div className="search-area container flex flex-col justify-center items-center relative">

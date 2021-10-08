@@ -59,6 +59,19 @@ const Policy = () => {
     setPageInput('');
   }
 
+  const renderNavButton = (type: string): JSX.Element => {
+    if(type === 'prev') {
+      return (
+        <button
+          onClick={() => { changePageNumber(type) }}
+          className="bg-black text-white px-4 py-2 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300"
+        >
+          &laquo;
+        </button>
+      )
+    }
+  }
+
   useEffect(() => {
     if(router.query.pid) {
       loadPolicyPage();
@@ -96,25 +109,18 @@ const Policy = () => {
             </div>
 
             <div>
-              {parseInt(page) > 0 ?
-                <button
-                  onClick={() => { changePageNumber('prev') }}
-                  className="bg-black text-white px-4 py-2 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300"
-                >
-                  &laquo;
-                </button>
-              :
-              null}
-              {parseInt(page) < policyPage.documentMetadata.pageCount ?
-
-                <button
-                  onClick={() => { changePageNumber('next') }}
-                  className="bg-black text-white px-4 py-2 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300"
-                >
-                  &raquo;
-                </button>
-              :
-              null}
+            <button
+              onClick={() => { changePageNumber('prev') }}
+              className={`bg-black text-white px-4 py-2 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+            >
+              &laquo;
+            </button>
+            <button
+              onClick={() => { changePageNumber('next') }}
+              className={`bg-black text-white px-4 py-2 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+            >
+              &raquo;
+            </button>
               
             </div>
           </div>

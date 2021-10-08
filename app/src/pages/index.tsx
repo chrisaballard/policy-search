@@ -82,7 +82,8 @@ const Home = React.memo((): JSX.Element => {
         }
         <SearchResults 
           policies={resultsByDocument} 
-          searchQuery={searchQueryString} 
+          searchQueryString={searchQueryString}
+          searchTerms={searchQuery}
           processing={processing}
           geographies={geographies}
         />

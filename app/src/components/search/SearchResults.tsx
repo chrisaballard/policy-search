@@ -1,7 +1,6 @@
 import { getParameterByName } from "../../helpers/queryString";
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
-import Filters from "../blocks/Filters/Filters";
 import SearchResultItem from "./SearchResultItem";
 import { API_BASE_URL } from '../../constants';
 import Loader from '../../components/Loader';
@@ -9,18 +8,18 @@ import Loader from '../../components/Loader';
 interface SearchResultsProps {
   policies: ResultByDocument[];
   geographies: Geography[];
-  searchQuery: string;
+  searchQueryString: string;
   processing: boolean;
+  searchTerms: string;
 }
 const SearchResults = ({
   policies,
-  searchQuery,
+  searchQueryString,
   processing,
   geographies,
+  searchTerms
 }: SearchResultsProps) => {
-  const extractSearchTerms = () => {
-    return getParameterByName('query', `${API_BASE_URL}/policies/search?${searchQuery}`)
-  }
+
   const renderMessage = () => {
     if(!policies.length) {
       return (
@@ -31,7 +30,7 @@ const SearchResults = ({
     }
     return (
       <div className="text-2xl  mt-6 md:mt-0">
-        Results for <span className="font-bold text-gray-500">"{extractSearchTerms()}"</span>:
+        Results for <span className="font-bold text-gray-500">"{searchTerms}"</span>:
       </div>
     )
   }
@@ -39,9 +38,9 @@ const SearchResults = ({
     <section className="w-full">
         <div className="md:pl-4">
           
-          {searchQuery.length ?
+          {searchTerms.length ?
             <div className="mt-4">
-              {searchQuery.length && !processing ? renderMessage() : null}
+              {searchTerms.length && !processing ? renderMessage() : null}
             </div>
             : null
           }
@@ -54,7 +53,7 @@ const SearchResults = ({
               <ul className="mt-4">
                 {policies.map((policy, index) => (
                   <li 
-                    className={`border-b border-gray-300 border-dotted last:border-none py-6 ${index%2 ? '' : ''}`}
+                    className="border-b border-gray-300 border-dotted last:border-none py-6"
                     key={`${index}-${policy.policyId}`}
                     id={`${index}-${policy.policyId}`}
                   >
@@ -65,7 +64,7 @@ const SearchResults = ({
             </>
           :
           null}
-          {processing && searchQuery.length ? 
+          {processing && searchQueryString.length ? 
             <Loader />
             : null
           }
