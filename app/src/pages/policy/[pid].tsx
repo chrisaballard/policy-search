@@ -111,7 +111,7 @@ const Policy = () => {
                   onClick={() => { changePageNumber('next') }}
                   className="bg-black text-white px-4 py-2 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300"
                 >
-                  &laquo;
+                  &raquo;
                 </button>
               :
               null}
