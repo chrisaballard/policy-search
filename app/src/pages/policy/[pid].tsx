@@ -72,7 +72,7 @@ const Policy = () => {
       </Head>
       <section>
         <div className="container">
-          <div className="mb-4 flex justify-between">
+          <div className="mb-4 flex justify-between items-end">
             <Link href='/'>
               <a className="text-gray-500 hover:text-black transition duration-300">
                 &laquo; Back to search
