@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
+import { STOP_WORDS } from '../../constants';
 import useGetPolicyPage from '../../hooks/useGetPolicyPage';
 import useGetPolicies from '../../hooks/useGetPolicies';
 import useSetStatus from '../../hooks/useSetStatus';
@@ -10,7 +11,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Loader from '../../components/Loader';
 import { State } from '../../store/initialState';
-import { wrapWords } from '../../helpers/textWrap';
 
 const Policy = () => {
   const inputRef = useRef();
@@ -64,14 +64,38 @@ const Policy = () => {
     setPageInput('');
   }
 
-  // const highlightText = () => {
-  //   const queryArr = searchQuery.split(' ');
-  //   const pageTextArr = policyPage.pageText;
+  const highlightText = () => {
+    const queryArr = searchQuery.split(' ');
+    const newPageTextArray = [];
 
-  //   arr.forEach((word) => {
-  //     wrapWords(word, )
-  //   })
-  // }
+    // loop through each sentence in pageText array
+    policyPage.pageText.forEach((sentence) => {
+      const newWordsArray = [];
+      let newSentence = '';
+      // make array of each word in sentence
+      const wordsArray = sentence.split(' ');
+      // loop through each word in sentence
+      wordsArray.forEach((word) => {
+        let newWord = word;
+        queryArr.forEach((term) => {
+          const cleanTerm = term.trim().toLowerCase();
+          // ignore stop words
+          if (STOP_WORDS.indexOf(cleanTerm) > -1) return;
+          // remove trailing periods, commas or spaces from word for more accurate comparison
+          const cleanWord = word.replace(/\,/g, '').replace(/\./g, '').trim().toLowerCase();
+          if (cleanWord === term.trim().toLowerCase()) {
+            newWord = `<em>${word}</em>`
+          }
+        });
+        newWordsArray.push(newWord);
+      });
+      // make new sentence from new words array
+      newSentence = newWordsArray.join(' ');
+      // add new sentence to new pageText array
+      newPageTextArray.push(newSentence);
+    });
+    setPageText(newPageTextArray.join(' '));
+  }
 
   useEffect(() => {
     if(router.query.pid) {
@@ -80,15 +104,16 @@ const Policy = () => {
   }, [router]);
 
   useEffect(() => {
-
-  })
+    if(policyPage.pageText) {
+      highlightText();
+    }
+  }, [policyPage])
 
   return (
     <MainLayout>
       <Head>
         <title>Climate Policy Document: {policy.policyName}</title>
       </Head>
-      {console.log(searchQuery)}
       <section>
         <div className="container">
           <div className="mb-4 flex justify-between items-end">
@@ -145,9 +170,7 @@ const Policy = () => {
                 Page <span className="text-black font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>
-            <div className="mt-6">
-              {policyPage.pageText}
-            </div>
+            <div className="mt-6 text-gray-600" dangerouslySetInnerHTML={{__html: pageText}} />
           </div>
           }
           
