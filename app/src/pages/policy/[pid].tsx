@@ -116,15 +116,18 @@ const Policy = () => {
       </Head>
       <section>
         <div className="container">
-          <div className="mb-4 flex justify-between items-end">
-            <Link href='/'>
-              <a className="text-gray-500 hover:text-black transition duration-300">
-                &laquo; Back to search
-              </a>
-            </Link>
+          <div className="mb-4 flex flex-wrap md:flex-no-wrap justify-between items-end">
+            <div className="w-full text-center mb-2 md:w-auto md:mb-0 md:text-left">
+              <Link href='/'>
+                <a className="text-gray-500 hover:text-black transition duration-300">
+                  &laquo; Back to search
+                </a>
+              </Link>
+            </div>
+            
             <div>
-              <form>
-                Go to page:
+              <form className="flex items-end">
+                <span>Go to page:</span>
                 <input 
                   ref={inputRef}
                   type="number"
@@ -142,13 +145,15 @@ const Policy = () => {
             <div>
             <button
               onClick={() => { changePageNumber('prev') }}
-              className={`bg-black text-white px-4 py-2 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              style={{height: '36px'}}
+              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &laquo;
             </button>
             <button
               onClick={() => { changePageNumber('next') }}
-              className={`bg-black text-white px-4 py-2 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              style={{height: '36px'}}
+              className={`bg-black text-white px-4 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &raquo;
             </button>
@@ -159,8 +164,8 @@ const Policy = () => {
           {processing ?
             <Loader />
           :
-          <div className="bg-gray-100 rounded-2xl p-8 my-8">
-            <h1 className="text-4xl leading-relaxed">{policy.policyName}</h1>
+          <div className="bg-gray-100 rounded-2xl p-4 md:p-8 my-8">
+            <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
             <div className="my-4 text-gray-400 flex justify-between items-end">
               <a href={policy.url} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                 <span className="sr-only">Download PDF</span>
