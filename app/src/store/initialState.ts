@@ -17,7 +17,6 @@ export interface State {
 }
 
 const initialState = {
-  searchQuery: '',
   status: {
     processing: false
   },

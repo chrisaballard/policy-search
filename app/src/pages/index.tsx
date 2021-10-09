@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
@@ -7,12 +7,14 @@ import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGetGeographies from '../hooks/useGetGeographies';
 import useSetStatus from '../hooks/useSetStatus';
+import useBuildQueryString from '../hooks/useBuildQueryString';
+import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
 import { getParameterByName } from '../helpers/queryString';
 
 const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
-  // query=xxx
-  const [ searchQueryString, setSearchQueryString ] = useState('');
+  const containerRef = useRef();
+  
   // next number to start on when paging through
   const [ next, setNext ] = useState(0);
 
@@ -20,12 +22,19 @@ const Home = React.memo((): JSX.Element => {
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
   const [ status, setProcessing ] = useSetStatus();
+  const [ buildQueryString ] = useBuildQueryString();
   const { processing } = status;
   const { searchQuery, metadata, resultsByDocument } = searchResult;
 
+  // query=xxx
+  const [ searchQueryString, setSearchQueryString ] = useState(`query=${searchQuery}`);
+
+  const updateNext = () => {
+    const nextStart = document.getElementsByClassName('search-result').length;
+    setNext(nextStart);
+  }
   const loadResults = (queryString: string): void => {
     getResult(queryString);
-    setNext(PER_PAGE + next);
   }
 
   const checkIfEnd = () => {
@@ -45,18 +54,29 @@ const Home = React.memo((): JSX.Element => {
   }
   const handleNavigation = (): void => {
     setProcessing(true);
-    loadResults(`${searchQueryString}&start=${next}`);
+    const qStr = buildQueryString();
+    loadResults(`${qStr}&start=${next}`);
   }
   
   useEffect(() => {
     if(!geographies.length) setGeographies();
   }, []);
+  
   useEffect(() => {
-    setNext(PER_PAGE);
-  }, [geographyFilters])
-  useEffect(() => {
+    updateNext();
     checkIfEnd();
   }, [searchResult])
+
+  useEffect(() => {
+    if(containerRef.current) {
+      updateNext();
+    }
+  }, [containerRef])
+
+  useDidUpdateEffect(() => {
+    setNext(PER_PAGE);
+  }, [geographyFilters])
+
   return (
     <MainLayout>
       <Head>
@@ -68,7 +88,7 @@ const Home = React.memo((): JSX.Element => {
         processing={processing}
         searchTerms={searchQuery}
       />
-      <div className="container md:flex">
+      <div ref={containerRef} className="container md:flex">
 
       {searchQuery ?
           <Filters 

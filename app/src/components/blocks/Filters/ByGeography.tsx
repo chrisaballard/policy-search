@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
+import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
 import FilterTag from './FilterTag';
 
 interface ByGeographyProps {
@@ -38,17 +39,17 @@ const ByGeography = React.memo(({
     const value = (event.target as HTMLButtonElement).innerText;
     const newList = list.filter((item) => item.name === value)
     setGeographyFilters([...geographyFilters, ...newList])
-    setFiltersRemoved(false)
+    setFiltersRemoved(false);
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
     const newList = geographyFilters.filter((item) => item.name !== value);
     setGeographyFilters(newList);
-    setFiltersRemoved(true)
+    setFiltersRemoved(true);
   }
 
   const applyFilters = () => {
-    const queryString = buildQueryString(document.getElementById('search-input').value);
+    const queryString = buildQueryString();
     setProcessing(true);
     newSearch(queryString);
     setValue('');
@@ -60,15 +61,13 @@ const ByGeography = React.memo(({
     return () => clearTimeout(timeOutId);
   }, [value]);
 
-  useEffect(() => {
-    
+  useDidUpdateEffect(() => {
     if(geographyFilters.length || filtersRemoved) {
       applyFilters();
     }
 
-  }, [geographyFilters, filtersRemoved]);
-
-
+  }, [geographyFilters, filtersRemoved])
+  
   return (
     <section>
       <div className="mb-4 uppercase">Geography</div>

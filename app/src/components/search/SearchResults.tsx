@@ -37,7 +37,6 @@ const SearchResults = ({
   return (
     <section className="w-full">
         <div className="md:pl-4">
-          
           {searchTerms.length ?
             <div className="mt-4">
               {searchTerms.length && !processing ? renderMessage() : null}
@@ -53,7 +52,7 @@ const SearchResults = ({
               <ul className="mt-4">
                 {policies.map((policy, index) => (
                   <li 
-                    className="border-b border-gray-300 border-dotted last:border-none py-6"
+                    className="search-result border-b border-gray-300 border-dotted last:border-none py-6"
                     key={`${index}-${policy.policyId}`}
                     id={`${index}-${policy.policyId}`}
                   >

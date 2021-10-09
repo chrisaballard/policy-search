@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Geography } from '../../model/geography';
+import { useRouter } from 'next/router';
 import useBuildQueryString from '../../hooks/useBuildQueryString';
+import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
 interface SearchInputProps {
   newSearch(queryString: string): void;
@@ -10,8 +11,8 @@ interface SearchInputProps {
 }
 const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
-  const [ input, setInput ] = useState('');
-
+  const [ input, setInput ] = useState(searchTerms);
+  const router = useRouter();
   const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
@@ -23,18 +24,16 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
     setSearchOpen(!searchOpen);
   }
   const handleChange = () => {
-    // setSearchTerms(searchInput.current.value)
     setInput(searchInput.current.value)
   }
  
-  useEffect(() => {
+  useDidUpdateEffect(() => {
     if(input && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      const str = buildQueryString(input);
-      newSearch(str);
-      // newSearch(`query=${searchTerms}`);
+      const qStr = buildQueryString(input);
+      newSearch(qStr);
     }, 800);
     return () => clearTimeout(timeOutId);
   }, [input]);
@@ -48,9 +47,6 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
       }, 800);
   }, [searchOpen]);
 
-  useEffect(() => {
-    // setInput(searchTerms)
-  }, [])
 
   return (
     <section>

@@ -9,16 +9,21 @@ import Button from '../../components/elements/buttons/Button';
 import Head from 'next/head';
 import Link from 'next/link';
 import Loader from '../../components/Loader';
+import { State } from '../../store/initialState';
+import { wrapWords } from '../../helpers/textWrap';
 
 const Policy = () => {
   const inputRef = useRef();
   const router = useRouter();
   const [ pageInput, setPageInput ] = useState('')
+  const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
   const [ policy, getPolicy ] = useGetPolicies();
   const [ status, setProcessing ] = useSetStatus();
   const { processing } = status;
   const { pid, page } = router.query;
+  const state = useSelector((state: State ) => state)
+  const { searchResult: { searchQuery } } = state;
 
 
   const loadPolicyPage = () => {
@@ -38,7 +43,7 @@ const Policy = () => {
     loadNewPage(p);
   }
 
-  const handleInputChange = () => {
+  const handleInputChange = (): void => {
     let n = inputRef.current.value;
     if(n > policyPage.documentMetadata.pageCount) {
       n = policyPage.documentMetadata.pageCount;
@@ -59,18 +64,14 @@ const Policy = () => {
     setPageInput('');
   }
 
-  const renderNavButton = (type: string): JSX.Element => {
-    if(type === 'prev') {
-      return (
-        <button
-          onClick={() => { changePageNumber(type) }}
-          className="bg-black text-white px-4 py-2 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300"
-        >
-          &laquo;
-        </button>
-      )
-    }
-  }
+  // const highlightText = () => {
+  //   const queryArr = searchQuery.split(' ');
+  //   const pageTextArr = policyPage.pageText;
+
+  //   arr.forEach((word) => {
+  //     wrapWords(word, )
+  //   })
+  // }
 
   useEffect(() => {
     if(router.query.pid) {
@@ -78,11 +79,16 @@ const Policy = () => {
     }
   }, [router]);
 
+  useEffect(() => {
+
+  })
+
   return (
     <MainLayout>
       <Head>
         <title>Climate Policy Document: {policy.policyName}</title>
       </Head>
+      {console.log(searchQuery)}
       <section>
         <div className="container">
           <div className="mb-4 flex justify-between items-end">
@@ -128,7 +134,7 @@ const Policy = () => {
           {processing ?
             <Loader />
           :
-          <div className="border border-gray-300 p-8 my-8 shadow-lg">
+          <div className="bg-gray-100 rounded-2xl p-8 my-8">
             <h1 className="text-4xl leading-relaxed">{policy.policyName}</h1>
             <div className="my-4 text-gray-400 flex justify-between items-end">
               <a href={policy.url} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
