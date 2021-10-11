@@ -167,7 +167,7 @@ const Policy = () => {
           <div className="bg-gray-100 rounded-2xl p-4 md:p-8 my-8">
             <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
             <div className="my-4 text-gray-400 flex justify-between items-end">
-              <a href={policy.url} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+              <a href={`${policy.url}#page=${page}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
                 <span className="sr-only">Download PDF</span>
                 <img src="/images/download-pdf.svg" alt="Download PDF" title="Download PDF" style={{ width: '40px'}} />
               </a>
