@@ -18,6 +18,10 @@ body {
     -moz-appearance: textfield; /* Firefox */
   }
 
+  li.selected {
+    @apply bg-gray-100;
+  }
+
   .search-area {
     form {
       .search-input-wrapper {
