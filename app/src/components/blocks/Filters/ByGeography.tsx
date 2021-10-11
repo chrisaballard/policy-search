@@ -3,7 +3,6 @@ import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
-// import { listSelect } from '../../../helpers/listSelect';
 import useListSelect from '../../../hooks/useListSelect';
 import FilterTag from './FilterTag';
 
