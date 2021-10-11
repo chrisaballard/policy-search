@@ -25,6 +25,7 @@ COPY . ./
 RUN poetry config virtualenvs.create false
 RUN poetry install
 RUN poetry run python -m spacy download en_core_web_sm
+RUN poetry run pre-commit install --install-hooks
 
 # Make sure script has execute permissions
 RUN chmod +x ./scripts/start_api.sh
