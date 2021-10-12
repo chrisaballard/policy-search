@@ -32,7 +32,7 @@ const ByGeography = React.memo(({
 
   const [ buildQueryString ] = useBuildQueryString();
 
-  const navigateList = useListSelect('filter-list')
+  const [ navigateList, clearSelected ] = useListSelect('filter-list', list.length)
 
   const listRef = useRef(null);
   
@@ -45,6 +45,7 @@ const ByGeography = React.memo(({
     const newList = list.filter((item) => item.name === value)
     setGeographyFilters([...geographyFilters, ...newList])
     setFiltersRemoved(false);
+    clearSelected();
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
@@ -89,7 +90,6 @@ const ByGeography = React.memo(({
   
   return (
     <section>
-      {/* {console.log(listSelect.navigateList)} */}
       <div className="mb-4 uppercase">Geography</div>
       <div className="relative">
         <input

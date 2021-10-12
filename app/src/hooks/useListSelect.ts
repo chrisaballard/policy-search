@@ -1,13 +1,13 @@
+import { useState } from 'react';
 import { addClass, removeClass } from '../helpers/cssClass';
 
-const useListSelect = (elementId: string) => {
-  const ul = document.getElementById(elementId)
-  const listItems = document.querySelectorAll(`#${elementId} li`);
+const useListSelect = (elementId: string, listLength: number) => {
   let liSelected;
   let index = -1;
-
+  
   const navigateList = (e): void => {
-    const len = listItems.length - 1;
+    const ul = document.getElementById(elementId)
+    const len = listLength - 1;
     if(e.key === 'ArrowDown') {
       index += 1;
       // down
@@ -20,6 +20,7 @@ const useListSelect = (elementId: string) => {
         else {
           index = 0;
           liSelected = ul.getElementsByTagName('li')[0]
+
         }
         addClass(liSelected, 'selected');
       }
@@ -58,7 +59,14 @@ const useListSelect = (elementId: string) => {
     }
   }
 
-  return navigateList;
+  const clearSelected = () => {
+    const listItems = document.querySelectorAll(`#${elementId} li`);
+    listItems.forEach((el) => {
+      el?.classList.remove('selected')
+    })
+  }
+
+  return [ navigateList, clearSelected ] as const;
 }
 
 export default useListSelect;
