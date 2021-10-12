@@ -1,19 +1,20 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import Layout from '../components/Layout'
+import React, { useState, useEffect, useRef } from 'react';
+import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
-import Loader from '../components/Loader';
 import Filters from '../components/blocks/Filters/Filters';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGetGeographies from '../hooks/useGetGeographies';
 import useSetStatus from '../hooks/useSetStatus';
+import useBuildQueryString from '../hooks/useBuildQueryString';
+import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
 import { getParameterByName } from '../helpers/queryString';
 
-const Home = (): JSX.Element => {
+const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
-  // query=xxx
-  const [ searchQuery, setSearchQuery ] = useState('');
+  const containerRef = useRef();
+  
   // next number to start on when paging through
   const [ next, setNext ] = useState(0);
 
@@ -21,12 +22,19 @@ const Home = (): JSX.Element => {
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
   const [ status, setProcessing ] = useSetStatus();
+  const [ buildQueryString ] = useBuildQueryString();
   const { processing } = status;
-  const { metadata, resultsByDocument } = searchResult;
+  const { searchQuery, metadata, resultsByDocument } = searchResult;
 
+  // query=xxx
+  const [ searchQueryString, setSearchQueryString ] = useState(`query=${searchQuery}`);
+
+  const updateNext = () => {
+    const nextStart = document.getElementsByClassName('search-result').length;
+    setNext(nextStart);
+  }
   const loadResults = (queryString: string): void => {
     getResult(queryString);
-    setNext(PER_PAGE + next);
   }
 
   const checkIfEnd = () => {
@@ -37,7 +45,7 @@ const Home = (): JSX.Element => {
     const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
     if(sq?.trim().length === 0) return;
     
-    setSearchQuery(queryString);
+    setSearchQueryString(queryString);
     setNext(0);
     if (resultsByDocument.length) {
       clearResult();
@@ -46,20 +54,31 @@ const Home = (): JSX.Element => {
   }
   const handleNavigation = (): void => {
     setProcessing(true);
-    loadResults(`${searchQuery}&start=${next}`);
+    const qStr = buildQueryString();
+    loadResults(`${qStr}&start=${next}`);
   }
-
+  
   useEffect(() => {
     if(!geographies.length) setGeographies();
   }, []);
+  
   useEffect(() => {
-    setNext(PER_PAGE);
-  }, [geographyFilters])
-  useEffect(() => {
+    updateNext();
     checkIfEnd();
   }, [searchResult])
+
+  useEffect(() => {
+    if(containerRef.current) {
+      updateNext();
+    }
+  }, [containerRef])
+
+  useDidUpdateEffect(() => {
+    setNext(PER_PAGE);
+  }, [geographyFilters])
+
   return (
-    <Layout>
+    <MainLayout>
       <Head>
         <title>Policy Search</title>
       </Head>
@@ -67,9 +86,10 @@ const Home = (): JSX.Element => {
         newSearch={newSearch}
         setProcessing={setProcessing}
         processing={processing}
-        geographyFilters={geographyFilters}
+        searchTerms={searchQuery}
       />
-      <div className="container md:flex">
+      <div ref={containerRef} className="container md:flex">
+
       {searchQuery ?
           <Filters 
             geographies={geographies}
@@ -80,27 +100,23 @@ const Home = (): JSX.Element => {
           />
           : null
         }
-      <SearchResults 
-        policies={resultsByDocument} 
-        searchQuery={searchQuery} 
-        processing={processing}
-        geographies={geographies}
-      />
+        <SearchResults 
+          policies={resultsByDocument} 
+          searchQueryString={searchQueryString}
+          searchTerms={searchQuery}
+          processing={processing}
+          geographies={geographies}
+        />
       </div>
       
-      {processing ? 
-        <Loader />
-        : null
-      }
-
       {resultsByDocument.length && !endOfList ?
       <SearchNavigation onClick={handleNavigation} />
       : null
       }
       
       
-    </Layout>
+    </MainLayout>
   )
-}
+});
 
 export default Home;

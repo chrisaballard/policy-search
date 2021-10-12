@@ -7,7 +7,7 @@ const SearchNavigation = ({ onClick }: SearchNavigationProps) => {
   return (
     <div className="container">
       <div className="mx-auto lg:w-1/2 flex justify-center my-8">
-        <Button text="Load More" onClick={onClick}></Button>
+        <Button onClick={onClick}>Load More</Button>
       </div>
     </div>
     

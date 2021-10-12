@@ -44,12 +44,19 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
         </div>
       </div>
       <div className="text-black text-sm mt-2">
-        <button
-          onClick={toggleExtracts}
-          className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
-        >
-          {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
-        </button> in this policy.
+        {texts.length > 0 ?
+        <>
+          <button
+            onClick={toggleExtracts}
+            className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
+          >
+            {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
+          </button> in this policy.
+          </>
+        : 
+          <span className="text-gray-400">{texts.length} page matches.</span> 
+        }
+        
       </div>
 
       <div className={`${!showExtracts ? 'hidden' : ''}`}>
@@ -58,6 +65,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
             key={`${index}_${item.pageNumber}`}
             texts={item.text}
             page={item.pageNumber}
+            id={policy.policyId}
           />
         ))}
       </div>

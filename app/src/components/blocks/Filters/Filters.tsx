@@ -1,3 +1,4 @@
+import React from 'react';
 import { Geography } from "../../../model/geography";
 import ByGeography from "./ByGeography";
 
@@ -9,7 +10,7 @@ interface FiltersProps {
   setGeographyFilters(filters: Geography[]): void;
 }
 
-const Filters = ({
+const Filters = React.memo(({
   geographies, 
   newSearch, 
   setProcessing, 
@@ -30,5 +31,5 @@ const Filters = ({
       
     </div>
   )
-}
+});
 export default Filters;

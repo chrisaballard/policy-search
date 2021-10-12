@@ -1,17 +1,18 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Geography } from '../../model/geography';
+import { useRouter } from 'next/router';
 import useBuildQueryString from '../../hooks/useBuildQueryString';
+import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
 interface SearchInputProps {
   newSearch(queryString: string): void;
   setProcessing(boolean: boolean): void;
   processing: boolean;
-  geographyFilters: Geography[];
+  searchTerms: string;
 }
-const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: SearchInputProps): JSX.Element => {
+const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
-  const [ searchTerms, setSearchTerms ] = useState('');
-
+  const [ input, setInput ] = useState(searchTerms);
+  const router = useRouter();
   const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
@@ -23,20 +24,19 @@ const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: S
     setSearchOpen(!searchOpen);
   }
   const handleChange = () => {
-    setSearchTerms(searchInput.current.value)
+    setInput(searchInput.current.value)
   }
  
-  useEffect(() => {
-    if(searchTerms && !processing) setProcessing(true);
+  useDidUpdateEffect(() => {
+    if(input && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      const str = buildQueryString(searchTerms);
-      newSearch(str);
-      // newSearch(`query=${searchTerms}`);
+      const qStr = buildQueryString(input);
+      newSearch(qStr);
     }, 800);
     return () => clearTimeout(timeOutId);
-  }, [searchTerms]);
+  }, [input]);
 
   useEffect(() => {
     // toggle open/close of search field
@@ -46,6 +46,7 @@ const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: S
         }
       }, 800);
   }, [searchOpen]);
+
 
   return (
     <section>
@@ -66,7 +67,7 @@ const SearchInput = ({newSearch, setProcessing, processing, geographyFilters}: S
                 id="search-input"
                 ref={searchInput}
                 onChange={handleChange}
-                value={searchTerms}
+                value={input}
                 className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 
               />
           </div>
