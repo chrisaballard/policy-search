@@ -5,7 +5,7 @@ interface FilterTagProps {
 
 const FilterTag = ({ text, onClick }) => {
   return (
-    <div className="bg-gray-100 p-2 relative mt-4">
+    <div className="bg-gray-300 p-2 relative mt-4 rounded-xl">
       <button
         className="absolute top-0 right-0 mt-1 mr-1 text-xl px-1"
         onClick={onClick}

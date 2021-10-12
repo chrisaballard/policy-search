@@ -5,7 +5,7 @@ import { SearchInput, SearchResults, SearchNavigation } from '../components/sear
 import Filters from '../components/blocks/Filters/Filters';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
-import useGetGeographies from '../hooks/useGetGeographies';
+import useGeographies from '../hooks/useGeographies';
 import useSetStatus from '../hooks/useSetStatus';
 import useBuildQueryString from '../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
@@ -20,7 +20,7 @@ const Home = React.memo((): JSX.Element => {
 
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
-  const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGetGeographies();
+  const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
   const [ status, setProcessing ] = useSetStatus();
   const [ buildQueryString ] = useBuildQueryString();
   const { processing } = status;

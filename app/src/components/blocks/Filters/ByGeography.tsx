@@ -5,6 +5,7 @@ import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
 import useListSelect from '../../../hooks/useListSelect';
 import FilterTag from './FilterTag';
+import FilterHeading from './FilterHeading';
 
 interface ByGeographyProps {
   geographies: Geography[];
@@ -90,8 +91,8 @@ const ByGeography = React.memo(({
   
   return (
     <section>
-      <div className="mb-4 uppercase">Geography</div>
-      <div className="relative">
+      <FilterHeading title="Geography">
+      <div className="relative my-2">
         <input
           className="h-12 w-full border rounded focus:outline-none px-2 text-gray-500"
           type="text"
@@ -123,6 +124,7 @@ const ByGeography = React.memo(({
         null}
         
       </div>
+      </FilterHeading>
     </section>
   )
 });

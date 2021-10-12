@@ -1,6 +1,4 @@
 export function removeClass(el, className) {
-  console.log('remove')
-  console.log(el)
   if (el?.classList) {
     el.classList.remove(className);
   } else {
@@ -9,8 +7,6 @@ export function removeClass(el, className) {
 };
 
 export function addClass(el, className) {
-  console.log('remove')
-  console.log(el)
   if (el?.classList) {
     el.classList.add(className);
   } else {

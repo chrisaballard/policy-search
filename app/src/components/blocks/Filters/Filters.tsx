@@ -1,6 +1,7 @@
 import React from 'react';
 import { Geography } from "../../../model/geography";
 import ByGeography from "./ByGeography";
+import MultiSelect from './MultiSelect';
 
 interface FiltersProps {
   geographies: Geography[];
@@ -28,6 +29,10 @@ const Filters = React.memo(({
         geographyFilters={geographyFilters}
         setGeographyFilters={setGeographyFilters}
       />
+
+      <MultiSelect title="Instrument" list={[]} />
+
+      <MultiSelect title="Sector" list={[]} />
       
     </div>
   )
