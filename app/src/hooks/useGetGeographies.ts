@@ -6,8 +6,7 @@ import { Geography } from '../model/geography';
 const useGetGeographies = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: State ) => state)
-  const { geographies, filters } = state;
-  const { geographyFilters } = filters;
+  const { geographies, filters: {geographyFilters} } = state;
 
   const setGeographies = () => {
     dispatch(getGeographies());

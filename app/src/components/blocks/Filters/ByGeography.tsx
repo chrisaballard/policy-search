@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Geography } from "../../../model/geography";
 import useGeographyFilters from '../../../hooks/useGeographyFilters';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
+import useListSelect from '../../../hooks/useListSelect';
 import FilterTag from './FilterTag';
 
 interface ByGeographyProps {
@@ -30,6 +31,10 @@ const ByGeography = React.memo(({
   const [ list, suggest ] = useGeographyFilters(geographies); 
 
   const [ buildQueryString ] = useBuildQueryString();
+
+  const [ navigateList, clearSelected ] = useListSelect('filter-list', list.length)
+
+  const listRef = useRef(null);
   
   const handleChange = (): void => {
     suggest(value)
@@ -40,6 +45,7 @@ const ByGeography = React.memo(({
     const newList = list.filter((item) => item.name === value)
     setGeographyFilters([...geographyFilters, ...newList])
     setFiltersRemoved(false);
+    clearSelected();
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
@@ -48,7 +54,7 @@ const ByGeography = React.memo(({
     setFiltersRemoved(true);
   }
 
-  const applyFilters = () => {
+  const applyFilters = (): void => {
     const queryString = buildQueryString();
     setProcessing(true);
     newSearch(queryString);
@@ -60,6 +66,20 @@ const ByGeography = React.memo(({
     }, 100);
     return () => clearTimeout(timeOutId);
   }, [value]);
+
+  useEffect(() => {
+    if(list.length) {
+      window.addEventListener('keydown', navigateList);
+    }
+    else {
+      window.removeEventListener('keydown', navigateList);
+    }
+
+    return () => {
+      window.removeEventListener('keydown', navigateList);
+    }
+    
+  }, [list])
 
   useDidUpdateEffect(() => {
     if(geographyFilters.length || filtersRemoved) {
@@ -76,13 +96,13 @@ const ByGeography = React.memo(({
           className="h-12 w-full border rounded focus:outline-none px-2 text-gray-500"
           type="text"
           value={value}
-          placeholder='start typing...'
+          placeholder='Start typing...'
           onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
         />
         {list.length ?
-          <ul className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded z-10">
+          <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded z-10">
             {list.map((item) => (
-              <li key={item.code} className="">
+              <li key={item.code}>
                 <button 
                   type="button"
                   onClick={handleFilterSelect}
