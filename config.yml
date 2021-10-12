@@ -1,0 +1,12 @@
+sources:
+  cclw:
+    type: text/csv
+    attributes:
+      # Maps columns in data source csv to attributes
+      source_name: sourceName
+      source_policy_id: sourcePolicyId
+      policy_name: policyName
+      policy_type: policyType
+      country_code: countryCode
+      url: url
+      language: language

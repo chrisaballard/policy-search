@@ -1,3 +1,13 @@
+# Node dependencies
+/app/node_modules
+
+# next.js
+/app/.next/
+/app/out/
+
+# Poetry
+poetry.lock
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -127,3 +137,19 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Ignore data files
+/data/**
+
+# Ignore mlflow tracking backend store
+/mlruns
+
+# Ignore docker directory
+/docker
+
+# Ignore vscode config
+.vscode/*
+
+# Ignore vscode development contain config files
+.devcontainer/*
+
