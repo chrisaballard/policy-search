@@ -11,6 +11,7 @@ from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Polic
 from policy_search.pipeline.elasticsearch import ElasticSearchIndex
 from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
+from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
 
 
 POLICIES_TABLE = 'Policies'
@@ -154,6 +155,14 @@ def get_geographies():
 
     return load_geographies_data(GEOGRAPHIES_CSV_PATH)
 
+
+@app.get("/instruments", response_model=List[SchemaTopLevel])
+def get_instruments():
+    return get_schema_dict_from_path("./schema/instruments.yml")
+
+@app.get("/sectors", response_model=List[SchemaTopLevel])
+def get_sectors():
+    return get_schema_dict_from_path("./schema/sectors.yml")
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)
