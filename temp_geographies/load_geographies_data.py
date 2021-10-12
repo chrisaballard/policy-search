@@ -5,7 +5,7 @@ Temporary methods to load information on geographies from a static file.
 """
 
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 import pandas as pd
 from pydantic import BaseModel, Field
@@ -17,7 +17,7 @@ class Geography(BaseModel):
     geography_type: str = Field(alias="geographyType")
     world_bank_region: str = Field(alias="worldBankRegion")
     federal: bool = Field(alias="isFederal")
-    wb_income_group: str = Field(alias="wbIncomeGroup")
+    wb_income_group: Optional[str] = Field(alias="wbIncomeGroup")
 
 
 def load_geographies_data(
@@ -29,4 +29,4 @@ def load_geographies_data(
 
     df = pd.read_csv(csv_path).rename(columns={"Name": "name", "Geography type": "geographyType", "World Bank Region": "worldBankRegion", "Federal": "isFederal", "Iso": "code", "Wb income group": "wbIncomeGroup"})
 
-    return [Geography.parse_obj(item) for item in df.to_dict('records')]
+    return [Geography.parse_obj(row.dropna().to_dict()) for _, row in df.iterrows()]
