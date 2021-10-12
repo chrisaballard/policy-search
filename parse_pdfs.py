@@ -9,6 +9,7 @@ from typing import List, AnyStr
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.preprocess import clean_text
+from policy_search.logging import get_logger
 
 import fitz
 import spacy
@@ -16,6 +17,7 @@ import numpy as np
 from sortedcontainers import SortedKeyList
 import yaml
 
+logger = get_logger(__name__)
 
 MIN_WORDS_SPAN = 0
 MIN_WORDS_LINE = 2
@@ -284,7 +286,7 @@ def main(csv_filename: Path, data_path: Path):
 
     # Process all pdfs
     #pdf_extractor.process_pdfs(csv_filename)
-    print(doc_structure)
+    logger.debug(doc_structure)
     
 
 if __name__ == '__main__':
