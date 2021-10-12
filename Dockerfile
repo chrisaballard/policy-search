@@ -18,7 +18,7 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 
 WORKDIR /usr/src/app
 
-RUN pip install poetry
+RUN pip install "poetry==1.1.8"
 
 COPY . ./
 
