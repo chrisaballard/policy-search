@@ -15,6 +15,10 @@ interface ByGeographyProps {
   setGeographyFilters(filters: Geography[]): void;
 }
 
+/* 
+TODO: might want to rename this byTextInput and 
+make more generic, not specific to geography 
+*/
 const ByGeography = React.memo(({
   geographies, 
   newSearch, 

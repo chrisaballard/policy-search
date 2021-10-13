@@ -2,29 +2,38 @@ import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
-import Filters from '../components/blocks/Filters/Filters';
+import Filters from '../components/blocks/filters/Filters';
+import Overlay from '../components/Overlay';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGeographies from '../hooks/useGeographies';
 import useSectors from '../hooks/useSectors';
+import useInstruments from '../hooks/useInstruments';
 import useSetStatus from '../hooks/useSetStatus';
 import useBuildQueryString from '../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
 import { getParameterByName } from '../helpers/queryString';
+import SlideOut from '../components/modal/SlideOut';
+import MultiSelect from '../components/blocks/filters/MultiSelect';
 
 const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
-  const containerRef = useRef();
-  
+  const [ slideOutActive, setSlideOutActive ] = useState(false);
+  const [ activeSelect, setActiveSelect ] = useState(null);
   // next number to start on when paging through
   const [ next, setNext ] = useState(0);
 
+  const containerRef = useRef();
+  
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
   const [ sectors, setSectors ] = useSectors();
+  const [ instruments, setInstruments ] = useInstruments();
   const [ status, setProcessing ] = useSetStatus();
   const [ buildQueryString ] = useBuildQueryString();
+
+  // destructure
   const { processing } = status;
   const { searchQuery, metadata, resultsByDocument } = searchResult;
 
@@ -59,10 +68,21 @@ const Home = React.memo((): JSX.Element => {
     const qStr = buildQueryString();
     loadResults(`${qStr}&start=${next}`);
   }
-  
+
+  const toggleSlideOut = (type) => {
+    // which kind of filter
+    setActiveSelect(type)
+    
+  }
+
+  // useEffect(() => {
+  //   activeSelect ? setSlideOutActive(true) : setSlideOutActive(false)
+  // }, [activeSelect])
+
   useEffect(() => {
     if(!geographies.length) setGeographies();
     if(!sectors.length) setSectors();
+    if(!instruments.length) setInstruments();
   }, []);
   
   useEffect(() => {
@@ -81,10 +101,26 @@ const Home = React.memo((): JSX.Element => {
   }, [geographyFilters])
 
   return (
+    <>
+    <Head>
+      <title>Policy Search</title>
+    </Head>
+    <SlideOut
+        active={activeSelect}
+        onClick={() => { setActiveSelect(null)}}
+      >
+        {activeSelect ? 
+          <MultiSelect
+            title={activeSelect}
+            list={[activeSelect]}
+          />
+        : null}
+        
+    </SlideOut>
+    <Overlay
+      active={slideOutActive}
+    />
     <MainLayout>
-      <Head>
-        <title>Policy Search</title>
-      </Head>
       <SearchInput 
         newSearch={newSearch}
         setProcessing={setProcessing}
@@ -92,8 +128,15 @@ const Home = React.memo((): JSX.Element => {
         searchTerms={searchQuery}
       />
       <div ref={containerRef} className="container md:flex">
-
-      {searchQuery ?
+      <Filters 
+        geographies={geographies}
+        newSearch={newSearch}
+        setProcessing={setProcessing}
+        geographyFilters={geographyFilters}
+        setGeographyFilters={setGeographyFilters}
+        headingClick={toggleSlideOut}
+      />
+      {/* {searchQuery ?
           <Filters 
             geographies={geographies}
             newSearch={newSearch}
@@ -102,7 +145,7 @@ const Home = React.memo((): JSX.Element => {
             setGeographyFilters={setGeographyFilters}
           />
           : null
-        }
+        } */}
         <SearchResults 
           policies={resultsByDocument} 
           searchQueryString={searchQueryString}
@@ -119,6 +162,7 @@ const Home = React.memo((): JSX.Element => {
       
       
     </MainLayout>
+    </>
   )
 });
 
