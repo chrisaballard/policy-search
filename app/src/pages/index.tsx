@@ -19,7 +19,11 @@ import MultiSelect from '../components/blocks/filters/MultiSelect';
 const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
   const [ slideOutActive, setSlideOutActive ] = useState(false);
-  const [ activeSelect, setActiveSelect ] = useState(null);
+  // active filters on slide-out widget
+  const [ activeSelect, setActiveSelect ] = useState({
+    type: '',
+    list: []
+  });
   // next number to start on when paging through
   const [ next, setNext ] = useState(0);
 
@@ -70,8 +74,13 @@ const Home = React.memo((): JSX.Element => {
   }
 
   const toggleSlideOut = (type) => {
+    setSlideOutActive(true);
     // which kind of filter
-    setActiveSelect(type)
+    // (need a better way of doing this for when we might have more types of selectable filters)
+    setActiveSelect({
+      type,
+      list: type === 'sectors' ? sectors : instruments
+    })
     
   }
 
@@ -106,15 +115,19 @@ const Home = React.memo((): JSX.Element => {
       <title>Policy Search</title>
     </Head>
     <SlideOut
-        active={activeSelect}
-        onClick={() => { setActiveSelect(null)}}
+        active={slideOutActive}
+        onClick={() => { setSlideOutActive(false)}}
       >
-        {activeSelect ? 
-          <MultiSelect
-            title={activeSelect}
-            list={[activeSelect]}
+        <MultiSelect
+            title={activeSelect.type}
+            list={activeSelect.list}
           />
-        : null}
+        {/* {activeSelect.type ? 
+          <MultiSelect
+            title={activeSelect.type}
+            list={activeSelect.list}
+          />
+        : null} */}
         
     </SlideOut>
     <Overlay

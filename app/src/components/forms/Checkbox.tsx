@@ -12,7 +12,7 @@ const Checkbox = ({ name, checked }) => {
     overflow: 'visible'
   }
   return (
-    <div className="mr-8">
+    <div className="mr-6">
       <span className="relative inline-block cursor-pointer">
         <input className="absolute opacity-0 cursor-pointer" type="checkbox" value={name} checked={checked} />
         <span className={`inline-block border text-center align-top overflow-hidden rounded ${checked ? 'border-primary-light bg-primary-light text-white' : 'border-primary-dark bg-white'}`} style={{ height: '24px', width: '24px'}}>

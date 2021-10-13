@@ -14,7 +14,7 @@ const MultiSelect = ({title, list}: MultiSelectProps): JSX.Element => {
   return (
     <section>
       {console.log(list)}
-      <h2 className="text-2xl mb-8">{title}</h2>
+      <h2 className="text-2xl mb-8 capitalize">{title}</h2>
       <ul className="md:flex md:flex-wrap">
       {list.length && list.map((item) => (
         <li key={item.id} className="md:w-1/2 flex my-2 cursor-pointer">
