@@ -3,7 +3,7 @@ import { getGeographies, setGeoFilters } from '../actions';
 import { State } from '../store/initialState';
 import { Geography } from '../model/geography';
 
-const useGetGeographies = () => {
+const useGeographies = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: State ) => state)
   const { geographies, filters: {geographyFilters} } = state;
@@ -18,4 +18,4 @@ const useGetGeographies = () => {
   
   return [geographies, geographyFilters, setGeographies, setGeographyFilters] as const;
 }
-export default useGetGeographies;
+export default useGeographies;

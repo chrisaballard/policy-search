@@ -6,6 +6,7 @@ import Filters from '../components/blocks/Filters/Filters';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGeographies from '../hooks/useGeographies';
+import useSectors from '../hooks/useSectors';
 import useSetStatus from '../hooks/useSetStatus';
 import useBuildQueryString from '../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
@@ -21,6 +22,7 @@ const Home = React.memo((): JSX.Element => {
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
+  const [ sectors, setSectors ] = useSectors();
   const [ status, setProcessing ] = useSetStatus();
   const [ buildQueryString ] = useBuildQueryString();
   const { processing } = status;
@@ -60,6 +62,7 @@ const Home = React.memo((): JSX.Element => {
   
   useEffect(() => {
     if(!geographies.length) setGeographies();
+    if(!sectors.length) setSectors();
   }, []);
   
   useEffect(() => {

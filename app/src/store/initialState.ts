@@ -5,6 +5,8 @@ import { Geography } from "../model/geography";
 import { Filters } from "../model/filters";
 import { PolicyPage } from "../model/policyPage";
 import { Policy } from "../model/policy";
+import { Sector } from "../model/sector";
+import { Instrument } from "../model/instrument";
 
 export interface State {
   status: Status;
@@ -12,6 +14,8 @@ export interface State {
   policy: Policy;
   searchResult: SearchResult;
   geographies: Geography[];
+  sectors: Sector[];
+  instruments: Instrument[];
   filters: Filters;
   policyPage: PolicyPage;
 }
@@ -40,8 +44,12 @@ const initialState = {
     resultsByDocument: []
   },
   geographies: [],
+  sectors: [],
+  instruments: [],
   filters: {
-    geographyFilters: []
+    geographyFilters: [],
+    sectorFilters: [],
+    instrumentFilters: [],
   },
   policyPage: {
     documentMetadata: {
