@@ -6,15 +6,22 @@ import FilterHeading from './FilterHeading';
 interface MultiSelectProps {
   title: string;
   list: Instrument[] | Sector[];
+  icon: string;
 }
-const MultiSelect = ({title, list}: MultiSelectProps): JSX.Element => {
+const MultiSelect = ({title, list, icon}: MultiSelectProps): JSX.Element => {
   const expandList = () => {
     console.log('expand list')
   }
   return (
     <section>
-      <FilterHeading title={title} onClick={expandList}>
-        Some list
+      <FilterHeading
+        icon={icon}
+        title={title}
+        onClick={expandList}
+      >
+        <ul>
+          
+        </ul>
       </FilterHeading>
 
     </section>

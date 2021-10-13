@@ -30,9 +30,17 @@ const Filters = React.memo(({
         setGeographyFilters={setGeographyFilters}
       />
 
-      <MultiSelect title="Instrument" list={[]} />
+      <MultiSelect
+        title="Instrument"
+        list={[]}
+        icon="instrument"
+      />
 
-      <MultiSelect title="Sector" list={[]} />
+      <MultiSelect
+        title="Sector"
+        list={[]}
+        icon="sector"
+      />
       
     </div>
   )

@@ -43,12 +43,12 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
             </div>
         </div>
       </div>
-      <div className="text-black text-sm mt-2">
+      <div className="text-sm mt-2">
         {texts.length > 0 ?
         <>
           <button
             onClick={toggleExtracts}
-            className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
+            className="font-bold focus:outline-none text-primary-light hover:text-primary-dark transition duration-300"
           >
             {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
           </button> in this policy.

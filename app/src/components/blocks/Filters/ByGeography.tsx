@@ -91,8 +91,8 @@ const ByGeography = React.memo(({
   
   return (
     <section>
-      <FilterHeading title="Geography">
-      <div className="relative my-2">
+      <FilterHeading title="Geography" icon="geography">
+      <div className="relative my-2 mt-4">
         <input
           className="h-12 w-full border rounded focus:outline-none px-2 text-gray-500"
           type="text"

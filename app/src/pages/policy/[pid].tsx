@@ -119,7 +119,7 @@ const Policy = () => {
           <div className="mb-4 flex flex-wrap md:flex-no-wrap justify-between items-end">
             <div className="w-full text-center mb-2 md:w-auto md:mb-0 md:text-left">
               <Link href='/'>
-                <a className="text-gray-500 hover:text-black transition duration-300">
+                <a className="hover:text-primary transition duration-300">
                   &laquo; Back to search
                 </a>
               </Link>
@@ -146,14 +146,14 @@ const Policy = () => {
             <button
               onClick={() => { changePageNumber('prev') }}
               style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              className={`button-half px-4 rounded-l-lg border-r border-white focus:outline-primary-dark ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &laquo;
             </button>
             <button
               onClick={() => { changePageNumber('next') }}
               style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              className={`button-half px-4 rounded-r-lg focus:outline-primary-dark ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &raquo;
             </button>
@@ -172,7 +172,7 @@ const Policy = () => {
                 <img src="/images/download-pdf.svg" alt="Download PDF" title="Download PDF" style={{ width: '40px'}} />
               </a>
               <div>
-                Page <span className="text-black font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
+                Page <span className="font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>
             <div className="mt-6 text-gray-600" dangerouslySetInnerHTML={{__html: pageText}} />

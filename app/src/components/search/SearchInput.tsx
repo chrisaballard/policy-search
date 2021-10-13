@@ -51,7 +51,7 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
   return (
     <section>
       <div className="search-area container flex flex-col justify-center items-center relative">
-        <h1 className="text-4xl md:text-6xl font-bold text-black transform-uppercase text-center">Policy Search</h1>
+        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center">Policy Search</h1>
         <form 
           onSubmit={e => { e.preventDefault() }}
           className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto"
