@@ -26,6 +26,9 @@ module.exports = {
         'base': ['"Poppins"'],
         'heading': ['"Poppins"']
       },
+      spacing: {
+        'full200': '200%'
+      }
     },
   },
   variants: {},

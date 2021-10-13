@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 body {
-  @apply text-primary-dark;
+  @apply text-primary-dark overflow-x-hidden;
   em {
     @apply font-bold text-primary-dark;
   }
