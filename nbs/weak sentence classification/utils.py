@@ -4,6 +4,7 @@ import re
 import yaml
 from transformers import pipeline
 import pandas as pd
+import numpy as np
 
 
 def load_policy_dataset():
@@ -36,17 +37,22 @@ class Schema:
     
     @property
     def all_keywords(self):
-        return list(self.keyword_subsector_mapping.keys())
+        all_kw = []
+        for kw_list in self.subsector_keyword_mapping.values():
+            for kw in kw_list:
+                all_kw.append(kw)
+
+        return np.array(all_kw)
     
     @property
     def keyword_subsector_mapping(self):
-        kwd_subsector_mapping = dict()
-        
+        kwd_subsector_mapping = []
+
         for subsector, kwd_list in self.subsector_keyword_mapping.items():
             for keyword in kwd_list:
-                kwd_subsector_mapping.update({keyword: subsector})
+                kwd_subsector_mapping.append(subsector)
                                              
-        return kwd_subsector_mapping
+        return np.array(kwd_subsector_mapping)
     
 class ZeroShotClassifier:
     def __init__(
