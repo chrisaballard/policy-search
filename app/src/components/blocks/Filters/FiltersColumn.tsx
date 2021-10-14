@@ -1,8 +1,8 @@
 import React from 'react';
+import { Filters } from '../../../model/filters';
 import { Geography } from "../../../model/geography";
 import ByGeography from "./ByGeography";
 import BySelections from './BySelections';
-import MultiSelect from './MultiSelect';
  
 interface FiltersProps {
   geographies: Geography[];
@@ -10,16 +10,20 @@ interface FiltersProps {
   setProcessing(bool: boolean): void;
   geographyFilters: Geography[];
   setGeographyFilters(filters: Geography[]): void;
+  updateFilters(action: string, type: string, name: string): void;
   headingClick(type: string): void;
+  filters: Filters;
 }
 
-const Filters = React.memo(({
+const FiltersColumn = React.memo(({
   geographies, 
   newSearch, 
   setProcessing, 
   geographyFilters,
   setGeographyFilters,
-  headingClick
+  headingClick,
+  updateFilters,
+  filters
 }: FiltersProps) => {
   
   const onClick = (type) => {
@@ -34,25 +38,28 @@ const Filters = React.memo(({
         setProcessing={setProcessing}
         geographyFilters={geographyFilters}
         setGeographyFilters={setGeographyFilters}
+        // filters={filters.geographyFilters}
       />
 
       <BySelections
         title="Sectors"
-        list={[]}
         icon="sector"
         clickable={true}
-        onClick={() => { headingClick('sectors') }}
+        onClick={() => { headingClick('sector') }}
+        filters={filters.sectorFilters}
+        updateFilters={updateFilters}
       />
 
       <BySelections
         title="Instruments"
-        list={[]}
         icon="instrument"
         clickable={true}
-        onClick={() => { headingClick('instruments') }}
+        onClick={() => { headingClick('instrument') }}
+        filters={filters.instrumentFilters}
+        updateFilters={updateFilters}
       />
       
     </div>
   )
 });
-export default Filters;
+export default FiltersColumn;

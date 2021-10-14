@@ -28,6 +28,20 @@ module.exports = {
       },
       spacing: {
         'full200': '200%'
+      },
+      animation: {
+        fadeInOnce: '0.5s ease-out 0s 1 fadeIn',
+        growOnce: '0.3s ease-out 0s 1 grow'
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: '0'},
+          '100%': { opacity: '1'}
+        },
+        grow: {
+          '0%': { width: '0'},
+          '100%': { width: '100%'}
+        }
       }
     },
   },

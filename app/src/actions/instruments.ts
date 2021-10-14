@@ -1,11 +1,15 @@
 import { ActionTypes } from './actionTypes';
 import { loadInstruments } from '../api';
 import { Dispatch } from 'redux';
-import { Sector } from '../model/sector';
+import { Instrument } from '../model/instrument';
 
 export interface getInstrumentsAction {
   type: ActionTypes.getInstruments;
-  payload: Sector[];
+  payload: Instrument[];
+}
+export interface instrumentFiltersAction {
+  type: ActionTypes.setInstrumentFilters;
+  payload: Instrument[];
 }
 
 export const getInstruments = () => async (dispatch: Dispatch) => {
@@ -13,5 +17,12 @@ export const getInstruments = () => async (dispatch: Dispatch) => {
   dispatch<getInstrumentsAction>({
     type: ActionTypes.getInstruments,
     payload: data
+  })
+}
+
+export const setSectorFilters = (filters: Instrument[]) => (dispatch: Dispatch) => {
+  dispatch<instrumentFiltersAction>({
+    type: ActionTypes.setInstrumentFilters,
+    payload: filters
   })
 }

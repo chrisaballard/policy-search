@@ -1,19 +1,20 @@
 import { combineReducers } from 'redux';
+import searchResultReducer from './searchResult';
+import geographiesReducer from './geographies';
+import policyPageReducer from './policyPage';
+import statusReducer from './status';
+import sectorsReducer from './sectors';
+import instrumentsReducer from './instruments';
+import filtersReducer from './filters';
 import { Status } from '../model/status';
 import { SearchResult } from '../model/searchResult';
 import { Geography } from '../model/geography';
-import searchResultReducer from './searchResult';
-import { geographiesReducer, geographyFiltersReducer } from './geographies';
-import policyPageReducer from './policyPage';
-import statusReducer from './status';
 import { Filters } from '../model/filters';
 import { PolicyPage } from '../model/policyPage';
 import { Policy } from '../model/policy';
 import { policyReducer } from './policies';
 import { Sector } from '../model/sector';
 import { Instrument } from '../model/instrument';
-import { sectorsReducer } from './sectors';
-import { instrumentsReducer } from './instruments';
 
 // interface of entire redux store
 export interface StoreState {
@@ -32,7 +33,7 @@ export default combineReducers<StoreState>({
   geographies: geographiesReducer,
   sectors: sectorsReducer,
   instruments: instrumentsReducer,
-  filters: geographyFiltersReducer,
+  filters: filtersReducer,
   policyPage: policyPageReducer,
   policy: policyReducer,
 });

@@ -3,8 +3,9 @@ import { getPoliciesAction, getPolicyAction } from './policy';
 import { getGeographiesAction, geographyFiltersAction } from "./geographies";
 import { SetStatusAction } from "./status";
 import { getPolicyPageAction, clearPolicyPageAction } from './policyPage';
-import { getSectorsAction } from "./sectors";
-import { getInstrumentsAction } from "./instruments";
+import { getSectorsAction, sectorFiltersAction } from "./sectors";
+import { getInstrumentsAction, instrumentFiltersAction } from "./instruments";
+import { filtersAction } from './filters';
 
 export enum ActionTypes {
   getPolicies, // 0
@@ -18,6 +19,9 @@ export enum ActionTypes {
   getPolicy, // 8
   getSectors, // 9
   getInstruments, // 10
+  setSectorFilters, // 11
+  setInstrumentFilters, // 12
+  setNewFilters
 }
 
-export type Action = getPoliciesAction | getSearchResultAction | clearSearchResultAction | getGeographiesAction | SetStatusAction | geographyFiltersAction | getPolicyPageAction | clearPolicyPageAction | getPolicyAction | getSectorsAction | getInstrumentsAction;
+export type Action = getPoliciesAction | getSearchResultAction | clearSearchResultAction | getGeographiesAction | SetStatusAction | geographyFiltersAction | getPolicyPageAction | clearPolicyPageAction | getPolicyAction | getSectorsAction | getInstrumentsAction | sectorFiltersAction | instrumentFiltersAction | filtersAction;

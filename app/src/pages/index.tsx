@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
-import Filters from '../components/blocks/filters/Filters';
+import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
@@ -15,6 +15,7 @@ import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
 import { getParameterByName } from '../helpers/queryString';
 import SlideOut from '../components/modal/SlideOut';
 import MultiSelect from '../components/blocks/filters/MultiSelect';
+import useFilters from '../hooks/useFilters';
 
 const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
@@ -22,7 +23,7 @@ const Home = React.memo((): JSX.Element => {
   // active filters on slide-out widget
   const [ activeSelect, setActiveSelect ] = useState({
     type: '',
-    list: []
+    list: [],
   });
   // next number to start on when paging through
   const [ next, setNext ] = useState(0);
@@ -32,6 +33,7 @@ const Home = React.memo((): JSX.Element => {
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
+  const [ filters, updateFilters ] = useFilters();
   const [ sectors, setSectors ] = useSectors();
   const [ instruments, setInstruments ] = useInstruments();
   const [ status, setProcessing ] = useSetStatus();
@@ -77,16 +79,19 @@ const Home = React.memo((): JSX.Element => {
     setSlideOutActive(true);
     // which kind of filter
     // (need a better way of doing this for when we might have more types of selectable filters)
+    let list;
+    if(type === 'sector') {
+      list = sectors;
+    }
+    else if (type === 'instrument') {
+      list = instruments;
+    }
     setActiveSelect({
       type,
-      list: type === 'sectors' ? sectors : instruments
+      list
     })
     
   }
-
-  // useEffect(() => {
-  //   activeSelect ? setSlideOutActive(true) : setSlideOutActive(false)
-  // }, [activeSelect])
 
   useEffect(() => {
     if(!geographies.length) setGeographies();
@@ -121,14 +126,9 @@ const Home = React.memo((): JSX.Element => {
         <MultiSelect
             title={activeSelect.type}
             list={activeSelect.list}
+            activeFilters={filters[`${activeSelect.type}Filters`]}
+            updateFilters={updateFilters}
           />
-        {/* {activeSelect.type ? 
-          <MultiSelect
-            title={activeSelect.type}
-            list={activeSelect.list}
-          />
-        : null} */}
-        
     </SlideOut>
     <Overlay
       active={slideOutActive}
@@ -141,12 +141,14 @@ const Home = React.memo((): JSX.Element => {
         searchTerms={searchQuery}
       />
       <div ref={containerRef} className="container md:flex">
-      <Filters 
+      <FiltersColumn
         geographies={geographies}
         newSearch={newSearch}
         setProcessing={setProcessing}
         geographyFilters={geographyFilters}
         setGeographyFilters={setGeographyFilters}
+        updateFilters={updateFilters}
+        filters={filters}
         headingClick={toggleSlideOut}
       />
       {/* {searchQuery ?

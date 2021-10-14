@@ -119,7 +119,7 @@ const ByGeography = React.memo(({
         null
         }
         {geographyFilters.length ? 
-        <div className="mt-2 mb-8 flex flex-wrap">
+        <div>
           {geographyFilters.map((item) => (
             <FilterTag onClick={handleFilterRemove} key={item.code} text={item.name} />
           ))}
