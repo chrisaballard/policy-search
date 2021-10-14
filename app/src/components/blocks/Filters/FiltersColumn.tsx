@@ -50,6 +50,8 @@ const FiltersColumn = React.memo(({
         updateFilters={updateFilters}
       />
 
+      <hr className="mt-6" />
+
       <BySelections
         title="Instruments"
         icon="instrument"
