@@ -8,16 +8,6 @@ const filtersReducer = (state: Filters = initialState.filters, action: Action) =
     switch (action.type) {
       case ActionTypes.setNewFilters:
         return draft = action.payload;
-        break;
-      case ActionTypes.setGeographyFilters:
-        draft.geographyFilters = action.payload;
-        break;
-      case ActionTypes.setSectorFilters:
-        draft.sectorFilters = action.payload;
-        break;
-        case ActionTypes.setInstrumentFilters:
-          draft.instrumentFilters = action.payload;
-          break;
       default:
         break;
     }
