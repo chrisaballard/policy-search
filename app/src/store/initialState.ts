@@ -38,6 +38,7 @@ const initialState = {
   },
   searchResult: {
     searchQuery: '',
+    endOfList: true,
     metadata: {
       numDocsReturned: 0
     },

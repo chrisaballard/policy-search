@@ -20,7 +20,7 @@ import useFilters from '../hooks/useFilters';
 import { State } from '../store/initialState';
 
 const Home = React.memo((): JSX.Element => {
-  const [ endOfList, setEndOfList ] = useState(false);
+  const state = useSelector((state: State ) => state)
   const [ slideOutActive, setSlideOutActive ] = useState(false);
   // active filters on slide-out widget
   const [ activeSelect, setActiveSelect ] = useState({
@@ -32,11 +32,9 @@ const Home = React.memo((): JSX.Element => {
 
   const containerRef = useRef();
   
-  // hooks
+  // custom hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const setGeographies = useGeographies();
-  const state = useSelector((state: State ) => state)
-  const { status, filters, geographyList, sectorList, instrumentList } = state;
   const updateFilters = useFilters();
   const setSectors = useSectors();
   const setInstruments = useInstruments();
@@ -44,8 +42,9 @@ const Home = React.memo((): JSX.Element => {
   const buildQueryString = useBuildQueryString();
 
   // destructure
+  const { status, filters, geographyList, sectorList, instrumentList } = state;
   const { processing } = status;
-  const { searchQuery, metadata, resultsByDocument } = searchResult;
+  const { searchQuery, metadata, resultsByDocument, endOfList } = searchResult;
 
   // query=xxx
   const [ searchQueryString, setSearchQueryString ] = useState(`query=${searchQuery}`);
@@ -58,10 +57,6 @@ const Home = React.memo((): JSX.Element => {
     getResult(queryString);
   }
 
-  const checkIfEnd = () => {
-    const end = metadata.numDocsReturned < PER_PAGE;
-    setEndOfList(end);
-  }
   const newSearch = (queryString) => {
     const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
     if(sq?.trim().length === 0) return;
@@ -79,7 +74,8 @@ const Home = React.memo((): JSX.Element => {
     loadResults(`${qStr}&start=${next}`);
   }
 
-  const toggleSlideOut = (type) => {
+  const openSlideOut = (type) => {
+    window.scrollTo(0,0);
     setSlideOutActive(true);
     setActiveSelect({
       type,
@@ -96,7 +92,6 @@ const Home = React.memo((): JSX.Element => {
   
   useEffect(() => {
     updateNext();
-    checkIfEnd();
   }, [searchResult])
 
   useEffect(() => {
@@ -127,6 +122,7 @@ const Home = React.memo((): JSX.Element => {
     </SlideOut>
     <Overlay
       active={slideOutActive}
+      onClick={() => { setSlideOutActive(false)}}
     />
     <MainLayout>
       <SearchInput 
@@ -142,12 +138,8 @@ const Home = React.memo((): JSX.Element => {
         setProcessing={setProcessing}
         updateFilters={updateFilters}
         filters={filters}
-        headingClick={toggleSlideOut}
+        headingClick={openSlideOut}
       />
-      {/* {searchQuery ?
-          filters here
-          : null
-        } */}
         <SearchResults 
           policies={resultsByDocument} 
           searchQueryString={searchQueryString}
@@ -157,7 +149,7 @@ const Home = React.memo((): JSX.Element => {
         />
       </div>
       
-      {resultsByDocument.length && !endOfList ?
+      {!endOfList ?
       <SearchNavigation onClick={handleNavigation} />
       : null
       }

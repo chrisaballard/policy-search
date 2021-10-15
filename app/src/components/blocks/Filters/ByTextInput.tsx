@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Geography } from "../../../model/geography";
 import useSuggestList from '../../../hooks/useSuggestList';
 import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
@@ -36,7 +35,7 @@ const ByTextInput = React.memo(({
 
   const buildQueryString = useBuildQueryString();
 
-  const [ navigateList, clearSelected ] = useListSelect('filter-list', list.length)
+  const [ navigateList, clearSelected ] = useListSelect('filter-list', suggestList.length)
 
   const listRef = useRef(null);
   
@@ -46,23 +45,27 @@ const ByTextInput = React.memo(({
 
   const handleFilterSelect = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.target as HTMLButtonElement).innerText;
-    //const newFilter = list.find((item) => item.name === value)
     updateFilters('add', type, value)
     setFiltersRemoved(false);
     clearSelected();
   }
   const handleFilterRemove = (event: React.FormEvent<HTMLButtonElement>) => {
     const value = (event.currentTarget as HTMLButtonElement).nextSibling.textContent;
-    // const newFilter = filters.find((item) => item.name !== value);
     updateFilters('remove', type, value);
     setFiltersRemoved(true);
   }
 
   const applyFilters = (): void => {
     const queryString = buildQueryString();
-    setProcessing(true);
-    newSearch(queryString);
     setValue('');
+    // don't run search unless there is a search query
+    // only need this temporarily until search api will return all items when query is empty
+    const end = queryString.indexOf('&') > - 1 ? queryString.indexOf('&') : queryString.length;
+    const query = queryString.substring(queryString.indexOf('=') + 1, end)
+    if(query.length) {
+      setProcessing(true);
+      newSearch(queryString);
+    }
   }
   useEffect(() => {
     const timeOutId = setTimeout(() => {

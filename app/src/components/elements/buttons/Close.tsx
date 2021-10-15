@@ -4,9 +4,10 @@ interface CloseProps {
   size?: string;
 }
 
-const Close = ({ onClick, size = '20' }) => {
+const Close = ({ onClick, size = '20' }: CloseProps) => {
   return (
     <button
+      className="focus:outline-none"
       onClick={onClick}
       style={{
         height: `${size}px`,
