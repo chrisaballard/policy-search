@@ -1,13 +1,17 @@
 
 interface CloseProps {
   onClick(event: React.FormEvent<HTMLButtonElement>): void;
+  size?: string;
 }
 
-const Close = ({ onClick }) => {
+const Close = ({ onClick, size = '20' }) => {
   return (
     <button
-      className="px-2"
       onClick={onClick}
+      style={{
+        height: `${size}px`,
+        width: `${size}px`
+      }}
     >
       <img 
         src="/images/close.svg" 

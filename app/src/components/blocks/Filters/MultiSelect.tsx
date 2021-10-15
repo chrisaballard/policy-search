@@ -1,7 +1,7 @@
 
 import { Instrument } from '../../../model/instrument';
 import { Sector } from '../../../model/sector';
-import Checkbox from '../../forms/Checkbox';
+import Checkbox from '../../elements/inputs/Checkbox';
 
 interface MultiSelectProps {
   title: string;
