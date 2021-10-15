@@ -22,6 +22,9 @@ module.exports = {
       padding: '1rem'
     },
     extend: {
+      outline: {
+        dottedblue: ['2px dotted #071e4a', '1px']
+      },
       fontFamily: {
         'base': ['"Poppins"'],
         'heading': ['"Poppins"']
