@@ -1,6 +1,7 @@
 
 import { Instrument } from '../../../model/instrument';
 import { Sector } from '../../../model/sector';
+import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import Checkbox from '../../elements/inputs/Checkbox';
 
 interface MultiSelectProps {
@@ -10,8 +11,12 @@ interface MultiSelectProps {
   // active filters
   activeFilters: Instrument[] | Sector[];
   updateFilters(action: string, type: string, name: string): void;
+  newSearch(queryString: string): void;
 }
 const MultiSelect = ({title, list, activeFilters, updateFilters}: MultiSelectProps): JSX.Element => {
+
+  const buildQueryString = useBuildQueryString();
+  
   // need to compare and see if item is in filters
   const isInFilters = (name: string) => {
     return activeFilters.filter(item => item.name === name).length > 0;

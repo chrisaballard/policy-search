@@ -40,6 +40,7 @@ const FiltersColumn = React.memo(({
         clickable={true}
         onClick={() => { headingClick('sector') }}
         filters={filters.sectorFilters}
+        newSearch={newSearch}
         updateFilters={updateFilters}
       />
 
@@ -50,6 +51,7 @@ const FiltersColumn = React.memo(({
         clickable={true}
         onClick={() => { headingClick('instrument') }}
         filters={filters.instrumentFilters}
+        newSearch={newSearch}
         updateFilters={updateFilters}
       />
       

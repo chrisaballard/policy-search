@@ -118,6 +118,7 @@ const Home = React.memo((): JSX.Element => {
             list={activeSelect.list}
             activeFilters={filters[`${activeSelect.type}Filters`]}
             updateFilters={updateFilters}
+            newSearch={newSearch}
           />
     </SlideOut>
     <Overlay
