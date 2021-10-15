@@ -8,7 +8,7 @@ import uvicorn
 from elasticsearch import NotFoundError as ElasticNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
-from policy_search.pipeline.elasticsearch import ElasticSearchIndex
+from policy_search.pipeline.opensearch import OpenSearchIndex
 from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
 from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
@@ -22,8 +22,14 @@ dynamodb_url = f'http://{dynamodb_host}:{dynamodb_port}'
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, 'policyId')
 
-elastic_host = os.environ.get('elasticsearch_cluster', 'localhost:9200')
-es = ElasticSearchIndex(es_url=elastic_host)
+elastic_host = os.environ.get('elasticsearch_cluster', 'https://localhost:9200')
+es = OpenSearchIndex(
+    es_url=elastic_host, 
+    es_user="admin", 
+    es_password="admin", 
+    es_connector_kwargs={"use_ssl": False, "verify_certs": False, "ssl_show_warn": False},
+    embedding_dim=384
+)
 
 app = FastAPI()
 
@@ -63,10 +69,13 @@ def search_policies(
     else:
         kwd_filters = None
 
+    query_emb = [-0.04356783628463745, 0.07272697240114212, 0.05683586746454239]
+
     # There is no option to offset results for terms aggregation queries, so instead we 
     # get the first `start+limit` results and offset them by `start`.
     search_result = es.search(
         query,
+        query_emb,
         limit=start+limit,
         keyword_filters=kwd_filters,
     )
@@ -75,6 +84,7 @@ def search_policies(
 
     query_results_by_doc = []
 
+    # Iterate over each document returned from the query
     for result in results_by_doc[start : start+limit]:
         hits_by_page = result["top_passage_hits"]["hits"]["hits"]
         # num_pages_with_hit = result["doc_count"]
@@ -86,14 +96,23 @@ def search_policies(
 
         document_response = []
 
+        # Iterate over each page hit in each document
         for hit in hits_by_page:
-            if "highlight" in hit:
-                # Only return a page if there is at least one text match in the page
+            page_text_hits = []
+            # Find the matching text passages and add to results
+            for page_inner_hits in hit["inner_hits"]["text"]["hits"]["hits"]:
+                    page_text_hits.append(
+                        page_inner_hits["_source"]["text"]
+                    )
+
+            # Add the page matches for this document
+            if len(page_inner_hits) > 0:
                 document_response.append({
                     "pageNumber": hit["_source"]["page_number"],
-                    "text": hit["highlight"]["text"],
+                    "text": page_text_hits,
                 })
 
+        # Add the query matches for this document
         query_results_by_doc.append(
             {   
                 "policyId": policy_id,
