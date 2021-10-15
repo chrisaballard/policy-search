@@ -2,23 +2,22 @@
 """
 
 
-from typing import List, Optional, Generator
+from typing import List, Optional
 
-from elasticsearch import Elasticsearch, helpers
+from opensearchpy import OpenSearch, helpers
 
-from .fetch import DocumentSourceFetcher
-from ..parser.pdf_parser import PDFParser
 from .models.policy import Policy
 from .base import BaseCallback
 
 
-class ElasticSearchIndex(BaseCallback):
+class OpenSearchIndex(BaseCallback):
     def __init__(
         self,
         es_url: Optional[str] = None,
         es_user: Optional[str] = None,
         es_password: Optional[str] = None,
         es_connector_kwargs: dict = {},
+        embedding_dim: int = 312
     ):  
         super().__init__('elasticsearch')
         self.index_name = 'policies'
@@ -26,6 +25,8 @@ class ElasticSearchIndex(BaseCallback):
         self.es_url = es_url
         self.es_login = (es_user, es_password)
         self.es_connector_kwargs = es_connector_kwargs
+
+        self.embedding_dim = embedding_dim
 
         self._connect_to_elasticsearch()
         
@@ -37,17 +38,42 @@ class ElasticSearchIndex(BaseCallback):
 
         if self.es_url:
             if all(self.es_login):
-                self.es = Elasticsearch(
-                    [self.es_url], http_auth=self.es_login, **self.es_connector_kwargs
+                self.es = OpenSearch(
+                    [self.es_url], 
+                    http_auth=self.es_login, 
+                    **self.es_connector_kwargs
                 )
             else:
-                self.es = Elasticsearch([self.es_url], **self.es_connector_kwargs)
+                self.es = OpenSearch([self.es_url], **self.es_connector_kwargs)
             
         else:
-            self.es = Elasticsearch(**self.es_connector_kwargs)
+            self.es = OpenSearch(**self.es_connector_kwargs)
 
     def _is_connected_to_elasticsearch(self) -> bool:
         return self.es.ping()
+
+    def _index_body(self):
+        """Define policy index fields and types
+        """
+
+        return {
+            "mappings": {
+                "properties": {
+                    "text": {
+                        "type": "nested",
+                        "properties": {
+                            "text": {
+                                "type" : "text"
+                            },
+                            "embedding": {
+                                "type": "knn_vector",
+                                "dimension": self.embedding_dim
+                            }
+                        }
+                    }
+                }
+            }
+        }
                         
     def delete_and_create_index(self):
         """
@@ -55,7 +81,7 @@ class ElasticSearchIndex(BaseCallback):
         """
         
         self.es.indices.delete(index=self.index_name, ignore=[400, 404])
-        self.es.indices.create(index=self.index_name)
+        self.es.indices.create(index=self.index_name, body=self._index_body())
 
     def add(
         self,
@@ -67,17 +93,25 @@ class ElasticSearchIndex(BaseCallback):
         doc, doc_structure = super().add(**kwargs)
         self._docs_to_load += self._create_page_dicts_from_doc(doc, doc_structure)
 
-    def finalise(self):
+    def prepare(self):
+        super().prepare()
+
+        if not self._is_connected_to_elasticsearch():
+            self._connect_to_elasticsearch()
+
+        self.delete_and_create_index()
+    
+    def process_batch(self):
         """
         Load documents in the in-memory store into Elasticsearch.
         """
+
+        super().process_batch()
 
         # We check the connection here in case there have been any issues since 
         # creation of the instance of this class.
         if not self._is_connected_to_elasticsearch():
             self._connect_to_elasticsearch()
-
-        self.delete_and_create_index()
 
         bulk_loader = helpers.streaming_bulk(
             client=self.es,
@@ -95,6 +129,9 @@ class ElasticSearchIndex(BaseCallback):
                 
             successes += ok
 
+        # Clear in memory store of documents to load ready for next batch
+        self._docs_to_load = []
+
     def get_doc_by_id(
         self,
         _id: str,
@@ -109,10 +146,12 @@ class ElasticSearchIndex(BaseCallback):
     def search(
         self,
         query: str,
+        query_embedding: List[float],
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
-        max_pages_per_doc: Optional[int] = 10
+        max_pages_per_doc: Optional[int] = 10,
+        max_passages_per_page: Optional[int] = 5,
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
@@ -127,24 +166,38 @@ class ElasticSearchIndex(BaseCallback):
         fields_to_search = ["text", "policy_name"]
 
         es_query = {
+            "_source": {
+                "excludes": ["text.embedding"]
+            },
             "query": { 
                 "bool": {
-                    "should": [
-                        {
-                            "multi_match": {
-                                "query": query,
-                                "fields": fields_to_search
+                    "should": [{
+                            "nested": {
+                                "path": "text",
+                                "score_mode": "max",
+                                "inner_hits": {
+                                    "_source": ["text.text_id", "text.text"],
+                                    "size": max_passages_per_page
+                                },
+                                "query": {
+                                    "script_score": {
+                                        "query": {
+                                            "match_all": {}
+                                        },
+                                        "script": {
+                                            "source": "knn_score",
+                                            "lang": "knn",
+                                            "params": {
+                                                "field": "text.embedding",
+                                                "query_value": query_embedding,
+                                                "space_type": "innerproduct"     
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        }
-                    ],
+                        }],
                 }
-            },
-            "highlight": {
-                "fields": {
-                    "text": {
-                        "number_of_fragments": 0
-                    }
-                } 
             },
             "aggs": {
                 "top_docs": {
@@ -157,13 +210,7 @@ class ElasticSearchIndex(BaseCallback):
                     "aggs": {
                         "top_passage_hits": {
                             "top_hits": {
-                                "highlight": {
-                                    "fields": {
-                                        "text": {
-                                            "number_of_fragments": 0
-                                        }
-                                    } 
-                                },
+                                "_source": {"excludes": ["text.embedding"]},
                                 "size": max_pages_per_doc,
                             }
                         },
