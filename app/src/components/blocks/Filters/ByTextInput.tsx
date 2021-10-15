@@ -8,7 +8,7 @@ import FilterTag from './FilterTag';
 import FilterHeading from './FilterHeading';
 
 interface ByGeographyProps {
-  geographies: Geography[];
+  geographyList: Geography[];
   newSearch(queryString: string): void;
   setProcessing(bool: boolean): void;
   geographyFilters: Geography[];
@@ -20,7 +20,7 @@ TODO: might want to rename this byTextInput and
 make more generic, not specific to geography 
 */
 const ByGeography = React.memo(({
-  geographies, 
+  geographyList, 
   newSearch, 
   setProcessing,
   geographyFilters,
@@ -33,9 +33,9 @@ const ByGeography = React.memo(({
   const [ filtersRemoved, setFiltersRemoved ] = useState(false);
 
   // list of suggested geographies based on user input
-  const [ list, suggest ] = useGeographyFilters(geographies); 
+  const [ list, suggest ] = useGeographyFilters(geographyList); 
 
-  const [ buildQueryString ] = useBuildQueryString();
+  const buildQueryString = useBuildQueryString();
 
   const [ navigateList, clearSelected ] = useListSelect('filter-list', list.length)
 

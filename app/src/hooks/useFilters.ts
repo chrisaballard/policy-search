@@ -24,7 +24,7 @@ const useFilters = () => {
     dispatch(setFilters({...filters, [`${type}Filters`]: newFilters}))
   }
 
-  return [filters, updateFilters ] as const;
+  return updateFilters;
 }
 
 export default useFilters;

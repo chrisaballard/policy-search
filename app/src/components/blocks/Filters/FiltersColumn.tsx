@@ -5,7 +5,7 @@ import ByGeography from "./ByGeography";
 import BySelections from './BySelections';
  
 interface FiltersProps {
-  geographies: Geography[];
+  geographyList: Geography[];
   newSearch(searchQuery: string): void;
   setProcessing(bool: boolean): void;
   geographyFilters: Geography[];
@@ -16,7 +16,7 @@ interface FiltersProps {
 }
 
 const FiltersColumn = React.memo(({
-  geographies, 
+  geographyList, 
   newSearch, 
   setProcessing, 
   geographyFilters,
@@ -33,7 +33,7 @@ const FiltersColumn = React.memo(({
     <div className="w-full md:w-1/4 md:pr-4 flex-shrink-0">
       <h2 className="font-bold mb-4 border-b pb-2">Filter by:</h2>
       <ByGeography 
-        geographies={geographies}
+        geographyList={geographyList}
         newSearch={newSearch}
         setProcessing={setProcessing}
         geographyFilters={geographyFilters}

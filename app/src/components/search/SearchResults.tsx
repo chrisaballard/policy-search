@@ -7,7 +7,7 @@ import Loader from '../../components/Loader';
 
 interface SearchResultsProps {
   policies: ResultByDocument[];
-  geographies: Geography[];
+  geographyList: Geography[];
   searchQueryString: string;
   processing: boolean;
   searchTerms: string;
@@ -16,7 +16,7 @@ const SearchResults = ({
   policies,
   searchQueryString,
   processing,
-  geographies,
+  geographyList,
   searchTerms
 }: SearchResultsProps) => {
 
@@ -56,7 +56,7 @@ const SearchResults = ({
                     key={`${index}-${policy.policyId}`}
                     id={`${index}-${policy.policyId}`}
                   >
-                    <SearchResultItem policy={policy} geographies={geographies} texts={policy.resultsByPage} />
+                    <SearchResultItem policy={policy} geographyList={geographyList} texts={policy.resultsByPage} />
                   </li>
               ))}
               </ul>

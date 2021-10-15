@@ -7,11 +7,11 @@ import { ResultByDocument } from "../../model/resultByDocument";
 
 interface SearchResultItemProps {
   policy: ResultByDocument;
-  geographies: Geography[];
+  geographyList: Geography[];
   texts: ResultByPage[];
 }
 
-const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): JSX.Element => {
+const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps): JSX.Element => {
   const [ showExtracts, setShowExtracts ] = useState(false);
   const [ country, setCountry ] = useState('');
   const toggleExtracts = () => {
@@ -22,7 +22,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
       setCountry('European Union');
       return;
     }
-    const name = getCountryNameFromCode(policy.countryCode, geographies);
+    const name = getCountryNameFromCode(policy.countryCode, geographyList);
     setCountry(name);
   }
   

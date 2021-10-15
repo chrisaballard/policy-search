@@ -3,7 +3,7 @@ import initialState from '../store/initialState';
 import { Action, ActionTypes } from '../actions';
 import { Sector } from '../model/sector';
 
-const sectorsReducer = (state: Sector[] = initialState.sectors, action: Action) => {
+const sectorsReducer = (state: Sector[] = initialState.sectorList, action: Action) => {
   return produce(state, (draft: any) => { // TODO figure out the typing for this
     switch (action.type) {
       case ActionTypes.getSectors:

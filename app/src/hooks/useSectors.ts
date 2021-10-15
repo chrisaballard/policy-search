@@ -5,13 +5,13 @@ import { State } from '../store/initialState';
 const useSectors = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: State ) => state)
-  const { sectors } = state;
+  const { sectorList } = state;
   const setSectors = () => {
     dispatch(getSectors());
   }
 
   
   
-  return [ sectors, setSectors ] as const;
+  return setSectors;
 }
 export default useSectors;

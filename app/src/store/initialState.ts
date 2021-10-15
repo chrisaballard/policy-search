@@ -13,9 +13,9 @@ export interface State {
   policies: Policies;
   policy: Policy;
   searchResult: SearchResult;
-  geographies: Geography[];
-  sectors: Sector[];
-  instruments: Instrument[];
+  geographyList: Geography[];
+  sectorList: Sector[];
+  instrumentList: Instrument[];
   filters: Filters;
   policyPage: PolicyPage;
 }
@@ -43,9 +43,9 @@ const initialState = {
     },
     resultsByDocument: []
   },
-  geographies: [],
-  sectors: [],
-  instruments: [],
+  geographyList: [],
+  sectorList: [],
+  instrumentList: [],
   filters: {
     geographyFilters: [],
     sectorFilters: [],

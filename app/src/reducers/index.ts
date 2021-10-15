@@ -20,9 +20,9 @@ import { Instrument } from '../model/instrument';
 export interface StoreState {
   status: Status,
   searchResult: SearchResult;
-  geographies: Geography[];
-  sectors: Sector[];
-  instruments: Instrument[];
+  geographyList: Geography[];
+  sectorList: Sector[];
+  instrumentList: Instrument[];
   filters: Filters,
   policyPage: PolicyPage;
   policy: Policy;
@@ -30,9 +30,9 @@ export interface StoreState {
 export default combineReducers<StoreState>({
   status: statusReducer,
   searchResult: searchResultReducer,
-  geographies: geographiesReducer,
-  sectors: sectorsReducer,
-  instruments: instrumentsReducer,
+  geographyList: geographiesReducer,
+  sectorList: sectorsReducer,
+  instrumentList: instrumentsReducer,
   filters: filtersReducer,
   policyPage: policyPageReducer,
   policy: policyReducer,

@@ -5,11 +5,11 @@ import { State } from '../store/initialState';
 const useInstruments = () => {
   const dispatch = useDispatch();
   const state = useSelector((state: State ) => state)
-  const { instruments } = state;
+  const { instrumentList } = state;
   const setInstruments = () => {
     dispatch(getInstruments());
   }
 
-  return [ instruments, setInstruments ] as const;
+  return setInstruments;
 }
 export default useInstruments;

@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useSelector } from 'react-redux';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
@@ -16,6 +17,7 @@ import { getParameterByName } from '../helpers/queryString';
 import SlideOut from '../components/modal/SlideOut';
 import MultiSelect from '../components/blocks/filters/MultiSelect';
 import useFilters from '../hooks/useFilters';
+import { State } from '../store/initialState';
 
 const Home = React.memo((): JSX.Element => {
   const [ endOfList, setEndOfList ] = useState(false);
@@ -32,12 +34,14 @@ const Home = React.memo((): JSX.Element => {
   
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
-  const [ geographies, geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
-  const [ filters, updateFilters ] = useFilters();
-  const [ sectors, setSectors ] = useSectors();
-  const [ instruments, setInstruments ] = useInstruments();
-  const [ status, setProcessing ] = useSetStatus();
-  const [ buildQueryString ] = useBuildQueryString();
+  const [ geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
+  const state = useSelector((state: State ) => state)
+  const { status, filters, geographyList, sectorList, instrumentList } = state;
+  const updateFilters = useFilters();
+  const setSectors = useSectors();
+  const setInstruments = useInstruments();
+  const setProcessing = useSetStatus();
+  const buildQueryString = useBuildQueryString();
 
   // destructure
   const { processing } = status;
@@ -77,26 +81,17 @@ const Home = React.memo((): JSX.Element => {
 
   const toggleSlideOut = (type) => {
     setSlideOutActive(true);
-    // which kind of filter
-    // (need a better way of doing this for when we might have more types of selectable filters)
-    let list;
-    if(type === 'sector') {
-      list = sectors;
-    }
-    else if (type === 'instrument') {
-      list = instruments;
-    }
     setActiveSelect({
       type,
-      list
+      list: state[`${type}List`]
     })
     
   }
 
   useEffect(() => {
-    if(!geographies.length) setGeographies();
-    if(!sectors.length) setSectors();
-    if(!instruments.length) setInstruments();
+    if(!geographyList.length) setGeographies();
+    if(!sectorList.length) setSectors();
+    if(!instrumentList.length) setInstruments();
   }, []);
   
   useEffect(() => {
@@ -142,7 +137,7 @@ const Home = React.memo((): JSX.Element => {
       />
       <div ref={containerRef} className="container md:flex">
       <FiltersColumn
-        geographies={geographies}
+        geographyList={geographyList}
         newSearch={newSearch}
         setProcessing={setProcessing}
         geographyFilters={geographyFilters}
@@ -166,7 +161,7 @@ const Home = React.memo((): JSX.Element => {
           searchQueryString={searchQueryString}
           searchTerms={searchQuery}
           processing={processing}
-          geographies={geographies}
+          geographyList={geographyList}
         />
       </div>
       

@@ -19,7 +19,7 @@ const useBuildQueryString = () => {
     
   }
 
-  return [ buildQueryString ] as const;
+  return buildQueryString;
 }
 
 

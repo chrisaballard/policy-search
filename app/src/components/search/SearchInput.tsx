@@ -13,7 +13,7 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
   const [ searchOpen, setSearchOpen ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
   const router = useRouter();
-  const [ buildQueryString ] = useBuildQueryString();
+  const buildQueryString = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
