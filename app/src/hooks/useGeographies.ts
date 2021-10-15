@@ -11,11 +11,7 @@ const useGeographies = () => {
   const setGeographies = () => {
     dispatch(getGeographies());
   }
-
-  const setGeographyFilters = (filters: Geography[]) => {
-    dispatch(setGeoFilters(filters))
-  }
   
-  return [ geographyFilters, setGeographies, setGeographyFilters] as const;
+  return setGeographies;
 }
 export default useGeographies;

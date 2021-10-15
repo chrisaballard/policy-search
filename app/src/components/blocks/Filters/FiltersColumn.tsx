@@ -1,49 +1,42 @@
 import React from 'react';
 import { Filters } from '../../../model/filters';
 import { Geography } from "../../../model/geography";
-import ByGeography from "./ByGeography";
 import BySelections from './BySelections';
+import ByTextInput from './ByTextInput';
  
 interface FiltersProps {
   geographyList: Geography[];
   newSearch(searchQuery: string): void;
   setProcessing(bool: boolean): void;
-  geographyFilters: Geography[];
-  setGeographyFilters(filters: Geography[]): void;
   updateFilters(action: string, type: string, name: string): void;
   headingClick(type: string): void;
   filters: Filters;
 }
 
 const FiltersColumn = React.memo(({
-  geographyList, 
+  geographyList,
   newSearch, 
   setProcessing, 
-  geographyFilters,
-  setGeographyFilters,
   headingClick,
   updateFilters,
   filters
 }: FiltersProps) => {
   
-  const onClick = (type) => {
-    headingClick(type)
-  }
   return (
     <div className="w-full md:w-1/4 md:pr-4 flex-shrink-0">
       <h2 className="font-bold mb-4 border-b pb-2">Filter by:</h2>
-      <ByGeography 
-        geographyList={geographyList}
+
+      <ByTextInput
+        type="geography"
+        list={geographyList}
+        filters={filters.geographyFilters}
         newSearch={newSearch}
         setProcessing={setProcessing}
-        geographyFilters={geographyFilters}
-        setGeographyFilters={setGeographyFilters}
-        // filters={filters.geographyFilters}
+        updateFilters={updateFilters}
       />
 
       <BySelections
-        title="Sectors"
-        icon="sector"
+        type="sector"
         clickable={true}
         onClick={() => { headingClick('sector') }}
         filters={filters.sectorFilters}
@@ -53,8 +46,7 @@ const FiltersColumn = React.memo(({
       <hr className="mt-6" />
 
       <BySelections
-        title="Instruments"
-        icon="instrument"
+        type="instrument"
         clickable={true}
         onClick={() => { headingClick('instrument') }}
         filters={filters.instrumentFilters}

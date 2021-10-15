@@ -8,7 +8,7 @@ const useFilters = () => {
   const { filters } = state;
 
   const updateFilters = (action: string, type: string, name: string): void => {
-    const list = state[`${type}s`];
+    const list = state[`${type}List`];
     const activeFilters = filters[`${type}Filters`];
     let newFilters = [];
     if(action === 'add') {

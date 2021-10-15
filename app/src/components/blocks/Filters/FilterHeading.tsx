@@ -1,18 +1,17 @@
 interface FilterHeadingProps {
-  title: string;
   children: JSX.Element | string;
   onClick?(): void;
-  icon: string;
   clickable?:boolean;
+  type: string;
 }
-const FilterHeading = ({ title, children, onClick, icon, clickable }: FilterHeadingProps): JSX.Element => {
+const FilterHeading = ({ children, onClick, clickable, type }: FilterHeadingProps): JSX.Element => {
   return (
     <div className="mt-6">
       <div className={`flex items-center justify-start uppercase text-primary-dark ${clickable ? 'cursor-pointer hover:text-primary-light transition duration-300' : 'pointer-events-none'}`} onClick={onClick}>
         <div className="bg-primary-light rounded-full p-2 flex items-center justify-center" style={{ width: '36px', height: '36px'}}>
-          <img src={`/images/icon-${icon}.svg`} style={{ width: '100%'}} />
+          <img src={`/images/icon-${type}.svg`} style={{ width: '100%'}} />
         </div>
-        <div className="ml-4 flex-grow">{title}</div>
+        <div className="ml-4 flex-grow">{type}</div>
         {clickable ? 
           <div className="">+</div>
         :

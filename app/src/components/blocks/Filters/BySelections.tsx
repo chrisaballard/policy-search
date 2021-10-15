@@ -5,24 +5,22 @@ import FilterHeading from "./FilterHeading";
 import FilterTag from './FilterTag';
 
 interface BySelectionsProps {
-  title: string;
-  icon: string;
+  type: string;
   clickable?: boolean;
   onClick(): void;
   filters: Geography[] | Instrument[] | Sector[];
   updateFilters(action: string, type: string, name: string): void;
 }
 
-const BySelections = ({ title, icon, clickable, onClick, filters, updateFilters}: BySelectionsProps) => {
+const BySelections = ({ type, clickable, onClick, filters, updateFilters}: BySelectionsProps) => {
   const handleFilterRemove = (e) => {
     const name = e.currentTarget.parentNode.children[1].textContent;
-    updateFilters('remove', icon, name);
+    updateFilters('remove', type, name);
   }
   return (
     <section>
       <FilterHeading
-        icon={icon}
-        title={title}
+        type={type}
         clickable={clickable}
         onClick={onClick}
       >

@@ -34,7 +34,7 @@ const Home = React.memo((): JSX.Element => {
   
   // hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
-  const [ geographyFilters, setGeographies, setGeographyFilters ] = useGeographies();
+  const setGeographies = useGeographies();
   const state = useSelector((state: State ) => state)
   const { status, filters, geographyList, sectorList, instrumentList } = state;
   const updateFilters = useFilters();
@@ -107,7 +107,7 @@ const Home = React.memo((): JSX.Element => {
 
   useDidUpdateEffect(() => {
     setNext(PER_PAGE);
-  }, [geographyFilters])
+  }, [filters])
 
   return (
     <>
@@ -140,20 +140,12 @@ const Home = React.memo((): JSX.Element => {
         geographyList={geographyList}
         newSearch={newSearch}
         setProcessing={setProcessing}
-        geographyFilters={geographyFilters}
-        setGeographyFilters={setGeographyFilters}
         updateFilters={updateFilters}
         filters={filters}
         headingClick={toggleSlideOut}
       />
       {/* {searchQuery ?
-          <Filters 
-            geographies={geographies}
-            newSearch={newSearch}
-            setProcessing={setProcessing}
-            geographyFilters={geographyFilters}
-            setGeographyFilters={setGeographyFilters}
-          />
+          filters here
           : null
         } */}
         <SearchResults 
