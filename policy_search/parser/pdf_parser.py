@@ -4,10 +4,11 @@
 from pathlib import Path
 import re
 from operator import itemgetter
-from typing import List
+from typing import List, Tuple, Dict
 
 from policy_search.pipeline.fetch import CSVDocumentSourceFetcher
 from policy_search.pipeline.preprocess import clean_text
+from .base import BaseParser
 
 import fitz
 import spacy
@@ -47,7 +48,7 @@ regex_span_sub = [
 regex_line_endings = re.compile(r'[?|.|!|;]\Z')
 
 
-class PDFParser():
+class PDFParser(BaseParser):
     def __init__(
         self,
         data_path: Path,
@@ -55,7 +56,8 @@ class PDFParser():
         text_dir: str,
         save_pdf_text: bool
     ):
-        self.data_path = data_path
+        super().__init__(data_path)
+
         self.content_path = data_path / content_dir
         self.text_path = data_path / text_dir
         self.save_pdf_text = save_pdf_text
@@ -156,33 +158,18 @@ class PDFParser():
 
         return [sent.text for sent in doc.sents if len(sent.text.split(WORD_SEPARATOR)) >= MIN_WORDS_LINE]
 
-    def _convert_structure_to_string(
-        self,
-        doc_structure: List[dict]
-    ):
-        doc_string = ''
-        for page_ix in doc_structure.keys():
-            for sent in doc_structure[page_ix]:
-                sent = sent + '\n'
-                doc_string += sent
-
-        return doc_string
-
     def extract_text(
         self, 
-        pdf_filename: Path,
-        extract_type: str='structure',
-    ):
-        assert(extract_type in ['structure', 'string'])
+        **kwargs,
+    ) -> Tuple[Dict[int, List[str]], str]:
+        """Use the PDF parser to extract the text for each page
+        """
 
-        extract_structure = False
-        if extract_type == 'structure':
-            extract_structure = True
-
-        doc_structure = {}
+        extract_structure, doc_structure = super().extract_text(**kwargs)
+        _, doc_filename, _ = self._get_arguments(**kwargs)
 
         try:
-            doc = self.open(pdf_filename)
+            doc = self.open(doc_filename)
             
             for doc_page_ix in range(0, doc.page_count):
                 page_text = self.extract_text_blocks_on_page(doc, doc_page_ix)
@@ -197,7 +184,7 @@ class PDFParser():
 
         text_filename = None
         if self.save_pdf_text:
-            text_filename = self.save_text(doc_structure, pdf_filename)
+            text_filename = self.save_text(doc_structure, doc_filename)
 
         if not extract_structure:
             return self._convert_structure_to_string(doc_structure), text_filename
