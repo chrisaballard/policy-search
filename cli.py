@@ -18,7 +18,7 @@ TXT_FILEAME_ATTRIBUTE = 'policy_txt_file'
 DOC_FILENAME_ATTRIBUTE = 'policy_content_file'
 
 with open('./config.yml', 'rt') as config_f:
-    config = yaml.load(config_f)
+    config = yaml.safe_load(config_f)
 
 @click.group()
 @click.pass_context
