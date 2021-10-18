@@ -45,7 +45,7 @@ const SearchResults = ({
           }
           {policies.length ?
             <>
-              <div className="font-bold md:text-lg grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
+              <div className="font-bold md:text-lg grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-primary border-t border-b py-2">
                 <div className="col-span-5 md:col-span-4">Policy</div>
                 <div className="text-center">Country</div>
               </div>
@@ -67,7 +67,6 @@ const SearchResults = ({
             <Loader />
             : null
           }
-          
         </div>
     </section>
   )
