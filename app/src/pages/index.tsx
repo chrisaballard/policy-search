@@ -35,7 +35,7 @@ const Home = React.memo((): JSX.Element => {
   // custom hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const setGeographies = useGeographies();
-  const updateFilters = useFilters();
+  const [ removeFilters, updateFilters, checkForFilters ] = useFilters();
   const setSectors = useSectors();
   const setInstruments = useInstruments();
   const setProcessing = useSetStatus();
@@ -102,6 +102,15 @@ const Home = React.memo((): JSX.Element => {
 
   useDidUpdateEffect(() => {
     setNext(PER_PAGE);
+    const queryString = buildQueryString();
+    // don't run search unless there is a search query
+    // only need this temporarily until search api will return all items when query is empty
+    const end = queryString.indexOf('&') > - 1 ? queryString.indexOf('&') : queryString.length;
+    const query = queryString.substring(queryString.indexOf('=') + 1, end)
+    if(query.length) {
+      setProcessing(true);
+      newSearch(queryString);
+    }
   }, [filters])
 
   return (
@@ -118,7 +127,6 @@ const Home = React.memo((): JSX.Element => {
             list={activeSelect.list}
             activeFilters={filters[`${activeSelect.type}Filters`]}
             updateFilters={updateFilters}
-            newSearch={newSearch}
           />
     </SlideOut>
     <Overlay
@@ -135,11 +143,12 @@ const Home = React.memo((): JSX.Element => {
       <div ref={containerRef} className="container md:flex">
       <FiltersColumn
         geographyList={geographyList}
-        newSearch={newSearch}
         setProcessing={setProcessing}
         updateFilters={updateFilters}
+        removeFilters={removeFilters}
         filters={filters}
         headingClick={openSlideOut}
+        checkForFilters={checkForFilters}
       />
         <SearchResults 
           policies={resultsByDocument} 
