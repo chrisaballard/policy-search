@@ -13,17 +13,17 @@ import Loader from '../../components/Loader';
 import { State } from '../../store/initialState';
 
 const Policy = () => {
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>();
   const router = useRouter();
   const [ pageInput, setPageInput ] = useState('')
   const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
   const [ policy, getPolicy ] = useGetPolicies();
-  const [ status, setProcessing ] = useSetStatus();
-  const { processing } = status;
+  const setProcessing = useSetStatus();
+
   const { pid, page } = router.query;
   const state = useSelector((state: State ) => state)
-  const { searchResult: { searchQuery } } = state;
+  const { searchResult: { searchQuery }, status: { processing } } = state;
 
 
   const loadPolicyPage = () => {
@@ -33,7 +33,7 @@ const Policy = () => {
   }
 
   const changePageNumber = (action: string): void => {
-    let p = parseInt(page);
+    let p = parseInt(page as string);
     if(action === 'prev') {
       p -= 1;
     }
@@ -44,11 +44,15 @@ const Policy = () => {
   }
 
   const handleInputChange = (): void => {
-    let n = inputRef.current.value;
+    let n: number;
+    if(inputRef.current) {
+      n = parseInt(inputRef.current.value);
+    }
+    
     if(n > policyPage.documentMetadata.pageCount) {
       n = policyPage.documentMetadata.pageCount;
     }
-    setPageInput(n);
+    setPageInput(n.toString());
   }
 
   const handlePageChange = (e: React.FormEvent<HTMLButtonElement>): void => {
@@ -146,14 +150,14 @@ const Policy = () => {
             <button
               onClick={() => { changePageNumber('prev') }}
               style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 1 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page as string) === 1 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &laquo;
             </button>
             <button
               onClick={() => { changePageNumber('next') }}
               style={{height: '36px'}}
-              className={`button-half px-4 rounded-r-lg focus:outline-primary-dark ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              className={`button-half px-4 rounded-r-lg focus:outline-primary-dark ${parseInt(page as string) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &raquo;
             </button>
