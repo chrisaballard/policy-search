@@ -146,7 +146,7 @@ const Policy = () => {
             <button
               onClick={() => { changePageNumber('prev') }}
               style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
+              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 1 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
             >
               &laquo;
             </button>
@@ -175,7 +175,14 @@ const Policy = () => {
                 Page <span className="text-black font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>
+            {pageText.length ? 
             <div className="mt-6 text-gray-600" dangerouslySetInnerHTML={{__html: pageText}} />
+            : 
+            <div className="my-12 text-gray-600">
+              <p>This page has been intentionally left blank.</p>
+            </div>
+            }
+            
           </div>
           }
           
