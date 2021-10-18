@@ -94,7 +94,7 @@ const ByTextInput = React.memo(({
                 <button 
                   type="button"
                   onClick={handleFilterSelect}
-                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-dark-200">{item.name}</button>
+                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-light-200">{item.name}</button>
               </li>
             ))}
           </ul>
