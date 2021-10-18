@@ -1,9 +1,8 @@
-import { getParameterByName } from "../../helpers/queryString";
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
-import { API_BASE_URL } from '../../constants';
 import Loader from '../../components/Loader';
+import { SearchNavigation } from ".";
 
 interface SearchResultsProps {
   policies: ResultByDocument[];
@@ -11,13 +10,17 @@ interface SearchResultsProps {
   searchQueryString: string;
   processing: boolean;
   searchTerms: string;
+  handleNavigation(): void;
+  endOfList: boolean;
 }
 const SearchResults = ({
   policies,
   searchQueryString,
   processing,
   geographyList,
-  searchTerms
+  searchTerms,
+  handleNavigation,
+  endOfList
 }: SearchResultsProps) => {
 
   const renderMessage = () => {
@@ -63,11 +66,16 @@ const SearchResults = ({
             </>
           :
           null}
+
           {processing && searchQueryString.length ? 
             <Loader />
             : null
           }
         </div>
+        {!endOfList ?
+          <SearchNavigation onClick={handleNavigation} />
+          : null
+          }
     </section>
   )
 }
