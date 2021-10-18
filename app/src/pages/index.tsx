@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
-import { SearchInput, SearchResults, SearchNavigation } from '../components/search';
+import { SearchInput, SearchResults } from '../components/search';
 import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
 import { API_BASE_URL, PER_PAGE } from '../constants';
@@ -147,15 +147,10 @@ const Home = React.memo((): JSX.Element => {
           searchTerms={searchQuery}
           processing={processing}
           geographyList={geographyList}
+          handleNavigation={handleNavigation}
+          endOfList={endOfList}
         />
       </div>
-      
-      {!endOfList ?
-      <SearchNavigation onClick={handleNavigation} />
-      : null
-      }
-      
-      
     </MainLayout>
     </>
   )

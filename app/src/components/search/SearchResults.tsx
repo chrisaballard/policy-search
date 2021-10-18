@@ -1,9 +1,8 @@
-import { getParameterByName } from "../../helpers/queryString";
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
-import { API_BASE_URL } from '../../constants';
 import Loader from '../../components/Loader';
+import { SearchNavigation } from ".";
 
 interface SearchResultsProps {
   policies: ResultByDocument[];
@@ -11,13 +10,17 @@ interface SearchResultsProps {
   searchQueryString: string;
   processing: boolean;
   searchTerms: string;
+  handleNavigation(): void;
+  endOfList: boolean;
 }
 const SearchResults = ({
   policies,
   searchQueryString,
   processing,
   geographyList,
-  searchTerms
+  searchTerms,
+  handleNavigation,
+  endOfList
 }: SearchResultsProps) => {
 
   const renderMessage = () => {
@@ -45,7 +48,7 @@ const SearchResults = ({
           }
           {policies.length ?
             <>
-              <div className="font-bold md:text-lg grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
+              <div className="font-bold md:text-lg grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-primary border-t border-b py-2">
                 <div className="col-span-5 md:col-span-4">Policy</div>
                 <div className="text-center">Country</div>
               </div>
@@ -63,12 +66,16 @@ const SearchResults = ({
             </>
           :
           null}
+
           {processing && searchQueryString.length ? 
             <Loader />
             : null
           }
-          
         </div>
+        {!endOfList ?
+          <SearchNavigation onClick={handleNavigation} />
+          : null
+          }
     </section>
   )
 }

@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 body {
-  @apply text-primary-dark overflow-x-hidden;
+  @apply text-primary overflow-x-hidden;
   em {
-    @apply font-bold text-primary-dark;
+    @apply font-bold text-primary;
   }
 
   input::-webkit-outer-spin-button,
@@ -26,14 +26,14 @@ body {
   }
 
   li.selected {
-    @apply bg-gray-100;
+    @apply bg-primary-dark-200;
   }
 
   .button {
-    @apply bg-primary-dark text-white rounded-lg hover:bg-primary duration-300 transition;
+    @apply bg-primary text-white rounded-lg hover:bg-primary-light focus:outline-primary-light duration-300 transition;
   }
   .button-half {
-    @apply bg-primary-dark text-white hover:bg-primary duration-300 transition;
+    @apply text-white hover:bg-primary-light focus:outline-primary-light duration-300 transition;
   }
 
   .search-area {
@@ -46,7 +46,7 @@ body {
         height: 60px;
         @apply border-b-8 border-white;
         &.expanded {
-          @apply w-full border-b-8 border-primary-dark;
+          @apply w-full border-b-8 border-primary;
         }
       }
       .search-btn {
@@ -72,5 +72,11 @@ body {
   }
   .page-close {
     width: 50px;
+  }
+  // radar loader
+  .radar {
+    transform: rotate(-70deg);
+    width: 25%;
+    height: 14em;
   }
 }

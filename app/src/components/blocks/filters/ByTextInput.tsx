@@ -99,20 +99,20 @@ const ByTextInput = React.memo(({
       <FilterHeading type={type}>
       <div className="relative my-2 mt-4">
         <input
-          className="h-12 w-full border rounded focus:outline-none px-2 text-gray-500"
+          className="h-12 w-full rounded-lg bg-primary-dark-200 focus:outline-none px-2 text-primary-dark-600 placeholder-primary-dark-400"
           type="text"
           value={value}
           placeholder='Start typing...'
           onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
         />
         {suggestList.length ?
-          <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded z-10">
+          <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded-b-lg z-10">
             {suggestList.map((item) => (
               <li key={item.code}>
                 <button 
                   type="button"
                   onClick={handleFilterSelect}
-                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-gray-100">{item.name}</button>
+                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-dark-200">{item.name}</button>
               </li>
             ))}
           </ul>

@@ -58,7 +58,7 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-gray-400 text-2xl text-center z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
+            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-2xl text-center z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
@@ -68,7 +68,7 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
                 ref={searchInput}
                 onChange={handleChange}
                 value={input}
-                className={`search-input h-full w-full text-3xl text-gray-500 outline-none focus:outline-none`} 
+                className={`search-input h-full w-full text-3xl text-primary-dark-500 outline-none focus:outline-none`} 
               />
           </div>
           
