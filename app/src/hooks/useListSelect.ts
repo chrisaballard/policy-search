@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { addClass, removeClass } from '../helpers/cssClass';
 
 const useListSelect = (elementId: string, listLength: number) => {

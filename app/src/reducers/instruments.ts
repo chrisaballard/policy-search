@@ -1,17 +1,16 @@
 import produce from 'immer';
 import initialState from '../store/initialState';
 import { Action, ActionTypes } from '../actions';
-import { Geography } from '../model/geography';
+import { Instrument } from '../model/instrument';
 
-const geographiesReducer = (state: Geography[] = initialState.geographyList, action: Action) => {
+const instrumentsReducer = (state: Instrument[] = initialState.instrumentList, action: Action) => {
   return produce(state, (draft: any) => { // TODO figure out the typing for this
     switch (action.type) {
-      case ActionTypes.getGeographies:
+      case ActionTypes.getInstruments:
         return draft = action.payload;
       default:
         break;
     }
   })
 }
-
-export default geographiesReducer;
+export default instrumentsReducer;

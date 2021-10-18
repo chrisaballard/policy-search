@@ -7,11 +7,11 @@ import { ResultByDocument } from "../../model/resultByDocument";
 
 interface SearchResultItemProps {
   policy: ResultByDocument;
-  geographies: Geography[];
+  geographyList: Geography[];
   texts: ResultByPage[];
 }
 
-const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): JSX.Element => {
+const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps): JSX.Element => {
   const [ showExtracts, setShowExtracts ] = useState(false);
   const [ country, setCountry ] = useState('');
   const toggleExtracts = () => {
@@ -22,7 +22,7 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
       setCountry('European Union');
       return;
     }
-    const name = getCountryNameFromCode(policy.countryCode, geographies);
+    const name = getCountryNameFromCode(policy.countryCode, geographyList);
     setCountry(name);
   }
   
@@ -43,12 +43,12 @@ const SearchResultItem = ({policy, geographies, texts}: SearchResultItemProps): 
             </div>
         </div>
       </div>
-      <div className="text-black text-sm mt-2">
+      <div className="text-sm mt-2">
         {texts.length > 0 ?
         <>
           <button
             onClick={toggleExtracts}
-            className="font-bold focus:outline-none text-gray-500 hover:text-black transition duration-300"
+            className="font-bold focus:outline-none text-primary-light hover:text-primary-dark transition duration-300"
           >
             {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
           </button> in this policy.

@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 body {
+  @apply text-primary-dark overflow-x-hidden;
   em {
-    @apply font-bold text-black;
+    @apply font-bold text-primary-dark;
   }
 
   input::-webkit-outer-spin-button,
@@ -17,9 +18,22 @@ body {
   input[type='number'] {
     -moz-appearance: textfield; /* Firefox */
   }
+  .logo {
+    width: 100px;
+    @screen md {
+      width: 150px;
+    }
+  }
 
   li.selected {
     @apply bg-gray-100;
+  }
+
+  .button {
+    @apply bg-primary-dark text-white rounded-lg hover:bg-primary duration-300 transition;
+  }
+  .button-half {
+    @apply bg-primary-dark text-white hover:bg-primary duration-300 transition;
   }
 
   .search-area {
@@ -30,10 +44,9 @@ body {
         right: 0;
         width: 0;
         height: 60px;
-        border-bottom: 10px solid white;
+        @apply border-b-8 border-white;
         &.expanded {
-          width: 100%;
-          border-bottom: 10px solid black;
+          @apply w-full border-b-8 border-primary-dark;
         }
       }
       .search-btn {

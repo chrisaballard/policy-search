@@ -1,5 +1,5 @@
 import { searchQuery } from '../api';
-import { API_BASE_URL } from '../constants';
+import { API_BASE_URL, PER_PAGE } from '../constants';
 import { Dispatch } from 'redux' // hit cmd click to see type definition file
 import { SearchResult } from '../model/searchResult';
 import { SetStatusAction } from '.';
@@ -20,9 +20,10 @@ export interface clearSearchResultAction {
 export const getSearchResult = (queryString: string) => async (dispatch: Dispatch) => {
   const searchTerms = getParameterByName('query', `${API_BASE_URL}/?${queryString}`)
   const data = await searchQuery(queryString);
+  const endOfList = data.resultsByDocument.length < PER_PAGE;
   dispatch<getSearchResultAction>({
     type: ActionTypes.getSearchResult,
-    payload: {...data, searchQuery: searchTerms}
+    payload: {...data, searchQuery: searchTerms, endOfList}
   })
   dispatch<SetStatusAction>({
     type: ActionTypes.setStatus,
@@ -37,6 +38,7 @@ export const clearSearchResult = () => (dispatch: Dispatch, getState) => {
   const { searchQuery } = currSearch;
   const emptyResult = {
     searchQuery: searchQuery,
+    endOfList: true,
     metadata: {
       numDocsReturned: 0
     },
@@ -45,6 +47,6 @@ export const clearSearchResult = () => (dispatch: Dispatch, getState) => {
 
   dispatch<clearSearchResultAction>({
     type: ActionTypes.clearSearchResult,
-    payload: emptyResult
+    payload: emptyResult,
   })
 }

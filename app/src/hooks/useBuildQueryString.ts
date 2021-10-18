@@ -15,11 +15,21 @@ const useBuildQueryString = () => {
         str += `&geography=${item.code}`
       })
     }
+    if(filters.sectorFilters.length) {
+      filters.sectorFilters.forEach((item) => {
+        // TODO: build query string when API ready
+      })
+    }
+    if(filters.instrumentFilters.length) {
+      filters.instrumentFilters.forEach((item) => {
+        // TODO: build query string when API ready
+      })
+    }
     return str;
     
   }
 
-  return [ buildQueryString ] as const;
+  return buildQueryString;
 }
 
 

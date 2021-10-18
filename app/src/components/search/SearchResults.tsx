@@ -7,7 +7,7 @@ import Loader from '../../components/Loader';
 
 interface SearchResultsProps {
   policies: ResultByDocument[];
-  geographies: Geography[];
+  geographyList: Geography[];
   searchQueryString: string;
   processing: boolean;
   searchTerms: string;
@@ -16,7 +16,7 @@ const SearchResults = ({
   policies,
   searchQueryString,
   processing,
-  geographies,
+  geographyList,
   searchTerms
 }: SearchResultsProps) => {
 
@@ -30,7 +30,7 @@ const SearchResults = ({
     }
     return (
       <div className="text-2xl  mt-6 md:mt-0">
-        Results for <span className="font-bold text-gray-500">"{searchTerms}"</span>:
+        Results for <span className="font-bold">"{searchTerms}"</span>:
       </div>
     )
   }
@@ -45,7 +45,7 @@ const SearchResults = ({
           }
           {policies.length ?
             <>
-              <div className="font-bold md:text-lg text-gray-500 grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
+              <div className="font-bold md:text-lg grid grid-cols-7 md:grid-cols-5 gap-x-4 mt-8 border-gray-500 border-t border-b py-2">
                 <div className="col-span-5 md:col-span-4">Policy</div>
                 <div className="text-center">Country</div>
               </div>
@@ -56,7 +56,7 @@ const SearchResults = ({
                     key={`${index}-${policy.policyId}`}
                     id={`${index}-${policy.policyId}`}
                   >
-                    <SearchResultItem policy={policy} geographies={geographies} texts={policy.resultsByPage} />
+                    <SearchResultItem policy={policy} geographyList={geographyList} texts={policy.resultsByPage} />
                   </li>
               ))}
               </ul>
