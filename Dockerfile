@@ -18,12 +18,14 @@ ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION}
 
 WORKDIR /usr/src/app
 
+RUN pip install --upgrade pip
 RUN pip install "poetry==1.1.8"
 
 COPY . ./
 
 RUN poetry config virtualenvs.create false
 RUN poetry install
+RUN pip install torch
 RUN poetry run python -m spacy download en_core_web_sm
 RUN poetry run pre-commit install --install-hooks
 

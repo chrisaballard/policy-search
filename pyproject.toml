@@ -22,8 +22,6 @@ uvicorn = "*"
 fastapi = "*"
 elasticsearch = "*"
 opensearch-py = "^1.0.0"
-torch = "^1.9.1"
-
 
 
 [tool.poetry.dev-dependencies]
