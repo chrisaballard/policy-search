@@ -4,7 +4,6 @@ and are stored in a dataset.
 
 from pathlib import Path
 from typing import Tuple, Dict, List
-import pickle
 from collections import defaultdict
 import gzip
 
@@ -12,6 +11,7 @@ from .base import BaseParser
 from ..logging import logging
 
 import pandas as pd
+import numpy as np
 
 
 class PassageParser(BaseParser):
@@ -20,14 +20,15 @@ class PassageParser(BaseParser):
         data_path: Path,
         embeddings_mapping_filename: str,
         embeddings_filename: str,
-        predictions_filename: str
-        
+        predictions_filename: str,
+        embedding_dim: int,
     ):
         super().__init__(data_path)
 
         self._data_path = data_path
         self._embeddings_mapping_filename = embeddings_mapping_filename
         self._embeddings_filename = embeddings_filename
+        self._embedding_dim = embedding_dim
         self.predictions_filename = predictions_filename
 
         self.mapping = None
@@ -35,26 +36,25 @@ class PassageParser(BaseParser):
         self.predictions = None
 
         self._load()
-       
+
     def _load(self):
-        logging.debug('Loading embeddings mapping file...')
-        with gzip.open(self._data_path / self._embeddings_mapping_filename) as mapping_f:
+        logging.debug("Loading embeddings mapping file...")
+        with gzip.open(
+            self._data_path / self._embeddings_mapping_filename
+        ) as mapping_f:
             self.mapping = pd.read_pickle(mapping_f)
-        self.mapping.set_index('policy_id', inplace=True)
+        self.mapping.set_index("policy_id", inplace=True)
 
-        logging.debug('Loading embeddings...')
-        with gzip.open(self._data_path / self._embeddings_filename, 'rb') as emb_f:
-            self.embeddings = pickle.load(emb_f)
-        self.embeddings = self.embeddings.numpy()
+        logging.debug("Loading embeddings...")
+        self.embeddings = np.memmap(
+            self._data_path / self._embeddings_filename, dtype="float32", mode="r+"
+        ).reshape((-1, self._embedding_dim))
 
-        logging.debug('Loading predictions file...')
+        logging.debug("Loading predictions file...")
         with gzip.open(self._data_path / self.predictions_filename) as pred_f:
             self.predictions = pd.read_csv(pred_f)
 
-    def extract_text(
-        self, 
-        **kwargs
-    ) -> Tuple[Dict[int, List[str]], str]:
+    def extract_text(self, **kwargs) -> Tuple[Dict[int, List[str]], str]:
         """Reads each text passage and returns a list of dictionaries containing
         passage text, embedding vector and predicted passage level attributes
         (e.g. sector and instrument)
@@ -78,14 +78,12 @@ class PassageParser(BaseParser):
                         "embedding": self.embeddings[passage["text_id"], :].tolist(),
                     }
                 )
-        except KeyError as e:
-            logging.warn(f"Document {doc_ix} does not exist in {self._embeddings_mapping_filename}")
+        except KeyError:
+            logging.warn(
+                f"Document {doc_ix} does not exist in {self._embeddings_mapping_filename}"  # noqa: E501
+            )
 
         if not extract_structure:
             return self._convert_structure_to_string(doc_structure), None
         else:
             return doc_structure, None
-
-
-
-    
