@@ -1,7 +1,6 @@
 import { Geography } from '../../../model/geography';
 import { Instrument } from '../../../model/instrument';
 import { Sector } from '../../../model/sector';
-import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import FilterHeading from "./FilterHeading";
 import FilterTag from './FilterTag';
 

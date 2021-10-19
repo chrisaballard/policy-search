@@ -5,7 +5,7 @@ import Head from 'next/head';
 import { SearchInput, SearchResults } from '../components/search';
 import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
-import { API_BASE_URL, PER_PAGE } from '../constants';
+import { PER_PAGE } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGeographies from '../hooks/useGeographies';
 import useSectors from '../hooks/useSectors';
@@ -13,7 +13,6 @@ import useInstruments from '../hooks/useInstruments';
 import useSetStatus from '../hooks/useSetStatus';
 import useBuildQueryString from '../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
-import { getParameterByName } from '../helpers/queryString';
 import SlideOut from '../components/modal/SlideOut';
 import MultiSelect from '../components/blocks/filters/MultiSelect';
 import useFilters from '../hooks/useFilters';
@@ -39,15 +38,12 @@ const Home = React.memo((): JSX.Element => {
   const setSectors = useSectors();
   const setInstruments = useInstruments();
   const setProcessing = useSetStatus();
-  const buildQueryString = useBuildQueryString();
+  const [ buildQueryString ] = useBuildQueryString();
 
   // destructure
   const { status, filters, geographyList, sectorList, instrumentList } = state;
   const { processing } = status;
   const { searchQuery, metadata, resultsByDocument, endOfList } = searchResult;
-
-  // query=xxx
-  const [ searchQueryString, setSearchQueryString ] = useState(`query=${searchQuery}`);
 
   const updateNext = () => {
     const nextStart = document.getElementsByClassName('search-result').length;
@@ -58,19 +54,17 @@ const Home = React.memo((): JSX.Element => {
   }
 
   const newSearch = (queryString) => {
-    const sq = getParameterByName('query', `${API_BASE_URL}/policies/search?${queryString}`);
-    if(sq?.trim().length === 0) return;
-    
-    setSearchQueryString(queryString);
-    setNext(0);
-    if (resultsByDocument.length) {
-      clearResult();
-    }
+    setProcessing(true);
+    // reset current search results
+    clearResult();
+    // reset next page
+    setNext(PER_PAGE);
+    // load results
     loadResults(queryString);
   }
   const handleNavigation = (): void => {
     setProcessing(true);
-    const qStr = buildQueryString();
+    const qStr = buildQueryString(searchQuery);
     loadResults(`${qStr}&start=${next}`);
   }
 
@@ -90,27 +84,14 @@ const Home = React.memo((): JSX.Element => {
     if(!instrumentList.length) setInstruments();
   }, []);
   
-  useEffect(() => {
+  useDidUpdateEffect(() => {
     updateNext();
   }, [searchResult])
 
-  useEffect(() => {
-    if(containerRef.current) {
-      updateNext();
-    }
-  }, [containerRef])
-
   useDidUpdateEffect(() => {
     setNext(PER_PAGE);
-    const queryString = buildQueryString();
-    // don't run search unless there is a search query
-    // only need this temporarily until search api will return all items when query is empty
-    const end = queryString.indexOf('&') > - 1 ? queryString.indexOf('&') : queryString.length;
-    const query = queryString.substring(queryString.indexOf('=') + 1, end)
-    if(query.length) {
-      setProcessing(true);
-      newSearch(queryString);
-    }
+    const queryString = buildQueryString(searchQuery);
+    newSearch(queryString);
   }, [filters])
 
   return (
@@ -136,14 +117,12 @@ const Home = React.memo((): JSX.Element => {
     <MainLayout>
       <SearchInput 
         newSearch={newSearch}
-        setProcessing={setProcessing}
-        processing={processing}
+        clearResult={clearResult}
         searchTerms={searchQuery}
       />
       <div ref={containerRef} className="container md:flex">
       <FiltersColumn
         geographyList={geographyList}
-        setProcessing={setProcessing}
         updateFilters={updateFilters}
         removeFilters={removeFilters}
         filters={filters}
@@ -152,7 +131,6 @@ const Home = React.memo((): JSX.Element => {
       />
         <SearchResults 
           policies={resultsByDocument} 
-          searchQueryString={searchQueryString}
           searchTerms={searchQuery}
           processing={processing}
           geographyList={geographyList}

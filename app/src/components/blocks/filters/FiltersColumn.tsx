@@ -6,7 +6,6 @@ import ByTextInput from './ByTextInput';
  
 interface FiltersProps {
   geographyList: Geography[];
-  setProcessing(bool: boolean): void;
   updateFilters(action: string, type: string, name: string): void;
   headingClick(type: string): void;
   filters: Filters;
@@ -16,7 +15,6 @@ interface FiltersProps {
 
 const FiltersColumn = React.memo(({
   geographyList,
-  setProcessing, 
   headingClick,
   updateFilters,
   filters,
@@ -41,7 +39,6 @@ const FiltersColumn = React.memo(({
         type="geography"
         list={geographyList}
         filters={filters.geographyFilters}
-        setProcessing={setProcessing}
         updateFilters={updateFilters}
       />
 

@@ -7,7 +7,6 @@ import { SearchNavigation } from ".";
 interface SearchResultsProps {
   policies: ResultByDocument[];
   geographyList: Geography[];
-  searchQueryString: string;
   processing: boolean;
   searchTerms: string;
   handleNavigation(): void;
@@ -15,7 +14,6 @@ interface SearchResultsProps {
 }
 const SearchResults = ({
   policies,
-  searchQueryString,
   processing,
   geographyList,
   searchTerms,
@@ -66,8 +64,7 @@ const SearchResults = ({
             </>
           :
           null}
-
-          {processing && searchQueryString.length ? 
+          {processing ? 
             <Loader />
             : null
           }

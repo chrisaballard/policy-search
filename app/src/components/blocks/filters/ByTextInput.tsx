@@ -10,7 +10,6 @@ interface ByTextInputProps {
   // full list of available filters
   list: any[]; // need generic type
   filters: any[];
-  setProcessing(bool: boolean): void;
   updateFilters(action: string, type: string, name: string): void;
 }
 
