@@ -37,7 +37,7 @@ const SearchResults = ({
   }
   return (
     <section className="w-full">
-        <div className="md:pl-4">
+        <div className="pt-8 md:pt-0 md:pl-4">
           {searchTerms.length ?
             <div className="mt-4">
               {searchTerms.length && !processing ? renderMessage() : null}

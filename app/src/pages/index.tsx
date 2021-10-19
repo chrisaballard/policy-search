@@ -120,15 +120,15 @@ const Home = React.memo((): JSX.Element => {
         clearResult={clearResult}
         searchTerms={searchQuery}
       />
-      <div ref={containerRef} className="container md:flex">
-      <FiltersColumn
-        geographyList={geographyList}
-        updateFilters={updateFilters}
-        removeFilters={removeFilters}
-        filters={filters}
-        headingClick={openSlideOut}
-        checkForFilters={checkForFilters}
-      />
+      <div ref={containerRef} className="relative container md:flex w-full">
+        <FiltersColumn
+          geographyList={geographyList}
+          updateFilters={updateFilters}
+          removeFilters={removeFilters}
+          filters={filters}
+          headingClick={openSlideOut}
+          checkForFilters={checkForFilters}
+        />
         <SearchResults 
           policies={resultsByDocument} 
           searchTerms={searchQuery}
