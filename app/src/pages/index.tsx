@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
-import { SearchInput, SearchResults } from '../components/search';
+import { SearchInput, SearchNavigation, SearchResults } from '../components/search';
 import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
 import { PER_PAGE } from '../constants';
@@ -83,9 +83,6 @@ const Home = React.memo((): JSX.Element => {
   }
 
   const renderContent = () => {
-    // if(processing) {
-    //   return <Loader />
-    // }
     if(resultsByDocument.length) {
       return (
         <SearchResults 
@@ -98,13 +95,16 @@ const Home = React.memo((): JSX.Element => {
         />
       )
     }
-    return (
-      <PolicyList
-        policy_db={policy_db}
-        geographyList={geographyList}
-        processing={processing}
-      />
-    )
+    if(policy_db.policies.length && !processing) {
+      return (
+        <PolicyList
+          policy_db={policy_db}
+          geographyList={geographyList}
+          processing={processing}
+        />
+      )
+    }
+    
   }
 
   useEffect(() => {
@@ -169,6 +169,10 @@ const Home = React.memo((): JSX.Element => {
             {renderContent()}
             {processing ? 
               <Loader />
+              : null
+            }
+            {!endOfList ?
+              <SearchNavigation onClick={handleNavigation} />
               : null
             }
           </div>

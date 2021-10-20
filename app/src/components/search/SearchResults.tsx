@@ -65,10 +65,6 @@ const SearchResults = ({
           :
           null}
         </div>
-        {!endOfList ?
-          <SearchNavigation onClick={handleNavigation} />
-          : null
-          }
     </section>
   )
 }
