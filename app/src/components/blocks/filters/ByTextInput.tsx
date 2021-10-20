@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import useSuggestList from '../../../hooks/useSuggestList';
-import useBuildQueryString from '../../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../../hooks/useDidUpdateEffect';
 import useListSelect from '../../../hooks/useListSelect';
 import FilterTag from './FilterTag';
@@ -11,8 +10,6 @@ interface ByTextInputProps {
   // full list of available filters
   list: any[]; // need generic type
   filters: any[];
-  newSearch(queryString: string): void;
-  setProcessing(bool: boolean): void;
   updateFilters(action: string, type: string, name: string): void;
 }
 
@@ -20,8 +17,6 @@ const ByTextInput = React.memo(({
   type,
   list,
   filters,
-  newSearch, 
-  setProcessing,
   updateFilters
 }: ByTextInputProps) => {
   // input value
@@ -32,8 +27,6 @@ const ByTextInput = React.memo(({
 
   // list of suggested available filter values based on user input
   const [ suggestList, suggest ] = useSuggestList(list, type); 
-
-  const buildQueryString = useBuildQueryString();
 
   const [ navigateList, clearSelected ] = useListSelect('filter-list', suggestList.length)
 
@@ -55,18 +48,6 @@ const ByTextInput = React.memo(({
     setFiltersRemoved(true);
   }
 
-  const applyFilters = (): void => {
-    const queryString = buildQueryString();
-    setValue('');
-    // don't run search unless there is a search query
-    // only need this temporarily until search api will return all items when query is empty
-    const end = queryString.indexOf('&') > - 1 ? queryString.indexOf('&') : queryString.length;
-    const query = queryString.substring(queryString.indexOf('=') + 1, end)
-    if(query.length) {
-      setProcessing(true);
-      newSearch(queryString);
-    }
-  }
   useEffect(() => {
     const timeOutId = setTimeout(() => {
       handleChange()
@@ -90,7 +71,7 @@ const ByTextInput = React.memo(({
 
   useDidUpdateEffect(() => {
     if(filters.length || filtersRemoved) {
-      applyFilters();
+      setValue('');
     }
   }, [filters, filtersRemoved])
   
@@ -112,7 +93,7 @@ const ByTextInput = React.memo(({
                 <button 
                   type="button"
                   onClick={handleFilterSelect}
-                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-dark-200">{item.name}</button>
+                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-light-200">{item.name}</button>
               </li>
             ))}
           </ul>

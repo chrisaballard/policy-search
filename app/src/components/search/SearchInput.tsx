@@ -5,15 +5,14 @@ import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
 interface SearchInputProps {
   newSearch(queryString: string): void;
-  setProcessing(boolean: boolean): void;
-  processing: boolean;
+  clearResult(): void;
   searchTerms: string;
 }
-const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: SearchInputProps): JSX.Element => {
+const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
   const router = useRouter();
-  const buildQueryString = useBuildQueryString();
+  const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
@@ -22,13 +21,14 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
   const handleClick = (e: React.FormEvent<HTMLButtonElement> ): void => {
     e.preventDefault();
     setSearchOpen(!searchOpen);
+    // clearResult();
+    // setInput('');
   }
   const handleChange = () => {
     setInput(searchInput.current.value)
   }
  
   useDidUpdateEffect(() => {
-    if(input && !processing) setProcessing(true);
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
@@ -54,7 +54,7 @@ const SearchInput = ({newSearch, setProcessing, processing, searchTerms}: Search
         <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center">Policy Search</h1>
         <form 
           onSubmit={e => { e.preventDefault() }}
-          className="w-full relative mt-8 md:mt-16 h-24 md:w-2/3 lg:w-1/2 mx-auto"
+          className="w-full relative mt-6 md:mt-16 h-20 md:h-24 md:w-2/3 lg:w-1/2 mx-auto"
         >
           <label 
             ref={searchLabel}

@@ -9,8 +9,7 @@ const useSuggestList = (list: any[], type: string) => {
   const { filters } = state;
 
   const isDuplicate = (name) => {
-    const result = filters[`${type}Filters`].filter(item => item.name === name)
-    return result.length;
+    return filters[`${type}Filters`].some(item => item.name === name);
   }
   const suggest = (input: string): void => {
     if (!input.length) {
@@ -18,7 +17,6 @@ const useSuggestList = (list: any[], type: string) => {
       return;
     }
     const filteredList = list.filter((item) => {
-
       return item.name.toLowerCase().indexOf(input.toLowerCase()) > -1 && !isDuplicate(item.name);
     })
     setSuggestList(filteredList.slice(0, 10))

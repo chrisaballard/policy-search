@@ -107,6 +107,6 @@ module.exports = {
       }
     },
   },
-  variants: {},
+  // variants: {},
   plugins: [],
 }
