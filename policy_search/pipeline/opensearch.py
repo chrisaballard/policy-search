@@ -147,12 +147,14 @@ class OpenSearchIndex(BaseCallback):
     def get_doc_by_id(
         self,
         _id: str,
+        _source: Optional[List[str]] = None,
     ) -> dict:
         """Get document by its '_id' field."""
 
         return self.es.get(
             index=self.index_name,
             id=_id,
+            _source=_source,
         )
 
     def search(
