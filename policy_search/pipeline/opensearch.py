@@ -17,10 +17,10 @@ class OpenSearchIndex(BaseCallback):
         es_user: Optional[str] = None,
         es_password: Optional[str] = None,
         es_connector_kwargs: dict = {},
-        embedding_dim: int = 312
-    ):  
-        super().__init__('elasticsearch')
-        self.index_name = 'policies'
+        embedding_dim: int = 312,
+    ):
+        super().__init__("elasticsearch")
+        self.index_name = "policies"
 
         self.es_url = es_url
         self.es_login = (es_user, es_password)
@@ -29,23 +29,21 @@ class OpenSearchIndex(BaseCallback):
         self.embedding_dim = embedding_dim
 
         self._connect_to_elasticsearch()
-        
+
         self._docs_to_load = []
 
     def _connect_to_elasticsearch(
         self,
-        ):
+    ):
 
         if self.es_url:
             if all(self.es_login):
                 self.es = OpenSearch(
-                    [self.es_url], 
-                    http_auth=self.es_login, 
-                    **self.es_connector_kwargs
+                    [self.es_url], http_auth=self.es_login, **self.es_connector_kwargs
                 )
             else:
                 self.es = OpenSearch([self.es_url], **self.es_connector_kwargs)
-            
+
         else:
             self.es = OpenSearch(**self.es_connector_kwargs)
 
@@ -53,8 +51,7 @@ class OpenSearchIndex(BaseCallback):
         return self.es.ping()
 
     def _index_body(self):
-        """Define policy index fields and types
-        """
+        """Define policy index fields and types"""
 
         return {
             "mappings": {
@@ -62,24 +59,22 @@ class OpenSearchIndex(BaseCallback):
                     "text": {
                         "type": "nested",
                         "properties": {
-                            "text": {
-                                "type" : "text"
-                            },
+                            "text": {"type": "text"},
                             "embedding": {
                                 "type": "knn_vector",
-                                "dimension": self.embedding_dim
-                            }
-                        }
+                                "dimension": self.embedding_dim,
+                            },
+                        },
                     }
                 }
             }
         }
-                        
+
     def delete_and_create_index(self):
         """
         Creates index. Deletes any existing index of the same name first.
         """
-        
+
         self.es.indices.delete(index=self.index_name, ignore=[400, 404])
         self.es.indices.create(index=self.index_name, body=self._index_body())
 
@@ -100,7 +95,7 @@ class OpenSearchIndex(BaseCallback):
             self._connect_to_elasticsearch()
 
         self.delete_and_create_index()
-    
+
     def process_batch(self):
         """
         Load documents in the in-memory store into Elasticsearch.
@@ -108,7 +103,7 @@ class OpenSearchIndex(BaseCallback):
 
         super().process_batch()
 
-        # We check the connection here in case there have been any issues since 
+        # We check the connection here in case there have been any issues since
         # creation of the instance of this class.
         if not self._is_connected_to_elasticsearch():
             self._connect_to_elasticsearch()
@@ -117,16 +112,18 @@ class OpenSearchIndex(BaseCallback):
             client=self.es,
             index=self.index_name,
             actions=iter(self._docs_to_load),
-            raise_on_error=True
+            raise_on_error=True,
+            request_timeout=60,
+            max_retries=5,
         )
-        
+
         successes = 0
         errs = []
-        
+
         for ok, action in bulk_loader:
             if not ok:
                 errs.append(action)
-                
+
             successes += ok
 
         # Clear in memory store of documents to load ready for next batch
@@ -139,7 +136,7 @@ class OpenSearchIndex(BaseCallback):
         """Get document by its '_id' field."""
 
         return self.es.get(
-            index=self.index_name, 
+            index=self.index_name,
             id=_id,
         )
 
@@ -155,7 +152,7 @@ class OpenSearchIndex(BaseCallback):
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
-        
+
         `keyword_filters` should be a dictionary, where each key is the field to be filtered, and each value is a list of strings to filter on. In
         Elasticsearch, keywords are datatypes that are only searchable by their exact value, therefore are useful for filtering.
 
@@ -163,49 +160,45 @@ class OpenSearchIndex(BaseCallback):
         If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
         """
 
-        fields_to_search = ["text", "policy_name"]
+        # fields_to_search = ["text", "policy_name"]
 
         es_query = {
-            "_source": {
-                "excludes": ["text.embedding"]
-            },
-            "query": { 
+            "_source": {"excludes": ["text.embedding"]},
+            "query": {
                 "bool": {
-                    "should": [{
+                    "should": [
+                        {
                             "nested": {
                                 "path": "text",
                                 "score_mode": "max",
                                 "inner_hits": {
                                     "_source": ["text.text_id", "text.text"],
-                                    "size": max_passages_per_page
+                                    "size": max_passages_per_page,
                                 },
                                 "query": {
                                     "script_score": {
-                                        "query": {
-                                            "match_all": {}
-                                        },
+                                        "query": {"match_all": {}},
                                         "script": {
                                             "source": "knn_score",
                                             "lang": "knn",
                                             "params": {
                                                 "field": "text.embedding",
                                                 "query_value": query_embedding,
-                                                "space_type": "innerproduct"     
-                                            }
-                                        }
+                                                "space_type": "innerproduct",
+                                            },
+                                        },
                                     }
-                                }
+                                },
                             }
-                        }],
+                        }
+                    ],
                 }
             },
             "aggs": {
                 "top_docs": {
                     "terms": {
                         "field": "policy_id",
-                        "order": {
-                            "top_hit": "desc"
-                        },
+                        "order": {"top_hit": "desc"},
                     },
                     "aggs": {
                         "top_passage_hits": {
@@ -214,16 +207,10 @@ class OpenSearchIndex(BaseCallback):
                                 "size": max_pages_per_doc,
                             }
                         },
-                        "top_hit" : {
-                            "max": {
-                                "script": {
-                                "source": "_score"
-                                }
-                            }
-                        }
-                    }
+                        "top_hit": {"max": {"script": {"source": "_score"}}},
+                    },
                 }
-            }
+            },
         }
 
         if limit:
@@ -231,89 +218,62 @@ class OpenSearchIndex(BaseCallback):
 
         if keyword_filters:
             terms_clauses = []
-            
+
             for field, values in keyword_filters.items():
-                terms_clauses.append(
-                    {
-                        "terms": {
-                            field: values
-                        }
-                    }
-                )
+                terms_clauses.append({"terms": {field: values}})
 
             es_query["query"]["bool"]["must"] = terms_clauses
 
-        return self.es.search(
-            body=es_query,
-            index=self.index_name
-        )
+        return self.es.search(body=es_query, index=self.index_name)
 
-    def get_page_count_for_doc(
-        self,
-        policy_id: int
-    ) -> int:
-        """Return the total number of pages in the elastic search index for a given document
-        """
+    def get_page_count_for_doc(self, policy_id: int) -> int:
+        """Return the total number of pages in the elastic search index for a given document"""
 
         es_query = {
-            "query": {
-                "match": {
-                    "policy_id": policy_id
-                }
-            },
+            "query": {"match": {"policy_id": policy_id}},
             "size": 0,
-            "aggs": {
-                "page_count": {"max": {"field": "page_number"}}
-            }
+            "aggs": {"page_count": {"max": {"field": "page_number"}}},
         }
 
-        query_result = self.es.search(
-            body=es_query,
-            index=self.index_name
-        )
+        query_result = self.es.search(body=es_query, index=self.index_name)
 
-        doc_page_count = query_result['aggregations']['page_count']['value']
+        doc_page_count = query_result["aggregations"]["page_count"]["value"]
 
         return doc_page_count
 
-            
     def _create_page_dicts_from_doc(
-        self,
-        doc: Policy,
-        doc_structure: dict
+        self, doc: Policy, doc_structure: dict
     ) -> List[dict]:
         """
         For use with `doc_source_fetcher.get_text_by_page`
         """
-        
+
         page_docs = []
 
         for page_num, page_text in doc_structure.items():
-            page_docs.append({
-                "_id": f"{doc.policy_id}_page{page_num}",
-                'text': page_text,
-                'policy_id': doc.policy_id,
-                'policy_name': doc.policy_name,
-                'page_number': page_num,
-                'country_code': doc.country_code,     
-                'source_name': doc.source_name,
-            })
+            page_docs.append(
+                {
+                    "_id": f"{doc.policy_id}_page{page_num}",
+                    "text": page_text,
+                    "policy_id": doc.policy_id,
+                    "policy_name": doc.policy_name,
+                    "page_number": page_num,
+                    "country_code": doc.country_code,
+                    "source_name": doc.source_name,
+                }
+            )
 
         return page_docs
 
-    def _create_doc_dict(
-        self,
-        doc: Policy,
-        doc_structure: str
-    ) -> dict:
+    def _create_doc_dict(self, doc: Policy, doc_structure: str) -> dict:
         """
         For use with `doc_source_fetcher.get_text`
         """
 
         return {
-            'text': doc_structure,
-            'policy_id': doc.policy_id,
-            'policy_name': doc.policy_name,
-            'country_code': doc.country_code,     
-            'source_name': doc.source_name,
+            "text": doc_structure,
+            "policy_id": doc.policy_id,
+            "policy_name": doc.policy_name,
+            "country_code": doc.country_code,
+            "source_name": doc.source_name,
         }

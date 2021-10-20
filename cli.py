@@ -17,7 +17,7 @@ TXT_FILEAME_ATTRIBUTE = "policy_txt_file"
 DOC_FILENAME_ATTRIBUTE = "policy_content_file"
 
 with open("./config.yml", "rt") as config_f:
-    config = yaml.load(config_f)
+    config = yaml.safe_load(config_f)
 
 
 def get_doc_fetcher(
@@ -92,6 +92,7 @@ def load(
             "use_ssl": False,
             "verify_certs": False,
             "ssl_show_warn": False,
+            "retry_on_timeout": True,
         },
         embedding_dim=embedding_dim,
     )
