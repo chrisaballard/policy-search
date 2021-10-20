@@ -54,6 +54,12 @@ class OpenSearchIndex(BaseCallback):
         """Define policy index fields and types"""
 
         return {
+            "settings": {
+                "index": {
+                    "knn": True,
+                    "knn.algo_param.ef_search": 100,  # TODO: tune me. see https://opensearch.org/docs/latest/search-plugins/knn/knn-index#index-settings
+                }
+            },
             "mappings": {
                 "properties": {
                     "text": {
@@ -63,11 +69,20 @@ class OpenSearchIndex(BaseCallback):
                             "embedding": {
                                 "type": "knn_vector",
                                 "dimension": self.embedding_dim,
+                                "method": {
+                                    "name": "hnsw",
+                                    "space_type": "innerproduct",
+                                    "engine": "nmslib",
+                                    "parameters": {
+                                        "ef_construction": 128,  # TODO: tune me
+                                        "m": 12,  # TODO: tune me
+                                    },
+                                },
                             },
                         },
                     }
                 }
-            }
+            },
         }
 
     def delete_and_create_index(self):
@@ -176,16 +191,10 @@ class OpenSearchIndex(BaseCallback):
                                     "size": max_passages_per_page,
                                 },
                                 "query": {
-                                    "script_score": {
-                                        "query": {"match_all": {}},
-                                        "script": {
-                                            "source": "knn_score",
-                                            "lang": "knn",
-                                            "params": {
-                                                "field": "text.embedding",
-                                                "query_value": query_embedding,
-                                                "space_type": "innerproduct",
-                                            },
+                                    "knn": {
+                                        "text.embedding": {
+                                            "vector": query_embedding,
+                                            "k": max_passages_per_page,
                                         },
                                     }
                                 },
@@ -222,7 +231,7 @@ class OpenSearchIndex(BaseCallback):
             for field, values in keyword_filters.items():
                 terms_clauses.append({"terms": {field: values}})
 
-            es_query["query"]["bool"]["must"] = terms_clauses
+            es_query["query"]["bool"]["filter"] = terms_clauses
 
         return self.es.search(body=es_query, index=self.index_name)
 
