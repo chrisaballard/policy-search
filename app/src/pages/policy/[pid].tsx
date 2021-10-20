@@ -19,7 +19,7 @@ const Policy = () => {
   const [ pageInput, setPageInput ] = useState('')
   const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
-  const [ policy, getPolicy ] = useGetPolicies();
+  const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
 
   const { pid, page } = router.query;

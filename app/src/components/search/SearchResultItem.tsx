@@ -44,7 +44,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
         </div>
       </div>
       <div className="text-sm mt-2 text-primary-dark-500">
-        {texts.length > 0 ?
+      {texts.length > 0 ?
         <>
           <button
             onClick={toggleExtracts}
@@ -52,11 +52,10 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
           >
             {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
           </button> in this policy.
-          </>
+        </>
         : 
           <span className="">{texts.length} page matches.</span> 
         }
-        
       </div>
 
       <div className={`${!showExtracts ? 'hidden' : ''}`}>

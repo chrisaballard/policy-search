@@ -12,9 +12,10 @@ import { Geography } from '../model/geography';
 import { Filters } from '../model/filters';
 import { PolicyPage } from '../model/policyPage';
 import { Policy } from '../model/policy';
-import { policyReducer } from './policies';
+import { policyReducer, policiesReducer } from './policies';
 import { Sector } from '../model/sector';
 import { Instrument } from '../model/instrument';
+import { Policies } from '../model/policies';
 
 // interface of entire redux store
 export interface StoreState {
@@ -26,6 +27,7 @@ export interface StoreState {
   filters: Filters,
   policyPage: PolicyPage;
   policy: Policy;
+  policies: Policies;
 }
 export default combineReducers<StoreState>({
   status: statusReducer,
@@ -36,4 +38,5 @@ export default combineReducers<StoreState>({
   filters: filtersReducer,
   policyPage: policyPageReducer,
   policy: policyReducer,
+  policies: policiesReducer,
 });

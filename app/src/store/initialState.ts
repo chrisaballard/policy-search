@@ -24,7 +24,11 @@ const initialState = {
   status: {
     processing: false
   },
-  policies: {},
+  policies: {
+    count: 0,
+    last_key: 0,
+    policies: []
+  },
   policy: {
     countryCode: '',
     language: '',

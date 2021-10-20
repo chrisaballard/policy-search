@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Filters } from '../../../model/filters';
 import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
+import { ShowFilters } from '../../elements/images/SVG';
 import BySelections from './BySelections';
 import ByTextInput from './ByTextInput';
  
@@ -32,14 +33,14 @@ const FiltersColumn = React.memo(({
       )
     }
     return (
-      <button onClick={() => { setVisible(!visible)}} className="block mx-auto" title="Filter">
-        <img src="/images/filter.svg" alt="Filter" style={{ width: '40px'}} />
+      <button onClick={() => { setVisible(!visible)}} className="block mx-auto text-white bg-primary-light rounded-lg pointer-events-auto" title="Filter">
+        <ShowFilters height="40" width="40" />
       </button>
     )
   }
   return (
     <>
-      <div className="absolute top-0 left-0 w-full md:hidden z-30">
+      <div className="absolute top-0 left-0 w-full md:hidden z-30 pointer-events-none">
         {renderButton()}
       </div>
       <div className={`${visible ? 'translate-x-0' : 'transform -translate-x-full'} left-0 top-0 absolute z-20 bg-white min-h-screen md:min-h-auto px-4 md:static transition duration-300 md:translate-x-0 w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0`}>

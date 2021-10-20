@@ -1,11 +1,11 @@
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
-import Loader from '../../components/Loader';
 import { SearchNavigation } from ".";
+import { Policy } from '../../model/policy';
 
 interface SearchResultsProps {
-  policies: ResultByDocument[];
+  policies: ResultByDocument[] | Policy[];
   geographyList: Geography[];
   processing: boolean;
   searchTerms: string;
@@ -64,10 +64,6 @@ const SearchResults = ({
             </>
           :
           null}
-          {processing ? 
-            <Loader />
-            : null
-          }
         </div>
         {!endOfList ?
           <SearchNavigation onClick={handleNavigation} />

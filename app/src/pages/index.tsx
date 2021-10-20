@@ -12,11 +12,14 @@ import useSectors from '../hooks/useSectors';
 import useInstruments from '../hooks/useInstruments';
 import useSetStatus from '../hooks/useSetStatus';
 import useBuildQueryString from '../hooks/useBuildQueryString';
+import useGetPolicies from '../hooks/useGetPolicies';
 import { useDidUpdateEffect } from '../hooks/useDidUpdateEffect';
 import SlideOut from '../components/modal/SlideOut';
 import MultiSelect from '../components/blocks/filters/MultiSelect';
 import useFilters from '../hooks/useFilters';
 import { State } from '../store/initialState';
+import PolicyList from '../components/policies/PolicyList';
+import Loader from '../components/Loader';
 
 const Home = React.memo((): JSX.Element => {
   const state = useSelector((state: State ) => state)
@@ -37,10 +40,11 @@ const Home = React.memo((): JSX.Element => {
   const [ removeFilters, updateFilters, checkForFilters ] = useFilters();
   const setSectors = useSectors();
   const setInstruments = useInstruments();
+  const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
   const [ buildQueryString ] = useBuildQueryString();
 
-  // destructure
+  // destructure from state
   const { status, filters, geographyList, sectorList, instrumentList } = state;
   const { processing } = status;
   const { searchQuery, metadata, resultsByDocument, endOfList } = searchResult;
@@ -78,11 +82,42 @@ const Home = React.memo((): JSX.Element => {
     
   }
 
+  const renderContent = () => {
+    // if(processing) {
+    //   return <Loader />
+    // }
+    if(resultsByDocument.length) {
+      return (
+        <SearchResults 
+          policies={resultsByDocument} 
+          searchTerms={searchQuery}
+          processing={processing}
+          geographyList={geographyList}
+          handleNavigation={handleNavigation}
+          endOfList={endOfList}
+        />
+      )
+    }
+    return (
+      <PolicyList
+        policy_db={policy_db}
+        geographyList={geographyList}
+        processing={processing}
+      />
+    )
+  }
+
   useEffect(() => {
     if(!geographyList.length) setGeographies();
     if(!sectorList.length) setSectors();
     if(!instrumentList.length) setInstruments();
   }, []);
+
+  useDidUpdateEffect(() => {
+    if(geographyList.length && !policy_db?.policies.length) {
+      getPolicies();
+    }
+  }, [geographyList])
   
   useDidUpdateEffect(() => {
     updateNext();
@@ -129,14 +164,15 @@ const Home = React.memo((): JSX.Element => {
           headingClick={openSlideOut}
           checkForFilters={checkForFilters}
         />
-        <SearchResults 
-          policies={resultsByDocument} 
-          searchTerms={searchQuery}
-          processing={processing}
-          geographyList={geographyList}
-          handleNavigation={handleNavigation}
-          endOfList={endOfList}
-        />
+        <section className="w-full">
+          <div className="pt-8 md:pt-0 md:pl-4">
+            {renderContent()}
+            {processing ? 
+              <Loader />
+              : null
+            }
+          </div>
+        </section>
       </div>
     </MainLayout>
     </>
