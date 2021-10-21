@@ -17,9 +17,10 @@ const PolicyList = ({ policy_db, geographyList, processing }: PolicyListProps) =
           
             {policies.length ? 
               <>
-                <div className="font-bold grid grid-cols-8 md:grid-cols-6 gap-x-4 mt-8 border-primary border-t border-b py-2">
-                  <div className="col-span-5 sm:col-span-6 md:col-span-4">Policy</div>
-                  <div className="text-center hidden md:block">Passed</div>
+                <div className="font-bold grid grid-cols-8 md:grid-cols-9 gap-x-4 mt-8 border-primary border-t border-b py-2">
+                  <div className="col-span-1 hidden md:block">Country</div>
+                  <div className="col-span-5 sm:col-span-6 md:col-span-5">Policy</div>
+                  <div className="text-center hidden md:block md:col-span-2">Year</div>
                   <div className="text-center col-span-3 sm:col-span-2 md:col-span-1">More</div>
                 </div>
                 <ul className="mt-4">

@@ -1,6 +1,8 @@
+import { useState, useEffect } from "react";
 import { Policy } from "../../model/policy";
 import { Geography } from "../../model/geography";
 import { PDFIcon, TextIcon } from '../elements/images/SVG';
+import { getCountryNameFromCode } from '../../helpers/geography';
 import Link from 'next/link'
 import Circle from "../blocks/Circle";
 
@@ -10,20 +12,39 @@ interface PolicyItemProps {
 }
 
 const PolicyListItem = ({ policy, geographyList }: PolicyItemProps) => {
+  const [ country, setCountry ] = useState('');
+  
+  const getCountryName = () => {
+    if (policy.countryCode === 'EUE') {
+      setCountry('European Union');
+      return;
+    }
+    const name = getCountryNameFromCode(policy.countryCode, geographyList);
+    setCountry(name);
+  }
+  
+  useEffect(() => {
+    getCountryName();
+  }, [])
   return (
-    <div className="font-bold grid grid-cols-8 md:grid-cols-6 gap-x-4 md:py-2">
-      <div className="col-span-5 sm:col-span-6 md:col-span-4 flex items-center">
-        <div className="mr-4">
-          <div style={{ width: '28px', height: '21px' }} className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
-        </div>
+    <div className="font-bold grid grid-cols-8 md:grid-cols-9 gap-x-4 md:py-2">
+      <div className="col-span-1 mr-4 hidden md:block">
+        <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+        <div className="font-normal text-xs text-primary-dark-500 mt-2 leading-tight">{country}</div>
+      </div>
+      <div className="col-span-5 sm:col-span-6 md:col-span-5 flex items-start">
         <div className="leading-tight">
           {policy.policyName}
           <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">2021</div>
         </div>
         
       </div>
-      <div className="hidden md:block text-center font-normal text-primary-dark-500">2021</div>
+      <div className="hidden md:block text-center font-normal text-primary-dark-500 md:col-span-2">2021</div>
       <div className="col-span-3 sm:col-span-2 md:col-span-1">
+        <div className="md:hidden mb-6 flex flex-col justify-self-end items-end">
+          <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+          <div className="font-normal text-xs text-right text-primary-dark-500 mt-2 leading-tight">{country}</div>
+        </div>
         <div className="flex justify-end">
           <Link href={`/policy/${policy.policyId}?page=1`}>
             <a href={``} className="flex flex-col justify-center items-center">
@@ -49,6 +70,7 @@ const PolicyListItem = ({ policy, geographyList }: PolicyItemProps) => {
             
           </a>
         </div>
+        
       </div>
     </div>
   )

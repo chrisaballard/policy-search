@@ -33,19 +33,40 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
     getCountryName();
   }, [])
   return (
-    <div className="font-bold grid grid-cols-8 md:grid-cols-6 gap-x-4 md:py-2">
-      <div className="col-span-5 sm:col-span-6 md:col-span-4 flex items-center">
-        <div className="mr-4">
-          <div style={{ width: '28px', height: '21px' }} className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
-        </div>
+    <>
+    <div className="font-bold grid grid-cols-8 md:grid-cols-9 gap-x-4 md:py-2">
+      <div className="col-span-1 mr-4 hidden md:block">
+        <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+        <div className="font-normal text-xs text-primary-dark-500 mt-2 leading-tight">{country}</div>
+      </div>
+      <div className="col-span-5 sm:col-span-6 md:col-span-5 flex items-start">
         <div className="leading-tight">
           {policy.policyName}
           <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">2021</div>
+
+          <div className="font-normal text-sm mt-2 text-primary-dark-400">
+          {texts.length > 0 ?
+            <>
+              <button
+                onClick={toggleExtracts}
+                className="focus:outline-none underline text-primary-dark-600 hover:text-primary-light transition duration-300"
+              >
+                {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
+              </button> in this policy.
+            </>
+            : 
+              <span className="">{texts.length} page matches.</span> 
+            }
+          </div>
+
         </div>
-        
       </div>
-      <div className="hidden md:block text-center font-normal text-primary-dark-500">2021</div>
+      <div className="hidden md:block text-center font-normal text-primary-dark-500 md:col-span-2">2021</div>
       <div className="col-span-3 sm:col-span-2 md:col-span-1">
+        <div className="md:hidden mb-6 flex flex-col items-end">
+          <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+          <div className="font-normal text-xs text-primary-dark-500 mt-2 leading-tight">{country}</div>
+        </div>
         <div className="flex justify-end">
           <Link href={`/policy/${policy.policyId}?page=1`}>
             <a href={``} className="flex flex-col justify-center items-center">
@@ -71,9 +92,24 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
             
           </a>
         </div>
+        
       </div>
+      
     </div>
     
+
+    <div className={`${!showExtracts ? 'hidden' : ''}`}>
+      {texts.map((item, index) => (
+        <TextExtract
+          key={`${index}_${item.pageNumber}`}
+          texts={item.text}
+          page={item.pageNumber}
+          id={policy.policyId}
+        />
+      ))}
+    </div>
+    
+    </>
   )
 }
 
