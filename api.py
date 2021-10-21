@@ -83,7 +83,7 @@ async def search_policies(
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
-            "policy_name", asc=True
+            "policy_name", asc=True, num_docs=start + limit
         )
         ids = [item["policy_id"] for item in titles_ids_alphabetical]
         documents = await read_policies_by_ids(ids)

@@ -309,13 +309,17 @@ class OpenSearchIndex(BaseCallback):
         }
 
     def get_docs_sorted_alphabetically(
-        self, field_name: str, asc: bool = True
+        self,
+        field_name: str,
+        asc: bool = True,
+        num_docs: int = 10000,
     ) -> List[dict]:
         """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
 
         Args:
             field_name (str): name of a text field, in dot notation
             asc (bool, optional): sort the results ascending (/descending). Defaults to True.
+            num_docs (int, optional): the number of documents to return
         """
 
         sort_order = "asc" if asc else "desc"
@@ -324,7 +328,11 @@ class OpenSearchIndex(BaseCallback):
             "size": 0,
             "aggs": {
                 "sorted_field": {
-                    "terms": {"field": field_name, "order": {"_term": sort_order}},
+                    "terms": {
+                        "field": field_name,
+                        "order": {"_term": sort_order},
+                        "size": num_docs,
+                    },
                     "aggs": {"ids": {"terms": {"field": "policy_id"}}},
                 }
             },
