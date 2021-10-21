@@ -38,18 +38,18 @@ class PolicyPageSearchResult(BaseModel):
     highlighted_text: List[str] = Field(alias="text")
 
 
-# TODO: some of this is a duplicate of the Policy class above
+# TODO: some of this is a duplicate of the Policy class above. Is there a way we can avoid duplicating these fields in code?
 class PolicySearchResult(BaseModel):
     policy_id: int = Field(alias="policyId")
     policy_name: str = Field(alias="policyName")
     country_code: str = Field(alias="countryCode")
+    language: str
     source_name: str = Field(alias="sourceName")
     source_policy_id: Optional[int] = Field(alias="sourcePolicyId")
-    language: str = Field(alias="language")
     url: HttpUrl
-    policy_type: str = Field(alias="policyType")
+    policy_type: Optional[str] = Field(alias="policyType")
     policy_txt_file: Optional[str] = Field(alias="policyTxtFile")
-    resultsByPage: List[PolicyPageSearchResult] = None
+    resultsByPage: Optional[List[PolicyPageSearchResult]]
 
 
 class PolicySearchResponse(BaseModel):
