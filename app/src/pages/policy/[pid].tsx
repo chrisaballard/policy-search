@@ -183,7 +183,7 @@ const Policy = () => {
             
             <div className="my-4 text-primary-light flex justify-between items-end">
               <div>
-                country flag, country name
+                {/* country flag, country name */}
               </div>
               <div className="text-primary-dark-500">
                 Page <span className="font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
