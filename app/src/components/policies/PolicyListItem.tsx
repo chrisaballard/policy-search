@@ -40,7 +40,7 @@ const PolicyListItem = ({ policy, geographyList }: PolicyItemProps) => {
           <a href={policy.url} target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center">
             <span className="sr-only">View PDF</span>
             <Circle
-              title="Read Text"
+              title="View PDF"
               bgClass="bg-secondary-4"
               textClass="text-white"
             >
