@@ -62,7 +62,7 @@ async def read_policies(
     return policy_table.scan(start, limit)
 
 
-async def read_policies_by_ids(ids: List[int], response_model=PolicyList):
+async def read_policies_by_ids(ids: List[int]):
     """Get policy metadata from a list of IDs"""
     return [policy_table.get_document(_id) for _id in ids]
 
