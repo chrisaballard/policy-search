@@ -23,18 +23,19 @@ dynamodb_url = f"http://{dynamodb_host}:{dynamodb_port}"
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, "policyId")
 
-elastic_host = os.environ.get("elasticsearch_cluster", "https://localhost:9200")
+opensearch_host = os.environ.get("opensearch_cluster", "https://localhost:9200")
+opensearch_user = os.environ.get("opensearch_user", None)
+opensearch_password = os.environ.get("opensearch_password", None)
 es = OpenSearchIndex(
-    es_url=elastic_host,
-    es_user="admin",
-    es_password="admin",
+    es_url=opensearch_host, 
+    es_user=opensearch_user, 
+    es_password=opensearch_password, 
     es_connector_kwargs={
-        "use_ssl": False,
-        "verify_certs": False,
-        "ssl_show_warn": False,
-        "timeout": 120,
+        "use_ssl": False, 
+        "verify_certs": False, 
+        "ssl_show_warn": False, 
+        "timeout": 120
     },
-    embedding_dim=768,
 )
 query_encoder = SBERTEncoder("msmarco-distilbert-dot-v5")
 
@@ -75,7 +76,8 @@ def search_policies(
     else:
         kwd_filters = None
 
-    query_emb = query_encoder.encode(query)
+    # TODO - Need to encode query
+    query_emb = []
 
     # There is no option to offset results for terms aggregation queries, so instead we
     # get the first `start+limit` results and offset them by `start`.
@@ -84,6 +86,7 @@ def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
+       
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]

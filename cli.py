@@ -32,7 +32,7 @@ def get_doc_fetcher(
 
 @click.group()
 def cli():
-    click.echo("test")
+    pass
 
 
 @cli.command()
@@ -83,22 +83,26 @@ def load(
     dynamodb_table = PolicyDynamoDBTable(dynamodb_url, "policyId")
 
     # Initialise elasticsearch
-    elastic_host = os.environ.get("elasticsearch_cluster", "https://localhost:9200")
+    opensearch_host = os.environ.get("opensearch_cluster", "https://localhost:9200")
+    opensearch_user = os.environ.get("opensearch_user", None)
+    opensearch_password = os.environ.get("opensearch_password", None)
+
     search_index = OpenSearchIndex(
-        es_url=elastic_host,
-        es_user="admin",
-        es_password="admin",
+        es_url=opensearch_host,
+        es_user=opensearch_user,
+        es_password=opensearch_password,
         es_connector_kwargs={
-            "use_ssl": False,
-            "verify_certs": False,
+            "use_ssl": True,
+            "verify_certs": True,
             "ssl_show_warn": False,
             "retry_on_timeout": True,
+            "timeout": 60
         },
         embedding_dim=embedding_dim,
     )
 
     # Initialise document processor, add callback objects and process text
-    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)
+    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=10)
     doc_processor.add_callback(dynamodb_table)
     doc_processor.add_callback(search_index)
     doc_processor.process_text()

@@ -3,6 +3,8 @@
 
 
 from typing import List, Optional
+from opensearchpy.client import logger
+from urllib3.exceptions import ReadTimeoutError
 
 from opensearchpy import OpenSearch, helpers
 
@@ -123,26 +125,30 @@ class OpenSearchIndex(BaseCallback):
         if not self._is_connected_to_elasticsearch():
             self._connect_to_elasticsearch()
 
-        bulk_loader = helpers.streaming_bulk(
-            client=self.es,
-            index=self.index_name,
-            actions=iter(self._docs_to_load),
-            raise_on_error=True,
-            request_timeout=60,
-            max_retries=5,
-        )
+        try:
+            bulk_loader = helpers.streaming_bulk(
+                client=self.es,
+                index=self.index_name,
+                actions=iter(self._docs_to_load),
+                raise_on_error=True,
+                request_timeout=120,
+                max_retries=2,
+                chunk_size=5
+            )
 
-        successes = 0
-        errs = []
+            successes = 0
+            errs = []
 
-        for ok, action in bulk_loader:
-            if not ok:
-                errs.append(action)
+            for ok, action in bulk_loader:
+                if not ok:
+                    errs.append(action)
 
-            successes += ok
-
-        # Clear in memory store of documents to load ready for next batch
-        self._docs_to_load = []
+                successes += ok
+        except ReadTimeoutError as e:
+            logger.error('Read timeout error occured when processing batch')
+        finally:
+            # Clear in memory store of documents to load ready for next batch
+            self._docs_to_load = []
 
     def get_doc_by_id(
         self,
@@ -235,7 +241,7 @@ class OpenSearchIndex(BaseCallback):
 
             es_query["query"]["bool"]["filter"] = terms_clauses
 
-        return self.es.search(body=es_query, index=self.index_name)
+        return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
 
     def get_page_count_for_doc(self, policy_id: int) -> int:
         """Return the total number of pages in the elastic search index for a given document"""
