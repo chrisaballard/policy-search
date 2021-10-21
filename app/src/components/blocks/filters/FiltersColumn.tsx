@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { Filters } from '../../../model/filters';
 import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
-import { ShowFilters } from '../../elements/images/SVG';
+import { FiltersIcon } from '../../elements/images/SVG';
+import Circle from '../Circle';
 import BySelections from './BySelections';
 import ByTextInput from './ByTextInput';
  
@@ -25,6 +26,7 @@ const FiltersColumn = React.memo(({
 }: FiltersProps) => {
   const [ visible, setVisible ] = useState(false);
   const renderButton = () => {
+    // Show/hide filters toggle for mobile view
     if(visible) {
       return (
         <div className="flex items-center justify-center h-8">
@@ -33,9 +35,13 @@ const FiltersColumn = React.memo(({
       )
     }
     return (
-      <button onClick={() => { setVisible(!visible)}} className="block mx-auto text-white bg-primary-light rounded-lg pointer-events-auto" title="Filter">
-        <ShowFilters height="40" width="40" />
-      </button>
+      <div className="flex items-center justify-center">
+        <Circle title="Show Filters" bgClass="bg-primary-light" textClass="text-white">
+          <button onClick={() => { setVisible(!visible)}} className="block mx-auto pointer-events-auto" title="Filter">
+            <FiltersIcon height="30" width="30" />
+          </button>
+        </Circle>
+      </div>
     )
   }
   return (

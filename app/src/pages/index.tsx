@@ -83,7 +83,7 @@ const Home = React.memo((): JSX.Element => {
   }
 
   const renderContent = () => {
-    if(resultsByDocument.length) {
+    if(resultsByDocument.length || searchQuery) {
       return (
         <SearchResults 
           policies={resultsByDocument} 
