@@ -58,7 +58,7 @@ module.exports = {
           '400': '#8ae3cb',
           '500': '#63daba',
         },
-        // RED
+        // RED 
         '4': {
           DEFAULT: '#F86F5C',
           '100': '#fef1ef',

@@ -23,8 +23,8 @@ const PolicyListItem = ({ policy, geographyList }: PolicyItemProps) => {
         
       </div>
       <div className="hidden md:block text-center font-normal text-primary-dark-500">2021</div>
-      <div>
-        <div className="flex">
+      <div className="col-span-3 sm:col-span-2 md:col-span-1">
+        <div className="flex justify-end">
           <Link href={`/policy/${policy.policyId}?page=1`}>
             <a href={``} className="flex flex-col justify-center items-center">
               <span className="sr-only">Read text</span>

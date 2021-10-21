@@ -49,7 +49,7 @@ const FiltersColumn = React.memo(({
       <div className="absolute top-0 left-0 w-full md:hidden z-30 pointer-events-none">
         {renderButton()}
       </div>
-      <div className={`${visible ? 'translate-x-0' : 'transform -translate-x-full'} left-0 top-0 absolute z-20 bg-white min-h-screen md:min-h-auto px-4 md:static transition duration-300 md:translate-x-0 w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0`}>
+      <div className={`${visible ? 'translate-x-0' : 'transform -translate-x-full -ml-12'} md:ml-0 left-0 top-0 absolute z-20 bg-white min-h-screen md:min-h-auto px-4 md:static transition duration-300 md:translate-x-0 w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0`}>
         <div className="flex justify-between border-b pb-2">
           <h2 className="font-bold text-xl">Filter by:</h2>
           {checkForFilters() ?

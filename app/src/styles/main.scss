@@ -46,7 +46,10 @@ body {
         height: 60px;
         @apply border-b-8 border-white;
         &.expanded {
-          @apply w-full border-b-8 border-primary;
+          @apply border-b-8 w-full border-primary;
+          @screen md {
+            width: calc(100% - 32px);
+          }
         }
       }
       .search-btn {
