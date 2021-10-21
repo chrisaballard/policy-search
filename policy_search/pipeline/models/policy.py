@@ -49,7 +49,7 @@ class PolicySearchResult(BaseModel):
     url: HttpUrl
     policy_type: Optional[str] = Field(alias="policyType")
     policy_txt_file: Optional[str] = Field(alias="policyTxtFile")
-    resultsByPage: Optional[List[PolicyPageSearchResult]]
+    resultsByPage: Optional[List[PolicyPageSearchResult]] = []
 
 
 class PolicySearchResponse(BaseModel):
