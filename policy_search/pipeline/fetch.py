@@ -48,7 +48,9 @@ class DocumentSourceFetcher():
 
 
 class CSVDocumentSourceFetcher(DocumentSourceFetcher):
-    """Fetches documents from a csv file source"""
+    """Fetches documents from a dataset containing a list of documents and associated pdf files.
+    Passages from each document are obtained by applying a pdf parser to each document.
+    """
 
     def __init__(
         self,
@@ -78,10 +80,6 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
             dtype={'source_policy_id': int}
         )
 
-        # Retain at most fetch_count documents if defined
-        if self.fetch_count is not None:
-            documents_df = documents_df.head(self.fetch_count)
-
         selected_cols = [self._csv_filename_col]
         if self._attribute_mapping is not None:
             selected_cols += list(self._attribute_col_names)
@@ -94,6 +92,10 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
 
         # Map columns in dataframe to attribute keys
         documents_df.rename(columns=self._attribute_mapping, inplace=True)
+
+        # Retain at most fetch_count documents if defined
+        if self.fetch_count is not None:
+            documents_df = documents_df.head(self.fetch_count)
 
         # Transform dataframe to list of dictionaries
         self._docs = documents_df.to_dict(orient='records')
@@ -111,13 +113,20 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
         doc_parser,
         extract_type: str = 'string',
     ) -> Tuple[Policy, List[Dict[str, str]]]:
+        """Uses a document parser to extract text from the list of documents provided when the object
+        is initialised.
+        """
 
         if len(self._docs) == 0:
             self.get_docs()
 
         for doc_ix, doc in enumerate(self._docs):
             doc_filename = Path(doc[self._csv_filename_col])
-            doc_structure, text_filename = doc_parser.extract_text(doc_filename, extract_type)
+            doc_structure, text_filename = doc_parser.extract_text(
+                doc_ix=doc_ix, 
+                doc_filename=doc_filename, 
+                extract_type=extract_type
+            )
             doc['policyId'] = doc_ix
             doc['policy_txt_file'] = text_filename
             doc = Policy(**doc)
@@ -130,4 +139,4 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
     ) -> dict:
         return self.get_text(doc_parser, extract_type='structure')
 
-        
+

@@ -8,8 +8,9 @@ import uvicorn
 from elasticsearch import NotFoundError as ElasticNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
-from policy_search.pipeline.elasticsearch import ElasticSearchIndex
+from policy_search.pipeline.opensearch import OpenSearchIndex
 from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
+from policy_search.pipeline.semantic_search import SBERTEncoder
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
 from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
 
@@ -22,8 +23,21 @@ dynamodb_url = f"http://{dynamodb_host}:{dynamodb_port}"
 
 policy_table = PolicyDynamoDBTable(dynamodb_url, "policyId")
 
-elastic_host = os.environ.get("elasticsearch_cluster", "localhost:9200")
-es = ElasticSearchIndex(es_url=elastic_host)
+opensearch_host = os.environ.get("opensearch_cluster", "https://localhost:9200")
+opensearch_user = os.environ.get("opensearch_user", None)
+opensearch_password = os.environ.get("opensearch_password", None)
+es = OpenSearchIndex(
+    es_url=opensearch_host, 
+    es_user=opensearch_user, 
+    es_password=opensearch_password, 
+    es_connector_kwargs={
+        "use_ssl": True, 
+        "verify_certs": True, 
+        "ssl_show_warn": False, 
+        "timeout": 120
+    },
+)
+query_encoder = SBERTEncoder("msmarco-distilbert-dot-v5")
 
 app = FastAPI()
 
@@ -62,18 +76,24 @@ def search_policies(
     else:
         kwd_filters = None
 
+    # Encode query
+    query_emb = query_encoder.encode(query)
+
     # There is no option to offset results for terms aggregation queries, so instead we
     # get the first `start+limit` results and offset them by `start`.
     search_result = es.search(
         query,
+        query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
+       
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
 
     query_results_by_doc = []
 
+    # Iterate over each document returned from the query
     for result in results_by_doc[start : start + limit]:
         hits_by_page = result["top_passage_hits"]["hits"]["hits"]
         # num_pages_with_hit = result["doc_count"]
@@ -85,26 +105,32 @@ def search_policies(
 
         document_response = []
 
+        # Iterate over each page hit in each document
         for hit in hits_by_page:
-            if "highlight" in hit:
-                # Only return a page if there is at least one text match in the page
+            page_text_hits = []
+            # Find the matching text passages and add to results
+            for page_inner_hits in hit["inner_hits"]["text"]["hits"]["hits"]:
+                page_text_hits.append(page_inner_hits["_source"]["text"])
+
+            # Add the page matches for this document
+            if len(page_text_hits) > 0:
                 document_response.append(
                     {
                         "pageNumber": hit["_source"]["page_number"],
-                        "text": hit["highlight"]["text"],
+                        "text": page_text_hits,
                     }
                 )
 
-        if document_response:
-            query_results_by_doc.append(
-                {
-                    "policyId": policy_id,
-                    "policyName": policy_name,
-                    "countryCode": policy_country_code,
-                    "sourceName": policy_source_name,
-                    "resultsByPage": document_response,
-                }
-            )
+        # Add the query matches for this document
+        query_results_by_doc.append(
+            {
+                "policyId": policy_id,
+                "policyName": policy_name,
+                "countryCode": policy_country_code,
+                "sourceName": policy_source_name,
+                "resultsByPage": document_response,
+            }
+        )
 
     response = {
         "metadata": {
@@ -136,8 +162,8 @@ def get_policy_text_by_page(
 
     try:
         # Get the page text for the given document and page
-        es_doc = es.get_doc_by_id(doc_id)
-        page_text = es_doc["_source"]["text"]
+        es_doc = es.get_doc_by_id(doc_id, _source=["text.text_id", "text.text"])
+        page_text = [item["text"] for item in es_doc["_source"]["text"]]
 
         # Get the total page count for the document
         page_count = es.get_page_count_for_doc(policy_id)
