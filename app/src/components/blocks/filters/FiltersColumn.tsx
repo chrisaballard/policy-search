@@ -4,6 +4,7 @@ import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
 import { FiltersIcon } from '../../elements/images/SVG';
 import Circle from '../Circle';
+import ByRange from './ByRange';
 import BySelections from './BySelections';
 import ByTextInput from './ByTextInput';
  
@@ -83,6 +84,15 @@ const FiltersColumn = React.memo(({
           clickable={true}
           onClick={() => { headingClick('instrument') }}
           filters={filters.instrumentFilters}
+          updateFilters={updateFilters}
+        />
+
+        <hr className="mt-6" />
+
+        <ByRange
+          type="years"
+          clickable={false}
+          filters={filters.yearFilters}
           updateFilters={updateFilters}
         />
         
