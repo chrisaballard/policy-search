@@ -31,8 +31,8 @@ es = OpenSearchIndex(
     es_user=opensearch_user, 
     es_password=opensearch_password, 
     es_connector_kwargs={
-        "use_ssl": False, 
-        "verify_certs": False, 
+        "use_ssl": True, 
+        "verify_certs": True, 
         "ssl_show_warn": False, 
         "timeout": 120
     },
@@ -76,8 +76,8 @@ def search_policies(
     else:
         kwd_filters = None
 
-    # TODO - Need to encode query
-    query_emb = []
+    # Encode query
+    query_emb = query_encoder.encode(query)
 
     # There is no option to offset results for terms aggregation queries, so instead we
     # get the first `start+limit` results and offset them by `start`.
