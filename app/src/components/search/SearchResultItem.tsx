@@ -80,7 +80,8 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
               </Circle>
             </a>
           </Link> 
-          <a href={`policy.url`} target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center">
+          {/* <a href={policy.url} target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center"> */}
+          <a href="https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBa3NJIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--8e23ad17764007871a3dd0b2e410764d6a82e124/f" target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center">
             <span className="sr-only">View PDF</span>
             <Circle
               title="View PDF"
