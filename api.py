@@ -31,10 +31,10 @@ es = OpenSearchIndex(
     es_user=opensearch_user,
     es_password=opensearch_password,
     es_connector_kwargs={
-        "use_ssl": False,
-        "verify_certs": False,
-        "ssl_show_warn": False,
-        "timeout": 120,
+        "use_ssl": True, 
+        "verify_certs": True, 
+        "ssl_show_warn": False, 
+        "timeout": 120
     },
 )
 query_encoder = SBERTEncoder("msmarco-distilbert-dot-v5")
@@ -96,6 +96,7 @@ async def search_policies(
             "resultsByDocument": documents,
         }
 
+    # Encode query
     query_emb = query_encoder.encode(query)
 
     # There is no option to offset results for terms aggregation queries, so instead we

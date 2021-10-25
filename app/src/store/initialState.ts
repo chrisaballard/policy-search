@@ -5,13 +5,17 @@ import { Geography } from "../model/geography";
 import { Filters } from "../model/filters";
 import { PolicyPage } from "../model/policyPage";
 import { Policy } from "../model/policy";
+import { Sector } from "../model/sector";
+import { Instrument } from "../model/instrument";
 
 export interface State {
   status: Status;
   policies: Policies;
   policy: Policy;
   searchResult: SearchResult;
-  geographies: Geography[];
+  geographyList: Geography[];
+  sectorList: Sector[];
+  instrumentList: Instrument[];
   filters: Filters;
   policyPage: PolicyPage;
 }
@@ -20,7 +24,11 @@ const initialState = {
   status: {
     processing: false
   },
-  policies: {},
+  policies: {
+    count: 0,
+    last_key: 0,
+    policies: []
+  },
   policy: {
     countryCode: '',
     language: '',
@@ -34,14 +42,19 @@ const initialState = {
   },
   searchResult: {
     searchQuery: '',
+    endOfList: true,
     metadata: {
       numDocsReturned: 0
     },
     resultsByDocument: []
   },
-  geographies: [],
+  geographyList: [],
+  sectorList: [],
+  instrumentList: [],
   filters: {
-    geographyFilters: []
+    geographyFilters: [],
+    sectorFilters: [],
+    instrumentFilters: [],
   },
   policyPage: {
     documentMetadata: {

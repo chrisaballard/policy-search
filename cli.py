@@ -29,6 +29,8 @@ def get_doc_fetcher(
         csv_filename, doc_filename_attribute, cclw_attributes, fetch_count
     )
 
+with open('./config.yml', 'rt') as config_f:
+    config = yaml.safe_load(config_f)
 
 @click.group()
 def cli():

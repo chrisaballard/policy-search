@@ -35,6 +35,14 @@ export const loadGeographies = async () => {
   return await fetchData(`${API_BASE_URL}/geographies`)
 }
 
+export const loadSectors = async () => {
+  return await fetchData(`${API_BASE_URL}/sectors`)
+}
+
+export const loadInstruments = async () => {
+  return await fetchData(`${API_BASE_URL}/instruments`)
+}
+
 export const loadPolicyPage = async (id: string | string[], page: string | string[]): Promise<PolicyPage> => {
   return await fetchData(`${API_BASE_URL}/policies/${id}/text/?page=${page}`);
 }

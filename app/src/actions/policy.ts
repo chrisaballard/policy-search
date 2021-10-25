@@ -16,6 +16,12 @@ export interface getPolicyAction {
 }
 
 export const loadPolicies = (start?: number) => async (dispatch: Dispatch) => {
+  dispatch<SetStatusAction>({
+    type: ActionTypes.setStatus,
+    payload: {
+      processing: true
+    }
+  })
   const data = await getPolicies(start);
   dispatch<getPoliciesAction>({
     type: ActionTypes.getPolicies,

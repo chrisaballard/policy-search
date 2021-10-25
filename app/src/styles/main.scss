@@ -3,8 +3,9 @@
 @tailwind utilities;
 
 body {
+  @apply text-primary overflow-x-hidden;
   em {
-    @apply font-bold text-black;
+    @apply font-bold text-primary;
   }
 
   input::-webkit-outer-spin-button,
@@ -17,9 +18,22 @@ body {
   input[type='number'] {
     -moz-appearance: textfield; /* Firefox */
   }
+  .logo {
+    width: 100px;
+    @screen md {
+      width: 150px;
+    }
+  }
 
   li.selected {
-    @apply bg-gray-100;
+    @apply bg-primary-light-200;
+  }
+
+  .button {
+    @apply bg-primary text-white rounded-lg hover:bg-primary-light focus:outline-primary-light duration-300 transition;
+  }
+  .button-half {
+    @apply text-white hover:bg-primary-light focus:outline-primary-light duration-300 transition;
   }
 
   .search-area {
@@ -30,10 +44,12 @@ body {
         right: 0;
         width: 0;
         height: 60px;
-        border-bottom: 10px solid white;
+        @apply border-b-8 border-white;
         &.expanded {
-          width: 100%;
-          border-bottom: 10px solid black;
+          @apply border-b-8 w-full border-primary;
+          @screen md {
+            width: calc(100% - 32px);
+          }
         }
       }
       .search-btn {
@@ -59,5 +75,11 @@ body {
   }
   .page-close {
     width: 50px;
+  }
+  // radar loader
+  .radar {
+    transform: rotate(-70deg);
+    width: 25%;
+    height: 14em;
   }
 }

@@ -4,6 +4,7 @@
 
 from typing import List, Optional
 from opensearchpy.client import logger
+from opensearchpy.exceptions import TransportError
 from urllib3.exceptions import ReadTimeoutError
 
 from opensearchpy import OpenSearch, helpers
@@ -145,8 +146,10 @@ class OpenSearchIndex(BaseCallback):
                 actions=iter(self._docs_to_load),
                 raise_on_error=True,
                 request_timeout=120,
-                max_retries=2,
-                chunk_size=5,
+                max_retries=5,
+                chunk_size=1,
+                initial_backoff=5,
+                max_backoff=60
             )
 
             successes = 0
@@ -157,8 +160,10 @@ class OpenSearchIndex(BaseCallback):
                     errs.append(action)
 
                 successes += ok
-        except ReadTimeoutError:
-            logger.error("Read timeout error occured when processing batch")
+        except ReadTimeoutError as e:
+            logger.error("Read timeout error occured when processing batch, igoring batch")
+        except TransportError as e:
+            logger.error("Transport error occured when processing batch, ignoring batch: " + str(e))
         finally:
             # Clear in memory store of documents to load ready for next batch
             self._docs_to_load = []
