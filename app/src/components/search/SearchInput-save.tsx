@@ -50,19 +50,19 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
 
   return (
     <section>
-      <div className="search-area container flex justify-center items-center relative">
-        <div className="hidden md:block w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0"></div>
+      <div className="search-area container flex flex-col justify-center items-center relative">
+        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center">Policy Search</h1>
         <form 
           onSubmit={e => { e.preventDefault() }}
-          className="w-full relative mt-6 lg:mt-10 h-20 md:h-24 md:flex-grow mx-auto"
+          className="w-full relative mt-6 md:mt-16 h-20 md:h-24 md:w-2/3 lg:w-1/2 mx-auto"
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
+            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-lg md:text-2xl text-center z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
-            className={`md:ml-64 search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
+            className={`search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
               <input 
                 id="search-input"
                 ref={searchInput}

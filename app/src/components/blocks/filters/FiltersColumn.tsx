@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Filters } from '../../../model/filters';
 import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
+import { FiltersIcon } from '../../elements/images/SVG';
+import Circle from '../Circle';
 import BySelections from './BySelections';
 import ByTextInput from './ByTextInput';
  
@@ -24,6 +26,7 @@ const FiltersColumn = React.memo(({
 }: FiltersProps) => {
   const [ visible, setVisible ] = useState(false);
   const renderButton = () => {
+    // Show/hide filters toggle for mobile view
     if(visible) {
       return (
         <div className="flex items-center justify-center h-8">
@@ -32,17 +35,21 @@ const FiltersColumn = React.memo(({
       )
     }
     return (
-      <button onClick={() => { setVisible(!visible)}} className="block mx-auto" title="Filter">
-        <img src="/images/filter.svg" alt="Filter" style={{ width: '40px'}} />
-      </button>
+      <div className="flex items-center justify-center">
+        <Circle title="Show Filters" bgClass="bg-primary-light" textClass="text-white">
+          <button onClick={() => { setVisible(!visible)}} className="block mx-auto pointer-events-auto" title="Filter">
+            <FiltersIcon height="30" width="30" />
+          </button>
+        </Circle>
+      </div>
     )
   }
   return (
     <>
-      <div className="absolute top-0 left-0 w-full md:hidden z-30">
+      <div className="absolute top-0 left-0 w-full md:hidden z-30 pointer-events-none">
         {renderButton()}
       </div>
-      <div className={`${visible ? 'translate-x-0' : 'transform -translate-x-full'} left-0 top-0 absolute z-20 bg-white min-h-screen md:min-h-auto px-4 md:static transition duration-300 md:translate-x-0 w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0`}>
+      <div className={`${visible ? 'translate-x-0' : 'transform -translate-x-full -ml-12'} md:ml-0 left-0 top-0 absolute z-20 bg-white min-h-screen md:min-h-auto px-4 md:static transition duration-300 md:translate-x-0 w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0`}>
         <div className="flex justify-between border-b pb-2">
           <h2 className="font-bold text-xl">Filter by:</h2>
           {checkForFilters() ?

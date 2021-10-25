@@ -12,6 +12,7 @@ import Link from 'next/link';
 import Loader from '../../components/Loader';
 import { State } from '../../store/initialState';
 import HalfButton from '../../components/elements/buttons/HalfButton';
+import { DownloadPDFIcon } from '../../components/elements/images/SVG';
 
 const Policy = () => {
   const inputRef = useRef<HTMLInputElement>();
@@ -19,7 +20,7 @@ const Policy = () => {
   const [ pageInput, setPageInput ] = useState('')
   const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
-  const [ policy, getPolicy ] = useGetPolicies();
+  const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
 
   const { pid, page } = router.query;
@@ -119,7 +120,7 @@ const Policy = () => {
       <Head>
         <title>Climate Policy Document: {policy.policyName}</title>
       </Head>
-      <section className="flex flex-col flex-grow">
+      <section className="mt-8 flex flex-col flex-grow">
         <div className="container flex-grow flex flex-col justify-start">
           <div className="mb-4 flex flex-wrap md:flex-no-wrap justify-between items-end">
             <div className="w-full text-center mb-2 md:w-auto md:mb-0 md:text-left">
@@ -169,13 +170,22 @@ const Policy = () => {
             <Loader />
           :
           <div className="flex-grow bg-primary-dark-200 rounded-2xl p-4 md:p-8 md:my-8">
-            <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
-            <div className="my-4 text-primary-dark-400 flex justify-between items-end">
-              <a href={`${policy.url}#page=${page}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+            <div className="flex justify-between">
+              <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
+              <a href={`${policy.url}#page=${page}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 text-primary-light">
                 <span className="sr-only">Download PDF</span>
-                <img src="/images/download-pdf.svg" alt="Download PDF" title="Download PDF" style={{ width: '40px'}} />
+                <DownloadPDFIcon
+                  height="40"
+                  width="40"
+                />
               </a>
+            </div>
+            
+            <div className="my-4 text-primary-light flex justify-between items-end">
               <div>
+                {/* country flag, country name */}
+              </div>
+              <div className="text-primary-dark-500">
                 Page <span className="font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>

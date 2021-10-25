@@ -7,7 +7,7 @@ interface CloseProps {
 const Close = ({ onClick, size = '20' }: CloseProps) => {
   return (
     <button
-      className="focus:outline-none"
+      className="focus:outline-none pointer-events-auto"
       onClick={onClick}
       style={{
         height: `${size}px`,
