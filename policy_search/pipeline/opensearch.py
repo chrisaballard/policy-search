@@ -312,6 +312,7 @@ class OpenSearchIndex(BaseCallback):
         self,
         field_name: str,
         asc: bool = True,
+        keyword_filters: Optional[dict] = None,
         num_docs: int = 10000,
     ) -> List[dict]:
         """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
@@ -320,6 +321,7 @@ class OpenSearchIndex(BaseCallback):
             field_name (str): name of a text field, in dot notation
             asc (bool, optional): sort the results ascending (/descending). Defaults to True.
             num_docs (int, optional): the number of documents to return
+            keyword_filters (dict, optional): each key is a field to be filtered, and each value is a list of strings to filter on.
         """
 
         sort_order = "asc" if asc else "desc"
@@ -337,6 +339,16 @@ class OpenSearchIndex(BaseCallback):
                 }
             },
         }
+
+        if keyword_filters:
+            terms_clauses = []
+
+            for field, values in keyword_filters.items():
+                terms_clauses.append({"terms": {field: values}})
+
+            query["query"] = {}
+            query["query"]["bool"] = {}
+            query["query"]["bool"]["filter"] = terms_clauses
 
         query_result = self.es.search(body=query, index=self.index_name)
 
