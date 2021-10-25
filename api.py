@@ -27,9 +27,9 @@ opensearch_host = os.environ.get("opensearch_cluster", "https://localhost:9200")
 opensearch_user = os.environ.get("opensearch_user", None)
 opensearch_password = os.environ.get("opensearch_password", None)
 es = OpenSearchIndex(
-    es_url=opensearch_host, 
-    es_user=opensearch_user, 
-    es_password=opensearch_password, 
+    es_url=opensearch_host,
+    es_user=opensearch_user,
+    es_password=opensearch_password,
     es_connector_kwargs={
         "use_ssl": True, 
         "verify_certs": True, 
@@ -62,9 +62,14 @@ async def read_policies(
     return policy_table.scan(start, limit)
 
 
+async def read_policies_by_ids(ids: List[int]):
+    """Get policy metadata from a list of IDs"""
+    return [policy_table.get_document(_id) for _id in ids]
+
+
 @app.get("/policies/search/", response_model=PolicySearchResponse)
-def search_policies(
-    query: str,
+async def search_policies(
+    query: Optional[str] = None,
     start: Optional[int] = 0,
     limit: Optional[int] = 100,
     geography: Optional[List[str]] = Query(None),
@@ -76,6 +81,21 @@ def search_policies(
     else:
         kwd_filters = None
 
+    if query is None:
+        titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
+            "policy_name", asc=True, num_docs=start + limit, keyword_filters=kwd_filters
+        )
+        ids = [item["policy_id"] for item in titles_ids_alphabetical]
+        documents = await read_policies_by_ids(ids)
+        documents = documents[start : start + limit]
+
+        return {
+            "metadata": {
+                "numDocsReturned": len(documents),
+            },
+            "resultsByDocument": documents,
+        }
+
     # Encode query
     query_emb = query_encoder.encode(query)
 
@@ -86,7 +106,6 @@ def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
-       
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
@@ -98,10 +117,6 @@ def search_policies(
         hits_by_page = result["top_passage_hits"]["hits"]["hits"]
         # num_pages_with_hit = result["doc_count"]
         policy_id = result["key"]
-        if hits_by_page:
-            policy_name = hits_by_page[0]["_source"]["policy_name"]
-            policy_country_code = hits_by_page[0]["_source"]["country_code"]
-            policy_source_name = hits_by_page[0]["_source"]["source_name"]
 
         document_response = []
 
@@ -121,13 +136,19 @@ def search_policies(
                     }
                 )
 
+            doc_metadata = await read_policies_by_ids([policy_id])
+            doc_metadata = doc_metadata[0]
+
         # Add the query matches for this document
         query_results_by_doc.append(
             {
                 "policyId": policy_id,
-                "policyName": policy_name,
-                "countryCode": policy_country_code,
-                "sourceName": policy_source_name,
+                "policyName": doc_metadata.policy_name,
+                "policyType": doc_metadata.policy_type,
+                "countryCode": doc_metadata.country_code,
+                "sourceName": doc_metadata.source_name,
+                "url": doc_metadata.url,
+                "language": doc_metadata.language,
                 "resultsByPage": document_response,
             }
         )

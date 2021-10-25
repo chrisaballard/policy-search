@@ -61,7 +61,16 @@ class OpenSearchIndex(BaseCallback):
                 "index": {
                     "knn": True,
                     "knn.algo_param.ef_search": 100,  # TODO: tune me. see https://opensearch.org/docs/latest/search-plugins/knn/knn-index#index-settings
-                }
+                },
+                "analysis": {
+                    "normalizer": {
+                        "lowercase_asciifold": {
+                            "type": "custom",
+                            "char_filter": [],
+                            "filter": ["lowercase", "asciifolding"],
+                        }
+                    }
+                },
             },
             "mappings": {
                 "properties": {
@@ -83,7 +92,11 @@ class OpenSearchIndex(BaseCallback):
                                 },
                             },
                         },
-                    }
+                    },
+                    "policy_name": {
+                        "type": "keyword",
+                        "normalizer": "lowercase_asciifold",
+                    },
                 }
             },
         }
@@ -299,3 +312,59 @@ class OpenSearchIndex(BaseCallback):
             "country_code": doc.country_code,
             "source_name": doc.source_name,
         }
+
+    def get_docs_sorted_alphabetically(
+        self,
+        field_name: str,
+        asc: bool = True,
+        keyword_filters: Optional[dict] = None,
+        num_docs: int = 10000,
+    ) -> List[dict]:
+        """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
+
+        Args:
+            field_name (str): name of a text field, in dot notation
+            asc (bool, optional): sort the results ascending (/descending). Defaults to True.
+            num_docs (int, optional): the number of documents to return
+            keyword_filters (dict, optional): each key is a field to be filtered, and each value is a list of strings to filter on.
+        """
+
+        sort_order = "asc" if asc else "desc"
+
+        query = {
+            "size": 0,
+            "aggs": {
+                "sorted_field": {
+                    "terms": {
+                        "field": field_name,
+                        "order": {"_term": sort_order},
+                        "size": num_docs,
+                    },
+                    "aggs": {"ids": {"terms": {"field": "policy_id"}}},
+                }
+            },
+        }
+
+        if keyword_filters:
+            terms_clauses = []
+
+            for field, values in keyword_filters.items():
+                terms_clauses.append({"terms": {field: values}})
+
+            query["query"] = {}
+            query["query"]["bool"] = {}
+            query["query"]["bool"]["filter"] = terms_clauses
+
+        query_result = self.es.search(body=query, index=self.index_name)
+
+        sorted_docs = []
+
+        for doc_by_field in query_result["aggregations"]["sorted_field"]["buckets"]:
+            field_value = doc_by_field["key"]
+
+            for doc_by_id in doc_by_field["ids"]["buckets"]:
+                doc_id = doc_by_id["key"]
+
+                sorted_docs.append({"policy_id": doc_id, field_name: field_value})
+
+        return sorted_docs
