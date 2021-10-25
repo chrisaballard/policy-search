@@ -1,4 +1,5 @@
 import { YearRange } from "../../../model/yearRange";
+import MultiRange from "../../elements/inputs/MultiRange";
 import Range from "../../elements/inputs/Range";
 import FilterHeading from "./FilterHeading";
 
@@ -15,7 +16,8 @@ const ByRange = ({ type, clickable, filters, updateFilters}: ByRangeProps) => {
       clickable={clickable}
     >
       <div className="mt-2">
-        <Range />
+        {/* <Range /> */}
+        <MultiRange />
       </div>
     </FilterHeading>
   )

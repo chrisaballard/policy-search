@@ -1,14 +1,28 @@
-@mixin slider-thumb {
+@mixin slider-thumb() {
   height: 12px;
   width: 12px;
   border-radius: 50%;
   @apply bg-primary cursor-pointer border-none;
 }
 
-@mixin slider-track {
+@mixin slider-track() {
   width: 100%;
   height: 4px;
-  // background: rgba($grey_xxlight, 0.9);
   border-radius: 6px;
   @apply bg-primary-dark-200;
+}
+
+@mixin multi-track() {
+  background: none; /* get rid of Firefox track background */
+  height: 100%;
+  width: 100%;
+}
+
+@mixin multi-thumb() {
+  background: currentcolor;
+  border: none; /* get rid of Firefox thumb border */
+  border-radius: 0; /* get rid of Firefox corner rounding */
+  pointer-events: auto; /* catch clicks */
+  width: $h;
+  height: $h;
 }

@@ -20,6 +20,7 @@ import useFilters from '../hooks/useFilters';
 import { State } from '../store/initialState';
 import PolicyList from '../components/policies/PolicyList';
 import Loader from '../components/Loader';
+import MultiRange from '../components/elements/inputs/MultiRange';
 
 const Home = React.memo((): JSX.Element => {
   const state = useSelector((state: State ) => state)

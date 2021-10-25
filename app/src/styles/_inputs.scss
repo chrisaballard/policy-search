@@ -1,0 +1,125 @@
+input[type='number'] {
+  -moz-appearance: textfield; /* Firefox */
+}
+
+/* Range slider */
+.range-slider {
+  /* SLIDER THUMB */
+
+  &::-webkit-slider-thumb {
+    @include slider-thumb;
+  }
+  &::-moz-range-thumb {
+    @include slider-thumb;
+  }
+  &::-ms-thumb {
+    @include slider-thumb;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: -4px; /* You need to specify a margin in Chrome, but in Firefox and IE it is automatic */
+  }
+  &:focus {
+    outline: none; /* Removes the blue border. You should probably do some kind of focus styling for accessibility reasons though. */
+  }
+
+  /* SLIDER TRACK */
+
+  &::-webkit-slider-runnable-track {
+    @include slider-track;
+  }
+  &::-moz-range-track {
+    @include slider-track;
+  }
+  &::-ms-track {
+    @include slider-track;
+  }
+
+  &:focus::-webkit-slider-runnable-track {
+    @apply bg-primary-dark-200;
+  }
+  &::-ms-track {
+    /* Hides the slider so custom styles can be added */
+    background: transparent;
+    border-color: transparent;
+    color: transparent;
+  }
+  // ms special styling
+  &::-ms-fill-lower {
+    @include slider-track;
+  }
+  &:focus::-ms-fill-lower {
+    @apply bg-primary-dark-400;
+  }
+  &::-ms-fill-upper {
+    @include slider-track;
+  }
+  input[type='range']:focus::-ms-fill-upper {
+    @apply bg-primary-dark-400;
+  }
+}
+
+// Multi-thumb slider
+.multi-range-wrap {
+  display: grid;
+  grid-template-rows: max-content $h;
+  grid-template: repeat(2, max-content) #{$h}/ 1fr 1fr;
+  margin: 1em auto;
+  width: $w;
+  overflow: hidden; // in case <label> elements overflow
+  position: relative;
+  background: /* emulate track with wrapper background */ linear-gradient(
+    0deg,
+    #ccc $h,
+    transparent 0
+  );
+  [id='multi-lbl'] {
+    grid-column: 1 / span 2;
+  }
+  .sr-only {
+    position: absolute;
+    clip-path: inset(50%);
+  }
+
+  input[type='range'] {
+    &::-webkit-slider-runnable-track,
+    &::-webkit-slider-thumb,
+    & {
+      -webkit-appearance: none;
+    }
+    grid-column: 1 / span 2;
+    grid-row: 3;
+    background: none; /* get rid of white Chrome background */
+    color: #000;
+    font: inherit; /* fix too small font-size in both Chrome & Firefox */
+    margin: 0;
+    pointer-events: none; /* let clicks pass through */
+
+    &::-webkit-slider-runnable-track {
+      @include multi-track;
+    }
+    &::-moz-range-track {
+      @include multi-track;
+    }
+
+    &::-webkit-slider-thumb {
+      @include multi-thumb;
+    }
+    &::-moz-range-thumb {
+      @include multi-thumb;
+    }
+  }
+  output {
+    grid-row: 2;
+
+    &:last-child {
+      text-align: right;
+    }
+
+    &::after {
+      counter-reset: c var(--c);
+      content: '--' attr(for) ': ' counter(c) ';';
+    }
+  }
+}
