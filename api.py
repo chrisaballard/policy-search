@@ -31,10 +31,10 @@ es = OpenSearchIndex(
     es_user=opensearch_user,
     es_password=opensearch_password,
     es_connector_kwargs={
-        "use_ssl": True, 
-        "verify_certs": True, 
-        "ssl_show_warn": False, 
-        "timeout": 120
+        "use_ssl": True,
+        "verify_certs": True,
+        "ssl_show_warn": False,
+        "timeout": 120,
     },
 )
 query_encoder = SBERTEncoder("msmarco-distilbert-dot-v5")
@@ -140,18 +140,19 @@ async def search_policies(
             doc_metadata = doc_metadata[0]
 
         # Add the query matches for this document
-        query_results_by_doc.append(
-            {
-                "policyId": policy_id,
-                "policyName": doc_metadata.policy_name,
-                "policyType": doc_metadata.policy_type,
-                "countryCode": doc_metadata.country_code,
-                "sourceName": doc_metadata.source_name,
-                "url": doc_metadata.url,
-                "language": doc_metadata.language,
-                "resultsByPage": document_response,
-            }
-        )
+        if len(document_response) > 0:
+            query_results_by_doc.append(
+                {
+                    "policyId": policy_id,
+                    "policyName": doc_metadata.policy_name,
+                    "policyType": doc_metadata.policy_type,
+                    "countryCode": doc_metadata.country_code,
+                    "sourceName": doc_metadata.source_name,
+                    "url": doc_metadata.url,
+                    "language": doc_metadata.language,
+                    "resultsByPage": document_response,
+                }
+            )
 
     response = {
         "metadata": {
