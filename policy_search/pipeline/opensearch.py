@@ -3,9 +3,6 @@
 
 
 from typing import List, Optional
-from opensearchpy.client import logger
-from opensearchpy.exceptions import TransportError
-from urllib3.exceptions import ReadTimeoutError
 
 from opensearchpy import OpenSearch, helpers
 
@@ -140,6 +137,7 @@ class OpenSearchIndex(BaseCallback):
             self._connect_to_elasticsearch()
 
         try:
+            self.es.indices.put_settings({"index": {"refresh_interval": -1}})
             bulk_loader = helpers.streaming_bulk(
                 client=self.es,
                 index=self.index_name,
@@ -149,7 +147,7 @@ class OpenSearchIndex(BaseCallback):
                 max_retries=5,
                 chunk_size=1,
                 initial_backoff=5,
-                max_backoff=60
+                max_backoff=500,
             )
 
             successes = 0
@@ -160,13 +158,14 @@ class OpenSearchIndex(BaseCallback):
                     errs.append(action)
 
                 successes += ok
-        except ReadTimeoutError as e:
-            logger.error("Read timeout error occured when processing batch, igoring batch")
-        except TransportError as e:
-            logger.error("Transport error occured when processing batch, ignoring batch: " + str(e))
+        # except ReadTimeoutError as e:
+        #     logger.error("Read timeout error occured when processing batch, igoring batch")
+        # except TransportError as e:
+        #     logger.error("Transport error occured when processing batch, ignoring batch: " + str(e))
         finally:
             # Clear in memory store of documents to load ready for next batch
             self._docs_to_load = []
+            self.es.indices.put_settings({"index": {"refresh_interval": "1s"}})
 
     def get_doc_by_id(
         self,
