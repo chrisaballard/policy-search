@@ -42,11 +42,15 @@ dynamodb-local   java -jar DynamoDBLocal.ja ...   Up      0.0.0.0:8000->8000/tcp
 
 ### Load policy corpus into dynamodb
 
-Execute the following command from the host machine:
+Execute the following command from the host machine, with the required data files in the `/data` folder:
 
 ```
-docker exec cpr-policy-api poetry run python cli.py load /usr/src/app/data/corpus /usr/src/app/data/corpus/processed_policies.csv
+docker exec cpr-policy-api poetry run python cli.py load /usr/src/app/data/corpus /usr/src/app/data/corpus/processed_policies.csv /usr/src/app/data/policy_text_embeddings_mapping_msmarco-distilbert-dot-v5.pkl.gz /usr/src/app/data/policy_text_embeddings_msmarco-distilbert-dot-v5_dim_768.memmap /usr/src/app/data/policy_text_predictions_multi-qa-MiniLM-L6-cos-v1.csv.gz 768
 ```
+
+You can also pass the following optional parameters into the CLI:
+
+* `--num-docs`/`-n`: the number of documents, from the start of the dataset, to load in.
 
 This will create a table called `Policies` in dynamodb.
 
