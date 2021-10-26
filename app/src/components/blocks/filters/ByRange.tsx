@@ -17,7 +17,7 @@ const ByRange = ({ type, clickable, filters, updateFilters}: ByRangeProps) => {
     >
       <div className="mt-2">
         {/* <Range /> */}
-        <MultiRange />
+        <MultiRange min="1947" max="2021" />
       </div>
     </FilterHeading>
   )

@@ -1,6 +1,10 @@
 import { useEffect } from 'react';
 
-const MultiRange = () => {
+interface MultiRangeProps {
+  min: string;
+  max: string;
+}
+const MultiRange = ({min, max}) => {
   useEffect(() => {
     addEventListener('input', e => {
       let _t = e.target;
@@ -13,18 +17,18 @@ const MultiRange = () => {
       role='group'
       aria-labelledby='multi-lbl'
       style={{ 
-        '--a': '-30',
-        '--b': '20',
-        '--min': '-50',
-        '--max': '50'
+        '--a': min,
+        '--b': max,
+        '--min': min,
+        '--max': max
        }}>
     <div id='multi-lbl'>Multi thumb slider:</div>
     <label className='sr-only' htmlFor='a'>Value A:</label>
-    <input id='a' type='range' min='-50' defaultValue='-30' max='50'/>
-    <output for='a' style={{'--c': 'var(--a)'}}></output>
+    <input id='a' type='range' min={min} defaultValue={min} max={max} />
+    <output htmlFor='a' style={{'--c': 'var(--a)'}}></output>
     <label className='sr-only' htmlFor='b'>Value B:</label>
-    <input id='b' type='range' min='-50' defaultValue='20' max='50'/>
-    <output for='b' style={{'--c': 'var(--b)'}}></output>
+    <input id='b' type='range' min={min} defaultValue={max} max={max}/>
+    <output htmlFor='b' style={{'--c': 'var(--b)'}}></output>
   </div>
   )
 }

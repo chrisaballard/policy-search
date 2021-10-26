@@ -19,9 +19,13 @@
 }
 
 @mixin multi-thumb() {
+  border: solid calc(0.5 * var(--r)) transparent;
+  border-radius: 50%; /* make circular */
+  box-sizing: border-box; /* different between Chrome & Firefox */
+  /* box-sizing needed now that we have a non-zero border */
   background: currentcolor;
-  border: none; /* get rid of Firefox thumb border */
-  border-radius: 0; /* get rid of Firefox corner rounding */
+  // border: none; /* get rid of Firefox thumb border */
+  // border-radius: 0; /* get rid of Firefox corner rounding */
   pointer-events: auto; /* catch clicks */
   width: $h;
   height: $h;

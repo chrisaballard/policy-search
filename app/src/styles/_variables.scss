@@ -1,2 +1,5 @@
-$w: 20em;
+$w: 100%;
 $h: 1em;
+$d: 0.5 * $h; // thumb diameter
+$r: 0.5 * $d; // thumb radius
+$uw: calc($w - $d); // useful width

@@ -71,9 +71,33 @@ input[type='number'] {
   position: relative;
   background: /* emulate track with wrapper background */ linear-gradient(
     0deg,
-    #ccc $h,
+    #ccc 4px,
     transparent 0
   );
+  background-position: 0 -6px;
+  background-repeat: no-repeat;
+  --dif: calc(var(--max) - var(--min));
+
+  &::before,
+  &::after {
+    grid-column: 1 / span 2;
+    grid-row: 3;
+    height: 4px;
+    margin-top: 6px;
+    content: '';
+    @apply bg-primary-light;
+  }
+
+  &::before {
+    margin-left: calc(#{$r} + (var(--a) - var(--min)) / var(--dif) *#{$uw});
+    width: calc((var(--b) - var(--a)) / var(--dif) *#{$uw});
+  }
+
+  &::after {
+    margin-left: calc(#{$r} + (var(--b) - var(--min)) / var(--dif) *#{$uw});
+    width: calc((var(--a) - var(--b)) / var(--dif) *#{$uw});
+  }
+
   [id='multi-lbl'] {
     grid-column: 1 / span 2;
   }
@@ -95,6 +119,10 @@ input[type='number'] {
     font: inherit; /* fix too small font-size in both Chrome & Firefox */
     margin: 0;
     pointer-events: none; /* let clicks pass through */
+    cursor: grab;
+    &:active {
+      cursor: grabbing;
+    }
 
     &::-webkit-slider-runnable-track {
       @include multi-track;
