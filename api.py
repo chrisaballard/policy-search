@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from elasticsearch import NotFoundError as ElasticNotFoundError
+from opensearchpy import NotFoundError as OpenSearchNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
 from policy_search.pipeline.opensearch import OpenSearchIndex
@@ -13,7 +13,6 @@ from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchRes
 from policy_search.pipeline.semantic_search import SBERTEncoder
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
 from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
-
 
 POLICIES_TABLE = "Policies"
 
@@ -187,17 +186,19 @@ def get_policy_text_by_page(
         es_doc = es.get_doc_by_id(doc_id, _source=["text.text_id", "text.text"])
         page_text = [item["text"] for item in es_doc["_source"]["text"]]
 
+    except OpenSearchNotFoundError:
+        page_text = []
+
+    finally:
         # Get the total page count for the document
         page_count = es.get_page_count_for_doc(policy_id)
-        return {
-            "documentMetadata": {"pageCount": page_count},
-            "pageText": page_text,
-        }
-
-    except ElasticNotFoundError:
-        raise HTTPException(
-            status_code=404, detail="Policy document or page within it not found"
-        )
+        if page_count:
+            return {
+                "documentMetadata": {"pageCount": page_count},
+                "pageText": page_text,
+            }
+        else:
+            raise HTTPException(404, "Document does not exist in OpenSearch database.")
 
 
 @app.get("/geographies", response_model=List[Geography])
