@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { setFilters, clearFilters } from '../actions/filters';
+import { YearRange } from '../model/yearRange';
 import { State } from '../store/initialState';
 
 const useFilters = () => {
@@ -18,10 +19,19 @@ const useFilters = () => {
         newFilters = [...activeFilters, newItem];
       }
     }
+    else if(action === 'replace') {
+      const newItem = list.find((item) => item[key] === name);
+      newFilters = [...activeFilters, newItem];
+    }
     else {
+      // remove
       newFilters = activeFilters.filter((item) => item[key] !== name);
     }
     dispatch(setFilters({...filters, [`${type}Filters`]: newFilters}))
+  }
+
+  const replaceFiltersObj = (type: string, obj: YearRange) => {
+    dispatch(setFilters({...filters, [`${type}Filters`]: obj}))
   }
 
   const removeFilters = () => {
@@ -35,7 +45,7 @@ const useFilters = () => {
     return false;
   }
 
-  return [ removeFilters, updateFilters, checkForFilters ] as const;
+  return [ removeFilters, updateFilters, checkForFilters, replaceFiltersObj ] as const;
 }
 
 export default useFilters;

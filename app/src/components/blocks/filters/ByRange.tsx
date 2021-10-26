@@ -7,17 +7,20 @@ interface ByRangeProps {
   type: string;
   clickable?: boolean;
   filters: YearRange;
-  updateFilters(action: string, type: string, name: string): void;
+  replaceFiltersObj(type: string, obj: Object): void;
 }
-const ByRange = ({ type, clickable, filters, updateFilters}: ByRangeProps) => {
+const ByRange = ({ type, clickable, filters, replaceFiltersObj}: ByRangeProps) => {
   return (
     <FilterHeading
       type={type}
       clickable={clickable}
     >
       <div className="mt-2">
-        {/* <Range /> */}
-        <MultiRange min="1947" max="2021" />
+        <MultiRange 
+          min="1947"
+          max="2021"
+          replaceFiltersObj={replaceFiltersObj}
+        />
       </div>
     </FilterHeading>
   )

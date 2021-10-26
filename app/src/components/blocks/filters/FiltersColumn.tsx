@@ -15,6 +15,7 @@ interface FiltersProps {
   filters: Filters;
   removeFilters(): void;
   checkForFilters(): boolean;
+  replaceFiltersObj(type: string, obj: Object): void;
 }
 
 const FiltersColumn = React.memo(({
@@ -23,7 +24,8 @@ const FiltersColumn = React.memo(({
   updateFilters,
   filters,
   removeFilters,
-  checkForFilters
+  checkForFilters,
+  replaceFiltersObj,
 }: FiltersProps) => {
   const [ visible, setVisible ] = useState(false);
   const renderButton = () => {
@@ -93,7 +95,7 @@ const FiltersColumn = React.memo(({
           type="years"
           clickable={false}
           filters={filters.yearFilters}
-          updateFilters={updateFilters}
+          replaceFiltersObj={replaceFiltersObj}
         />
         
       </div>
