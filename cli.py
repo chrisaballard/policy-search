@@ -29,8 +29,10 @@ def get_doc_fetcher(
         csv_filename, doc_filename_attribute, cclw_attributes, fetch_count
     )
 
-with open('./config.yml', 'rt') as config_f:
+
+with open("./config.yml", "rt") as config_f:
     config = yaml.safe_load(config_f)
+
 
 @click.group()
 def cli():
@@ -50,6 +52,12 @@ def cli():
     default=DOC_FILENAME_ATTRIBUTE,
     help="name of column in csv containing text filename",
 )
+@click.option(
+    "-n",
+    "--num-docs",
+    help="number of documents to load, from the start of the dataset. If this option is not used, all documents are loaded.",
+    type=int,
+)
 def load(
     data_path: Path,
     document_filename: str,
@@ -58,6 +66,7 @@ def load(
     predictions_filename: str,
     doc_filename_attribute: str,
     embedding_dim: int,
+    num_docs: int,
 ):
     """Load already parsed documents from a given dataset file into dynamodb and
     opensearch"""
@@ -70,7 +79,9 @@ def load(
     dynamodb_url = f"http://{dynamodb_host}:{dynamodb_port}"
 
     # Get the document fetcher
-    doc_fetcher = get_doc_fetcher(document_path, doc_filename_attribute)
+    doc_fetcher = get_doc_fetcher(
+        document_path, doc_filename_attribute, fetch_count=num_docs
+    )
 
     # Initialise passage parser
     doc_parser = PassageParser(
@@ -98,7 +109,7 @@ def load(
             "verify_certs": True,
             "ssl_show_warn": False,
             "retry_on_timeout": True,
-            "timeout": 60
+            "timeout": 60,
         },
         embedding_dim=embedding_dim,
     )
