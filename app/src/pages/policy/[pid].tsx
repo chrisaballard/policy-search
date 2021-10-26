@@ -111,7 +111,7 @@ const Policy = () => {
 
   useEffect(() => {
     if(policyPage.pageText) {
-      highlightText();
+      // highlightText();
     }
   }, [policyPage])
 

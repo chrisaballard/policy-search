@@ -1,4 +1,5 @@
 import { useSelector } from 'react-redux';
+import { PER_PAGE } from '../constants';
 import { State } from '../store/initialState';
 
 const useBuildQueryString = () => {
@@ -7,12 +8,12 @@ const useBuildQueryString = () => {
   const { searchQuery } = searchResult;
 
   const buildQueryString = (query?: string) => {
-    let str = query ? `query=${query}` : `query=`
+    let str = query ? `query=${query}&` : ``
     // should go through each set of filters when we have them
     // for now, only geography
     if(filters.geographyFilters.length) {
       filters.geographyFilters.forEach((item) => {
-        str += `&geography=${item.code}`
+        str += `geography=${item.code}`
       })
     }
     if(filters.sectorFilters.length) {

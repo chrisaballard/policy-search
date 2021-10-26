@@ -38,13 +38,13 @@ const SearchResults = ({
   return (
     <section className="w-full">
         <div className="pt-8 md:pt-0 md:pl-4">
-          {/* <h2 className="text-2xl font-bold leading-tight">Policies</h2> */}
-        {searchTerms.length ?
+
+        {/* {searchTerms.length ?
           <div className="mt-4">
             {searchTerms.length && !processing ? renderMessage() : null}
           </div>
           : null
-        }
+        } */}
           
             {policies.length ? 
               <>

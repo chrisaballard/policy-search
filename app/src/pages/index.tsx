@@ -115,7 +115,8 @@ const Home = React.memo((): JSX.Element => {
 
   useDidUpdateEffect(() => {
     if(geographyList.length && !policy_db?.policies.length) {
-      getPolicies();
+      // getPolicies();
+      newSearch('');
     }
   }, [geographyList])
   
@@ -166,7 +167,14 @@ const Home = React.memo((): JSX.Element => {
         />
         <section className="w-full">
           <div className="pt-8 md:pt-0 md:pl-4">
-            {renderContent()}
+            <SearchResults 
+              policies={resultsByDocument} 
+              searchTerms={searchQuery}
+              processing={processing}
+              geographyList={geographyList}
+              handleNavigation={handleNavigation}
+              endOfList={endOfList}
+            />
             {processing ? 
               <Loader />
               : null
