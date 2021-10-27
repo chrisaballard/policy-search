@@ -26,6 +26,9 @@ const useBuildQueryString = () => {
         // TODO: build query string when API ready
       })
     }
+
+    // years
+    str += `&yearMin=${filters.yearFilters.min}&yearMax=${filters.yearFilters.max}`
     return str;
     
   }

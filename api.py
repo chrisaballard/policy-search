@@ -41,11 +41,11 @@ query_encoder = SBERTEncoder("msmarco-distilbert-dot-v5")
 
 app = FastAPI()
 
-# Add CORS middleware to allow cross origin requests from any port on localhost
-# Note: this is likely to need changing for deployment
+# Add CORS middleware to allow cross origin requests from any port
+# NOTE: this is likely to need changing for deployment
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"https?://localhost:?[0-9]*",
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
