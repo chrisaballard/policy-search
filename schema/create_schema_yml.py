@@ -35,7 +35,11 @@ def get_unique_keywords(
     """
 
     keywords = level_keywords.unique().tolist()
-    keywords = [k.lower().strip() for k in keywords]
+    keywords = [
+        k.lower().strip() 
+        for k in keywords
+        if not pd.isna(k)
+    ]
 
     return keywords
 
@@ -50,6 +54,7 @@ def get_level(
 
     for level_ix, (level_name, level_df) in enumerate(df.groupby(level_name)):
         level = {'id': level_ix, 'name': level_name}
+        print(level_name)
 
         if next_level_name not in level_df:
             keywords = get_unique_keywords(level_df.keywords)
@@ -97,4 +102,4 @@ def main(data_path: Path):
 
 
 if __name__ == '__main__':
-    main(Path('./data'))
+    main(Path('./schema/'))
