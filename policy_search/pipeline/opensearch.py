@@ -137,7 +137,6 @@ class OpenSearchIndex(BaseCallback):
             self._connect_to_elasticsearch()
 
         try:
-            self.es.indices.put_settings({"index": {"refresh_interval": -1}})
             bulk_loader = helpers.streaming_bulk(
                 client=self.es,
                 index=self.index_name,
@@ -165,7 +164,6 @@ class OpenSearchIndex(BaseCallback):
         finally:
             # Clear in memory store of documents to load ready for next batch
             self._docs_to_load = []
-            self.es.indices.put_settings({"index": {"refresh_interval": "1s"}})
 
     def get_doc_by_id(
         self,
