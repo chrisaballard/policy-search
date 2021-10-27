@@ -18,6 +18,7 @@ import MultiSelect from '../components/blocks/filters/MultiSelect';
 import useFilters from '../hooks/useFilters';
 import { State } from '../store/initialState';
 import Loader from '../components/Loader';
+import ApexChart from '../components/ApexChart';
 
 const Home = React.memo((): JSX.Element => {
   const state = useSelector((state: State ) => state)
@@ -139,6 +140,7 @@ const Home = React.memo((): JSX.Element => {
         />
         <section className="w-full">
           <div className="pt-8 md:pt-0 md:pl-4">
+            <ApexChart />
             <SearchResults 
               policies={resultsByDocument} 
               searchTerms={searchQuery}
