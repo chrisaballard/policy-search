@@ -1,7 +1,6 @@
 import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
-import { SearchNavigation } from ".";
 import { Policy } from '../../model/policy';
 
 interface SearchResultsProps {
@@ -9,42 +8,45 @@ interface SearchResultsProps {
   geographyList: Geography[];
   processing: boolean;
   searchTerms: string;
-  handleNavigation(): void;
-  endOfList: boolean;
 }
 const SearchResults = ({
   policies,
   processing,
   geographyList,
   searchTerms,
-  handleNavigation,
-  endOfList
 }: SearchResultsProps) => {
 
   const renderMessage = () => {
-    if(!policies.length) {
+    if(searchTerms?.length) {
+      return (
+        <div className="text-2xl  mt-6 md:mt-0">
+          Results for <span className="font-bold">"{searchTerms}"</span>:
+        </div>
+      )
+    }
+    if(!policies.length && searchTerms?.length) {
       return (
       <div className="text-red-500 text-2xl">
         There are no results for your query, please try a different search.
       </div>
       )
     }
-    return (
-      <div className="text-2xl  mt-6 md:mt-0">
-        Results for <span className="font-bold">"{searchTerms}"</span>:
-      </div>
-    )
+    else {
+      return (
+        <div className="text-2xl  mt-6 md:mt-0">
+          Latest Policies:
+        </div>
+      )
+    }
   }
   return (
     <section className="w-full">
         <div className="pt-8 md:pt-0 md:pl-4">
 
-        {/* {searchTerms.length ?
-          <div className="mt-4">
-            {searchTerms.length && !processing ? renderMessage() : null}
-          </div>
-          : null
-        } */}
+        {!processing ?
+          renderMessage()
+        :
+        null}
           
             {policies.length ? 
               <>

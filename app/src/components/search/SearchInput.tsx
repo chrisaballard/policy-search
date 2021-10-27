@@ -10,6 +10,7 @@ interface SearchInputProps {
 }
 const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): JSX.Element => {
   const [ searchOpen, setSearchOpen ] = useState(false);
+  const [ searchActivated, setSearchActivated ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
   const router = useRouter();
   const [ buildQueryString ] = useBuildQueryString();
@@ -21,8 +22,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
   const handleClick = (e: React.FormEvent<HTMLButtonElement> ): void => {
     e.preventDefault();
     setSearchOpen(!searchOpen);
-    // clearResult();
-    // setInput('');
+    setSearchActivated(true);
   }
   const handleChange = () => {
     setInput(searchInput.current.value)
@@ -38,13 +38,20 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
     return () => clearTimeout(timeOutId);
   }, [input]);
 
-  useEffect(() => {
+  useDidUpdateEffect(() => {
     // toggle open/close of search field
-      setTimeout(() => {
-        if(searchInput.current && searchOpen) {
-          searchInput.current.focus();
-        }
-      }, 800);
+    if(searchInput.current && searchOpen) {
+      searchInput.current.focus();
+    }
+    else {
+      clearResult();
+      setInput('');
+    }
+    // focus on input field
+    if(searchActivated && searchInput.current) {
+      searchInput.current.focus();
+    }
+
   }, [searchOpen]);
 
 
@@ -58,11 +65,11 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
+            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
-            className={`md:ml-64 search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
+            className={`md:ml-64 search-input-wrapper transition-all duration-300 ${searchActivated ? 'expanded' : ''}`}>
               <input 
                 id="search-input"
                 ref={searchInput}
@@ -75,15 +82,15 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
           <button
             type="button"
             onClick={handleClick} ref={searchButton}
-            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchOpen ? 'collapsed' : ''}`}>
+            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
               <img 
                 src="/images/close.svg" 
                 alt="Close icon"
-                className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
+                className={`search-btn-close ${input.length ? 'opacity-100': 'opacity-0'}`} />
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
-                className={`search-btn-search ${searchOpen ? 'opacity-0': 'opacity-100'}`} />
+                className={`search-btn-search ${!input.length ? 'opacity-100': 'opacity-0'}`} />
           </button>
         </form>
       </div>
