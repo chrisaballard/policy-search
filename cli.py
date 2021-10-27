@@ -115,7 +115,7 @@ def load(
     )
 
     # Initialise document processor, add callback objects and process text
-    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=10)
+    doc_processor = DocumentProcessor(doc_fetcher, doc_parser, n_batch=50)
     doc_processor.add_callback(dynamodb_table)
     doc_processor.add_callback(search_index)
     doc_processor.process_text()
