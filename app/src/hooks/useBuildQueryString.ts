@@ -12,8 +12,8 @@ const useBuildQueryString = () => {
     // should go through each set of filters when we have them
     // for now, only geography
     if(filters.geographyFilters.length) {
-      filters.geographyFilters.forEach((item) => {
-        str += `geography=${item.code}`
+      filters.geographyFilters.forEach((item, index) => {
+        str += `${index > 0 ? '&' : ''}geography=${item.code}`
       })
     }
     if(filters.sectorFilters.length) {
