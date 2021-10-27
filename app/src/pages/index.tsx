@@ -37,7 +37,7 @@ const Home = React.memo((): JSX.Element => {
   // custom hooks
   const [ searchResult, getResult, clearResult ] = useGetSearchResult();
   const setGeographies = useGeographies();
-  const [ removeFilters, updateFilters, checkForFilters ] = useFilters();
+  const [ removeFilters, updateFilters, checkForFilters, replaceFiltersObj ] = useFilters();
   const setSectors = useSectors();
   const setInstruments = useInstruments();
   const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
@@ -163,6 +163,7 @@ const Home = React.memo((): JSX.Element => {
           filters={filters}
           headingClick={openSlideOut}
           checkForFilters={checkForFilters}
+          replaceFiltersObj={replaceFiltersObj}
         />
         <section className="w-full">
           <div className="pt-8 md:pt-0 md:pl-4">

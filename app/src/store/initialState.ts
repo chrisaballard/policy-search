@@ -55,6 +55,10 @@ const initialState = {
     geographyFilters: [],
     sectorFilters: [],
     instrumentFilters: [],
+    yearFilters: {
+      min: 1947,
+      max: 2021
+    }
   },
   policyPage: {
     documentMetadata: {

@@ -3,8 +3,8 @@ import { AppProps } from 'next/app'
 import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { useStore } from '../store';
-import '../styles/main.scss'
-import '../styles/flag-icon.css'
+import '../styles/main.scss';
+import '../styles/flag-icon.css';
 
 function MyApp({ Component, pageProps }: AppProps) {
 
