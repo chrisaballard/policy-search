@@ -14,6 +14,6 @@ const useSetStatus = () => {
     dispatch(setStatus(data));
   }
   
-  return [status, setProcessing] as const;
+  return setProcessing;
 }
 export default useSetStatus;

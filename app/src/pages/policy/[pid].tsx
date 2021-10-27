@@ -11,19 +11,21 @@ import Head from 'next/head';
 import Link from 'next/link';
 import Loader from '../../components/Loader';
 import { State } from '../../store/initialState';
+import HalfButton from '../../components/elements/buttons/HalfButton';
+import { DownloadPDFIcon } from '../../components/elements/images/SVG';
 
 const Policy = () => {
-  const inputRef = useRef();
+  const inputRef = useRef<HTMLInputElement>();
   const router = useRouter();
   const [ pageInput, setPageInput ] = useState('')
   const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
-  const [ policy, getPolicy ] = useGetPolicies();
-  const [ status, setProcessing ] = useSetStatus();
-  const { processing } = status;
+  const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
+  const setProcessing = useSetStatus();
+
   const { pid, page } = router.query;
   const state = useSelector((state: State ) => state)
-  const { searchResult: { searchQuery } } = state;
+  const { searchResult: { searchQuery }, status: { processing } } = state;
 
 
   const loadPolicyPage = () => {
@@ -33,7 +35,7 @@ const Policy = () => {
   }
 
   const changePageNumber = (action: string): void => {
-    let p = parseInt(page);
+    let p = parseInt(page as string);
     if(action === 'prev') {
       p -= 1;
     }
@@ -44,11 +46,15 @@ const Policy = () => {
   }
 
   const handleInputChange = (): void => {
-    let n = inputRef.current.value;
+    let n: number;
+    if(inputRef.current) {
+      n = parseInt(inputRef.current.value);
+    }
+    
     if(n > policyPage.documentMetadata.pageCount) {
       n = policyPage.documentMetadata.pageCount;
     }
-    setPageInput(n);
+    setPageInput(n.toString());
   }
 
   const handlePageChange = (e: React.FormEvent<HTMLButtonElement>): void => {
@@ -114,18 +120,18 @@ const Policy = () => {
       <Head>
         <title>Climate Policy Document: {policy.policyName}</title>
       </Head>
-      <section>
-        <div className="container">
+      <section className="mt-8 flex flex-col flex-grow">
+        <div className="container flex-grow flex flex-col justify-start">
           <div className="mb-4 flex flex-wrap md:flex-no-wrap justify-between items-end">
             <div className="w-full text-center mb-2 md:w-auto md:mb-0 md:text-left">
               <Link href='/'>
-                <a className="text-gray-500 hover:text-black transition duration-300">
+                <a className="hover:text-primary-light transition duration-300">
                   &laquo; Back to search
                 </a>
               </Link>
             </div>
             
-            <div>
+            <div className="mt-2 md:mt-0">
               <form className="flex items-end">
                 <span>Go to page:</span>
                 <input 
@@ -143,39 +149,54 @@ const Policy = () => {
             </div>
 
             <div>
-            <button
-              onClick={() => { changePageNumber('prev') }}
-              style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-l-lg border-r border-white focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === 0 ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
-            >
-              &laquo;
-            </button>
-            <button
-              onClick={() => { changePageNumber('next') }}
-              style={{height: '36px'}}
-              className={`bg-black text-white px-4 rounded-r-lg focus:outline-black hover:bg-gray-700 transition duration-300 ${parseInt(page) === policyPage.documentMetadata.pageCount ? 'pointer-events-none bg-gray-300 hover:bg-gray-300' : ''}`}
-            >
-              &raquo;
-            </button>
-              
+              <HalfButton 
+                side='left' 
+                onClick={ () => { changePageNumber('prev') }} 
+                active={parseInt(page as string) > 1}
+              >
+                &laquo;
+              </HalfButton>
+              <HalfButton 
+                side='right' 
+                onClick={ () => { changePageNumber('next') }} 
+                active={parseInt(page as string) < policyPage.documentMetadata.pageCount}
+              >
+                &raquo;
+              </HalfButton>
             </div>
           </div>
 
           {processing ?
             <Loader />
           :
-          <div className="bg-gray-100 rounded-2xl p-4 md:p-8 my-8">
-            <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
-            <div className="my-4 text-gray-400 flex justify-between items-end">
-              <a href={`${policy.url}#page=${page}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80">
+          <div className="flex-grow bg-primary-dark-200 rounded-2xl p-4 md:p-8 md:my-8">
+            <div className="flex justify-between">
+              <h1 className="text-2xl md:text-4xl leading-relaxed">{policy.policyName}</h1>
+              <a href={`${policy.url}#page=${page}`} target="_blank" rel="noopener noreferrer" className="hover:opacity-80 text-primary-light">
                 <span className="sr-only">Download PDF</span>
-                <img src="/images/download-pdf.svg" alt="Download PDF" title="Download PDF" style={{ width: '40px'}} />
+                <DownloadPDFIcon
+                  height="40"
+                  width="40"
+                />
               </a>
+            </div>
+            
+            <div className="my-4 text-primary-light flex justify-between items-end">
               <div>
-                Page <span className="text-black font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
+                {/* country flag, country name */}
+              </div>
+              <div className="text-primary-dark-500">
+                Page <span className="font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>
-            <div className="mt-6 text-gray-600" dangerouslySetInnerHTML={{__html: pageText}} />
+            {pageText.length ? 
+            <div className="mt-6 text-primary-dark-600" dangerouslySetInnerHTML={{__html: pageText}} />
+            : 
+            <div className="my-12 text-primary-dark-600">
+              <p>This page has been intentionally left blank.</p>
+            </div>
+            }
+            
           </div>
           }
           

@@ -31,11 +31,12 @@ class DocumentProcessor():
 
         for doc_ix, (doc, doc_structure) in tqdm(enumerate(
             self._fetcher.get_text(self._parser, 'structure')), unit='docs'):
-            for callback in self._callbacks.values():
-                callback.add(doc=doc, doc_structure=doc_structure)
+            if len(doc_structure.keys()) > 0:
+                for callback in self._callbacks.values():
+                    callback.add(doc=doc, doc_structure=doc_structure)
 
-                if (doc_ix > 0 and doc_ix % self._n_batch == 0) or (doc_ix == self._fetcher.n_docs - 1):
-                    callback.process_batch()
+                    if (doc_ix > 0 and doc_ix % self._n_batch == 0) or (doc_ix == self._fetcher.n_docs - 1):
+                        callback.process_batch()
 
         for callback in self._callbacks.values():
             callback.finalise()
