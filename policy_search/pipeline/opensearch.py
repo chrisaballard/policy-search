@@ -147,7 +147,7 @@ class OpenSearchIndex(BaseCallback):
                 max_retries=5,
                 chunk_size=1,
                 initial_backoff=5,
-                max_backoff=500,
+                max_backoff=200,
             )
 
             successes = 0
