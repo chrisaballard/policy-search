@@ -32,10 +32,14 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
   const handleChange = () => {
     setInput(searchInput.current.value)
   }
+  const newQuery = () => {
+    const qStr = buildQueryString(input);
+    newSearch(qStr);
+  }
  
   useDidUpdateEffect(() => {
     if(!input.length) {
-      newSearch('');
+      newQuery();
       searchInput.current.focus();
       return;
     }
@@ -43,8 +47,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      const qStr = buildQueryString(input);
-      newSearch(qStr);
+      newQuery();
     }, 800);
     return () => clearTimeout(timeOutId);
   }, [input]);
