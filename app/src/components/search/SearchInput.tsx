@@ -9,7 +9,6 @@ interface SearchInputProps {
   searchTerms: string;
 }
 const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): JSX.Element => {
-  const [ searchOpen, setSearchOpen ] = useState(false);
   const [ searchActivated, setSearchActivated ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
   const router = useRouter();
@@ -21,14 +20,26 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
 
   const handleClick = (e: React.FormEvent<HTMLButtonElement> ): void => {
     e.preventDefault();
-    setSearchOpen(!searchOpen);
-    setSearchActivated(true);
+    
+    if(!searchActivated) {
+      setSearchActivated(true);
+    }
+    else {
+      clearResult();
+      setInput('');
+    }
   }
   const handleChange = () => {
     setInput(searchInput.current.value)
   }
  
   useDidUpdateEffect(() => {
+    if(!input.length) {
+      newSearch('');
+      searchInput.current.focus();
+      return;
+    }
+    
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
@@ -39,20 +50,10 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
   }, [input]);
 
   useDidUpdateEffect(() => {
-    // toggle open/close of search field
-    if(searchInput.current && searchOpen) {
+    if(searchInput.current && searchActivated) {
       searchInput.current.focus();
     }
-    else {
-      clearResult();
-      setInput('');
-    }
-    // focus on input field
-    if(searchActivated && searchInput.current) {
-      searchInput.current.focus();
-    }
-
-  }, [searchOpen]);
+  }, [searchActivated]);
 
 
   return (
@@ -90,7 +91,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
-                className={`search-btn-search ${!input.length ? 'opacity-100': 'opacity-0'}`} />
+                className={`-mt-2 search-btn-search ${!input.length ? 'opacity-100': 'opacity-0'}`} />
           </button>
         </form>
       </div>
