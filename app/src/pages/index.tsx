@@ -144,6 +144,7 @@ const Home = React.memo((): JSX.Element => {
               searchTerms={searchQuery}
               processing={processing}
               geographyList={geographyList}
+              checkForFilters={checkForFilters}
             />
             {processing ? 
               <Loader />

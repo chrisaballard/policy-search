@@ -8,12 +8,14 @@ interface SearchResultsProps {
   geographyList: Geography[];
   processing: boolean;
   searchTerms: string;
+  checkForFilters(): boolean;
 }
 const SearchResults = ({
   policies,
   processing,
   geographyList,
   searchTerms,
+  checkForFilters,
 }: SearchResultsProps) => {
 
   const renderMessage = () => {
@@ -24,7 +26,7 @@ const SearchResults = ({
         </div>
       )
     }
-    if(!policies.length && searchTerms?.length) {
+    if(!policies.length && searchTerms?.length || !policies.length && checkForFilters()) {
       return (
       <div className="text-red-500 text-2xl">
         There are no results for your query, please try a different search.

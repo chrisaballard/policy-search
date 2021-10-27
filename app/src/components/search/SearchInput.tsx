@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import useBuildQueryString from '../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
@@ -11,7 +10,6 @@ interface SearchInputProps {
 const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): JSX.Element => {
   const [ searchActivated, setSearchActivated ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
-  const router = useRouter();
   const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
