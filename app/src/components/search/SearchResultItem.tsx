@@ -39,7 +39,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
         <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
         <div className="font-normal text-xs text-primary-dark-500 mt-2 leading-tight">{country}</div>
       </div>
-      <div className="col-span-5 sm:col-span-6 md:col-span-5 flex items-start">
+      <div className="col-span-5 sm:col-span-6 md:col-span-5 md:pl-2 flex items-start">
         <div className="leading-tight">
           {policy.policyName}
           <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">2021</div>
