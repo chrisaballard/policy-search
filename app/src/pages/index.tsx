@@ -140,7 +140,6 @@ const Home = React.memo((): JSX.Element => {
         />
         <section className="w-full">
           <div className="pt-8 md:pt-0 md:pl-4">
-            <ApexChart />
             <SearchResults 
               policies={resultsByDocument} 
               searchTerms={searchQuery}
