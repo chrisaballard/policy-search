@@ -153,5 +153,5 @@ dmypy.json
 # Ignore vscode development contain config files
 .devcontainer/*
 
+# Mac OS files
 .DS_Store
-**/.DS_Store
