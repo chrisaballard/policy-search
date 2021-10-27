@@ -54,7 +54,6 @@ def get_level(
 
     for level_ix, (level_name, level_df) in enumerate(df.groupby(level_name)):
         level = {'id': level_ix, 'name': level_name}
-        print(level_name)
 
         if next_level_name not in level_df:
             keywords = get_unique_keywords(level_df.keywords)
