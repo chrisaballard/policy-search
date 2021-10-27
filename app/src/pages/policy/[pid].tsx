@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useRouter } from 'next/router';
-import { STOP_WORDS } from '../../constants';
 import useGetPolicyPage from '../../hooks/useGetPolicyPage';
 import useGetPolicies from '../../hooks/useGetPolicies';
 import useSetStatus from '../../hooks/useSetStatus';
@@ -18,8 +17,8 @@ const Policy = () => {
   const inputRef = useRef<HTMLInputElement>();
   const router = useRouter();
   const [ pageInput, setPageInput ] = useState('')
-  const [ pageText, setPageText ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
+  const [ pageText, setPageText ] = useState('')
   const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
 
@@ -70,39 +69,6 @@ const Policy = () => {
     setPageInput('');
   }
 
-  const highlightText = () => {
-    const queryArr = searchQuery.split(' ');
-    const newPageTextArray = [];
-
-    // loop through each sentence in pageText array
-    policyPage.pageText.forEach((sentence) => {
-      const newWordsArray = [];
-      let newSentence = '';
-      // make array of each word in sentence
-      const wordsArray = sentence.split(' ');
-      // loop through each word in sentence
-      wordsArray.forEach((word) => {
-        let newWord = word;
-        queryArr.forEach((term) => {
-          const cleanTerm = term.trim().toLowerCase();
-          // ignore stop words
-          if (STOP_WORDS.indexOf(cleanTerm) > -1) return;
-          // remove trailing periods, commas or spaces from word for more accurate comparison
-          const cleanWord = word.replace(/\,/g, '').replace(/\./g, '').trim().toLowerCase();
-          if (cleanWord === term.trim().toLowerCase()) {
-            newWord = `<em>${word}</em>`
-          }
-        });
-        newWordsArray.push(newWord);
-      });
-      // make new sentence from new words array
-      newSentence = newWordsArray.join(' ');
-      // add new sentence to new pageText array
-      newPageTextArray.push(newSentence);
-    });
-    setPageText(newPageTextArray.join(' '));
-  }
-
   useEffect(() => {
     if(router.query.pid) {
       loadPolicyPage();
@@ -111,7 +77,7 @@ const Policy = () => {
 
   useEffect(() => {
     if(policyPage.pageText) {
-      // highlightText();
+      setPageText(policyPage.pageText.join(','));
     }
   }, [policyPage])
 
