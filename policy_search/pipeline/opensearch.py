@@ -149,7 +149,7 @@ class OpenSearchIndex(BaseCallback):
                 max_retries=5,
                 chunk_size=1,
                 initial_backoff=5,
-                max_backoff=60
+                max_backoff=60,
             )
 
             successes = 0
@@ -160,10 +160,14 @@ class OpenSearchIndex(BaseCallback):
                     errs.append(action)
 
                 successes += ok
-        except ReadTimeoutError as e:
-            logger.error("Read timeout error occured when processing batch, igoring batch")
+        except ReadTimeoutError:
+            logger.error(
+                "Read timeout error occured when processing batch, igoring batch"
+            )
         except TransportError as e:
-            logger.error("Transport error occured when processing batch, ignoring batch: " + str(e))
+            logger.error(
+                f"Transport error occured when processing batch, ignoring batch: {e}"
+            )
         finally:
             # Clear in memory store of documents to load ready for next batch
             self._docs_to_load = []
@@ -188,7 +192,7 @@ class OpenSearchIndex(BaseCallback):
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
-        max_pages_per_doc: Optional[int] = 10,
+        max_pages_per_doc: Optional[int] = 20,
         max_passages_per_page: Optional[int] = 5,
     ) -> List[dict]:
         """
@@ -201,13 +205,16 @@ class OpenSearchIndex(BaseCallback):
         If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
         """
 
-        # fields_to_search = ["text", "policy_name"]
+        BOOST_TEXT_MATCH = 1.2
+        BOOST_TEXT_MATCH_PHRASE = 2
+        BOOST_TEXT_KNN = 1
+        BOOST_TITLE_MATCH_PHRASE = 1.2
 
         es_query = {
             "_source": {"excludes": ["text.embedding"]},
             "query": {
                 "bool": {
-                    "should": [
+                    "must": [
                         {
                             "nested": {
                                 "path": "text",
@@ -217,13 +224,46 @@ class OpenSearchIndex(BaseCallback):
                                     "size": max_passages_per_page,
                                 },
                                 "query": {
-                                    "knn": {
-                                        "text.embedding": {
-                                            "vector": query_embedding,
-                                            "k": max_passages_per_page,
-                                        },
+                                    "bool": {
+                                        "should": [
+                                            {
+                                                "match": {
+                                                    "text.text": {
+                                                        "query": query,
+                                                        "boost": BOOST_TEXT_MATCH,
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                "match_phrase": {
+                                                    "text.text": {
+                                                        "query": query,
+                                                        "boost": BOOST_TEXT_MATCH_PHRASE,
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                "knn": {
+                                                    "text.embedding": {
+                                                        "vector": query_embedding,
+                                                        "k": max_passages_per_page,
+                                                        "boost": BOOST_TEXT_KNN,
+                                                    },
+                                                },
+                                            },
+                                        ]
                                     }
                                 },
+                            }
+                        },
+                    ],
+                    "should": [
+                        {
+                            "match_phrase": {
+                                "policy_name": {
+                                    "query": query,
+                                    "boost": BOOST_TITLE_MATCH_PHRASE,
+                                }
                             }
                         }
                     ],
