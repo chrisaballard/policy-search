@@ -299,6 +299,7 @@ class OpenSearchIndex(BaseCallback):
                     "hazards": doc.hazards,
                     "responses": doc.responses,
                     "language": doc.language,
+                    "keywords": doc.keywords,
                     "text": page_text,
                 }
             )

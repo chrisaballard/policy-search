@@ -78,6 +78,7 @@ async def search_policies(
     response: Optional[List[str]] = Query(None),
     hazard: Optional[List[str]] = Query(None),
     document_type: Optional[List[str]] = Query(None),
+    keyword: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
@@ -95,6 +96,8 @@ async def search_policies(
         kwd_filters["hazards.keyword"] = hazard
     if document_type:
         kwd_filters["document_types.keyword"] = document_type        
+    if keyword:
+        kwd_filters["keywords.keyword"] = keyword   
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(

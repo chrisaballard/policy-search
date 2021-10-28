@@ -51,4 +51,10 @@ sources:
           function: delimited_string_to_list
           args:
             delim: ";"
+      keyword_list: 
+        name: keywords
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
       

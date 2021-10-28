@@ -21,6 +21,7 @@ class Policy(BaseModel):
     hazards: Optional[List[str]] = []
     responses: Optional[List[str]] = []
     document_types: Optional[List[str]] = Field([], alias="documentTypes")
+    keywords: Optional[List[str]] = []
 
 
 
