@@ -3,10 +3,12 @@
   "children": [
     {
       "name": "Instruments",
+      "color": "#f24309",
       "children": [
         {
           "name": "Capacity building",
-          "value": 81
+          "value": 81,
+          "color": "blue"
         },
         {
           "name": "Direct investment",

@@ -21,6 +21,8 @@ async function renderVisualisation() {
         .sum(d => d.value)
         .sort((a, b) => b.value - a.value))
 
+    console.log(root.descendants().slice(1))
+
     const svg = d3.select('#visContainer').append("svg")
         .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
         .style("display", "block")
@@ -33,7 +35,7 @@ async function renderVisualisation() {
         .selectAll("circle")
         .data(root.descendants().slice(1))
         .join("circle")
-        .attr("fill", d => d.children ? color(d.depth) : "white")
+        .attr("fill", d => d.data.color || "white")
         .attr("pointer-events", d => !d.children ? "none" : null)
         .on("mouseover", function () { d3.select(this).attr("stroke", "#000"); })
         .on("mouseout", function () { d3.select(this).attr("stroke", null); })
