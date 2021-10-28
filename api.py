@@ -73,13 +73,28 @@ async def search_policies(
     start: Optional[int] = 0,
     limit: Optional[int] = 100,
     geography: Optional[List[str]] = Query(None),
+    sector: Optional[List[str]] = Query(None),
+    instrument: Optional[List[str]] = Query(None),
+    response: Optional[List[str]] = Query(None),
+    hazard: Optional[List[str]] = Query(None),
+    document_type: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
+    kwd_filters = {}
+    
     if geography:
-        kwd_filters = {"country_code.keyword": geography}
-    else:
-        kwd_filters = None
+        kwd_filters["country_code.keyword"] = geography
+    if sector:
+        kwd_filters["sectors.keyword"] = sector
+    if instrument:
+        kwd_filters["instruments.keyword"] = instrument
+    if response:
+        kwd_filters["responses.keyword"] = response
+    if hazard:
+        kwd_filters["hazards.keyword"] = hazard
+    if document_type:
+        kwd_filters["document_types.keyword"] = document_type        
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
@@ -144,12 +159,18 @@ async def search_policies(
             query_results_by_doc.append(
                 {
                     "policyId": policy_id,
+                    "policyDate": doc_metadata.policy_date,
                     "policyName": doc_metadata.policy_name,
                     "policyType": doc_metadata.policy_type,
+                    "documentTypes": doc_metadata.document_types,
                     "countryCode": doc_metadata.country_code,
                     "sourceName": doc_metadata.source_name,
                     "url": doc_metadata.url,
                     "language": doc_metadata.language,
+                    "sectors": doc_metadata.sectors,
+                    "instruments": doc_metadata.instruments,
+                    "hazards": doc_metadata.hazards,
+                    "responses": doc_metadata.responses,
                     "resultsByPage": document_response,
                 }
             )
