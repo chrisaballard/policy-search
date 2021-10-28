@@ -121,7 +121,7 @@ const Home = React.memo((): JSX.Element => {
       active={slideOutActive}
       onClick={() => { setSlideOutActive(false)}}
     />
-    <MainLayout>
+    <MainLayout pageTitle={'Policy Search'}>
       <SearchInput 
         newSearch={newSearch}
         clearResult={clearResult}

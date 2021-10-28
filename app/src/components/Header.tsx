@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-const Header = () => {
+const Header = ({ pageTitle }) => {
   return (
     <header>
       {/* <div className="container flex justify-center my-6 lg:my-12">
@@ -12,7 +12,7 @@ const Header = () => {
             <img className="logo cursor-pointer" src="/images/cpr-logo-primary.svg" alt="Climate Policy Radar Logo" />
           </Link>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center md:pl-8">Policy Search</h1>
+        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center md:pl-8 mx-auto">{pageTitle}</h1>
       </div>
     </header>
   )

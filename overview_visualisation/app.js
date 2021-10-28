@@ -5,6 +5,11 @@ function color(){
     .interpolate(d3.interpolateHcl)
 }
 
+function doSomething(svg) {
+    svg.selectAll("circle")
+    .each(function(d) { console.log(d.height); d.circleHeight = d.height; });
+}
+
 async function renderVisualisation() {
     const width = 932; //window.innerWidth;
     const height = 932; //window.innerHeight;
@@ -21,7 +26,7 @@ async function renderVisualisation() {
         .sum(d => d.value)
         .sort((a, b) => b.value - a.value))
 
-    console.log(root.descendants().slice(1))
+    // console.log(root.descendants().slice(1))
 
     const svg = d3.select('#visContainer').append("svg")
         .attr("viewBox", `-${width / 2} -${height / 2} ${width} ${height}`)
@@ -37,20 +42,56 @@ async function renderVisualisation() {
         .join("circle")
         .attr("fill", d => d.data.color || "white")
         .attr("pointer-events", d => !d.children ? "none" : null)
-        .on("mouseover", function () { d3.select(this).attr("stroke", "#000"); })
-        .on("mouseout", function () { d3.select(this).attr("stroke", null); })
-        .on("click", (event, d) => focus !== d && (zoom(event, d), event.stopPropagation()));
+        .on("mouseover", function () { d3.select(this).attr("opacity", 0.5); })
+        .on("mouseout", function () { d3.select(this).attr("opacity", 1); })
+        .on("click", (event, d) => focus !== d && (zoom(event, d)));
+        // .on("click", (event, d) => (zoom(event, d)));
+
+    // Add the rect elements, these are placeholders
+    // svg.append("g")
+    //     .selectAll("rect")
+    //     .data(root.descendants())
+    //     .join("rect")
+    //     // .attr("x", d => { 
+    //     //     console.log(d)
+    //     //     return d.x
+    //     // })
+    //     // .attr("y", d => d.y)
+    //     .style("fill", "black")
+    //     .style("opacity", "0.5");
+
+    
 
     const label = svg.append("g")
-        .style("font", "10px sans-serif")
+        .style("font", "12px sans-serif")
         .attr("pointer-events", "none")
         .attr("text-anchor", "middle")
         .selectAll("text")
         .data(root.descendants())
         .join("text")
+        .attr("y", d => {
+            // console.log(d)
+            return -d.height - 30
+        })
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
-        .text(d => d.data.name);
+        .style("fill", "black")
+        .text(d => d.data.value ? d.data.name + " (" + d.data.value + ")" : d.data.name + '')
+
+    // svg.selectAll("text")
+    // .each(function(d) { d.bbox = this.getBBox(); });
+
+    // // Update the rectangles using the sizes we just added to the data
+    // const xMargin = 4
+    // const yMargin = 2
+    // svg.selectAll("rect")
+    // .data(root.descendants())
+    // .join("rect")
+    //     .attr("width", d => d.bbox.width + 2 * xMargin)
+    //     .attr("height", d => d.bbox.height + 2 * yMargin)
+    //     .attr('transform', function(d) {
+    //         return `translate(-${xMargin}, -${d.bbox.height * 0.8 + yMargin})`
+    //     });
 
     zoomTo([root.x, root.y, root.r * 2]);
 
@@ -65,6 +106,15 @@ async function renderVisualisation() {
     }
 
     function zoom(event, d) {
+        
+        console.log(event.currentTarget)
+        if(d.data.link) {
+            console.log('change page')
+            window.location.href = d.data.link;
+            return;
+        }
+        event.stopPropagation()
+
         const focus0 = focus;
 
         focus = d;
@@ -86,4 +136,9 @@ async function renderVisualisation() {
 
 }
 
-renderVisualisation()
+// renderVisualisation()
+
+document.addEventListener("DOMContentLoaded", function(event) { 
+    //your code here
+    renderVisualisation()
+});
