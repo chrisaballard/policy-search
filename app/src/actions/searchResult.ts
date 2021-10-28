@@ -19,17 +19,6 @@ export interface clearSearchResultAction {
 export const getSearchResult = (queryString: string) => async (dispatch: Dispatch, getState) => {
   const searchTerms = getParameterByName('query', `${API_BASE_URL}/?${queryString}`)
 
-  // temporary until search can handle no query
-  if(!searchTerms.length) {
-    clearSearchResult();
-    dispatch<SetStatusAction>({
-      type: ActionTypes.setStatus,
-      payload: {
-        processing: false
-      }
-    })
-    return;
-  }
   const data = await searchQuery(queryString);
   const endOfList = data.resultsByDocument.length < PER_PAGE;
   dispatch<getSearchResultAction>({
