@@ -34,6 +34,12 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
     const qStr = buildQueryString(input);
     newSearch(qStr);
   }
+
+  useEffect(() => {
+    if(input?.length) {
+      setSearchActivated(true)
+    }
+  }, []);
  
   useDidUpdateEffect(() => {
     if(!input.length) {
@@ -88,11 +94,11 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
               <img 
                 src="/images/close.svg" 
                 alt="Close icon"
-                className={`search-btn-close ${input.length ? 'opacity-100': 'opacity-0'}`} />
+                className={`search-btn-close ${input?.length ? 'opacity-100': 'opacity-0'}`} />
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
-                className={`-mt-2 search-btn-search ${!input.length ? 'opacity-100': 'opacity-0'}`} />
+                className={`-mt-2 search-btn-search ${!input?.length ? 'opacity-100': 'opacity-0'}`} />
           </button>
         </form>
       </div>
