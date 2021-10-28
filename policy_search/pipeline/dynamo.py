@@ -86,7 +86,7 @@ class DynamoDBTable(BaseCallback):
         if response['Count'] > 0:
             items = response['Items']
             last_key = response.get('LastEvaluatedKey', None)
-            last_key = int(last_key[self._key_name])
+            last_key = int(last_key[self._key_name]) if last_key is not None else int(items[-1][self._key_name])
             count = response.get('Count', 0)    
 
         return items, last_key, count
