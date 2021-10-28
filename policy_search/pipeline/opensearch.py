@@ -248,13 +248,14 @@ class OpenSearchIndex(BaseCallback):
         if limit:
             es_query["aggs"]["top_docs"]["terms"]["size"] = limit
 
-        if keyword_filters:
-            terms_clauses = []
+        if keyword_filters is not None:
+            if len(keyword_filters) > 0:
+                terms_clauses = []
 
-            for field, values in keyword_filters.items():
-                terms_clauses.append({"terms": {field: values}})
+                for field, values in keyword_filters.items():
+                    terms_clauses.append({"terms": {field: values}})
 
-            es_query["query"]["bool"]["filter"] = terms_clauses
+                es_query["query"]["bool"]["filter"] = terms_clauses
 
         return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
 
@@ -286,12 +287,19 @@ class OpenSearchIndex(BaseCallback):
             page_docs.append(
                 {
                     "_id": f"{doc.policy_id}_page{page_num}",
-                    "text": page_text,
                     "policy_id": doc.policy_id,
                     "policy_name": doc.policy_name,
+                    "policy_date": doc.policy_date,
                     "page_number": page_num,
                     "country_code": doc.country_code,
                     "source_name": doc.source_name,
+                    "sectors": doc.sectors,
+                    "instruments": doc.instruments,
+                    "document_types": doc.document_types,
+                    "hazards": doc.hazards,
+                    "responses": doc.responses,
+                    "language": doc.language,
+                    "text": page_text,
                 }
             )
 
