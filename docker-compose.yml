@@ -1,19 +1,19 @@
 version: '3.8'
 services:
   db:
-    command: "-jar DynamoDBLocal.jar -sharedDb -dbPath ./data"
-    image: "amazon/dynamodb-local:latest"
+    command: '-jar DynamoDBLocal.jar -sharedDb -dbPath ./data'
+    image: 'amazon/dynamodb-local:latest'
     container_name: dynamodb-local
     ports:
-      - "8000:8000"
+      - '8000:8000'
     volumes:
-      - "~/data/dynamodb:/home/dynamodblocal/data"
+      - '~/data/dynamodb:/home/dynamodblocal/data'
     working_dir: /home/dynamodblocal
   opensearch:
     image: opensearchproject/opensearch:1.1.0
     container_name: opensearch
     ports:
-      - "9200:9200"
+      - '9200:9200'
     volumes:
       - ~/data/opensearch:/usr/share/opensearch/data
     environment:
@@ -23,22 +23,22 @@ services:
     build:
       context: .
       args:
-          api_host: 0.0.0.0
-          api_port: 8001
-          aws_access_key_id: ${AWS_ACCESS_KEY_ID}
-          aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
-          dynamodb_host: db
-          dynamodb_port: ${dynamodb_port}
+        api_host: 0.0.0.0
+        api_port: 8001
+        aws_access_key_id: ${AWS_ACCESS_KEY_ID}
+        aws_secret_access_key: ${AWS_SECRET_ACCESS_KEY}
+        dynamodb_host: db
+        dynamodb_port: ${dynamodb_port}
     volumes:
-      - "./:/usr/src/app"
+      - './:/usr/src/app'
     container_name: cpr-policy-api
     ports:
-      - "8001:8001"
+      - '8001:8001'
     env_file: .env
   frontend:
     container_name: frontend
     build:
       context: ./app
-    command: npm run dev
-    ports: 
-      - "3001:3001"
+    command: ash -c "npm install && npm run dev"
+    ports:
+      - '3001:3001'
