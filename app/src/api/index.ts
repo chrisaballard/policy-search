@@ -27,7 +27,8 @@ export const getPolicy = async (id: string | string[]): Promise<Policy> => {
 
 export const searchQuery = async (queryString: string) => {
   // query=[keywords]&geography=geocode1&geography=geocode2
-  let req = `${API_BASE_URL}/policies/search?${queryString}&limit=${PER_PAGE}`;
+  let req = `${API_BASE_URL}/policies/search?${queryString}`;
+  req += queryString.length ? `&limit=${PER_PAGE}` : `limit=${PER_PAGE}`
   return await fetchData(req);
 }
 
