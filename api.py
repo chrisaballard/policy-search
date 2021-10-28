@@ -62,9 +62,11 @@ async def read_policies(
     return policy_table.scan(start, limit)
 
 
-async def read_policies_by_ids(ids: List[int]):
+@app.get("/policies/multiple/", response_model=List[Policy])
+async def read_policies_by_ids(id: List[int] = Query([])):
     """Get policy metadata from a list of IDs"""
-    return [policy_table.get_document(_id) for _id in ids]
+
+    return [policy_table.get_document(_id) for _id in id]
 
 
 @app.get("/policies/search/", response_model=PolicySearchResponse)
