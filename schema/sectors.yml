@@ -115,7 +115,6 @@
     - land degradation
     - land management
     - land sinks
-    - lulucf
     - organic soil
     - peat
     - peatlands
@@ -125,6 +124,10 @@
     - tundra
     - wetlands
   - id: 5
+    name: Land use, land use change and forestry (LULUCF)
+    keywords:
+    - lulucf
+  - id: 6
     name: Livestock
     keywords:
     - animal products
@@ -210,6 +213,13 @@
     - marine biodiversity
     - oceans
 - id: 4
+  name: CROSS-CUTTING AREAS
+  levels:
+  - id: 0
+    name: Cross-cutting areas
+    keywords:
+    - cross-cutting areas
+- id: 5
   name: DISASTER RISK MANAGEMENT
   levels:
   - id: 0
@@ -234,7 +244,14 @@
     - tornado
     - typhoon
     - wildfire
-- id: 5
+- id: 6
+  name: ECONOMY-WIDE
+  levels:
+  - id: 0
+    name: Economy-wide
+    keywords:
+    - economy-wide
+- id: 7
   name: ENERGY & CARBON CAPTURE AND STORAGE
   levels:
   - id: 0
@@ -332,7 +349,7 @@
     - power
     - power storage
     - smartgrids
-- id: 6
+- id: 8
   name: ENVIRONMENT
   levels:
   - id: 0
@@ -345,7 +362,7 @@
     - plastic pollution
     - water pollution
     - water quality
-- id: 7
+- id: 9
   name: FINANCE
   levels:
   - id: 0
@@ -356,7 +373,7 @@
     - financial regulation
     - green finance
     - investment
-- id: 8
+- id: 10
   name: HEALTH
   levels:
   - id: 0
@@ -371,7 +388,7 @@
     - injury
     - pandemic
     - treatment
-- id: 9
+- id: 11
   name: INDUSTRY
   levels:
   - id: 0
@@ -439,7 +456,7 @@
     name: Industry (general)
     keywords:
     - industry
-- id: 10
+- id: 12
   name: NATURE-BASED SOLUTIONS
   levels:
   - id: 0
@@ -452,28 +469,43 @@
     - natural capital
     - urban forestry
     - urban green infrastructure
-- id: 11
+- id: 13
+  name: OTHER
+  levels:
+  - id: 0
+    name: Other
+    keywords: []
+- id: 14
+  name: PUBLIC SECTOR
+  levels:
+  - id: 0
+    name: Public sector
+    keywords:
+    - public sector
+    - government procurement
+    - government fleet
+- id: 15
   name: RURAL
   levels:
   - id: 0
     name: Rural
     keywords:
     - rural
-- id: 12
+- id: 16
   name: SOCIAL DEVELOPMENT
   levels:
   - id: 0
     name: Social development
     keywords:
     - social development
-- id: 13
+- id: 17
   name: TOURISM
   levels:
   - id: 0
     name: Tourism
     keywords:
     - tourism
-- id: 14
+- id: 18
   name: TRANSPORT
   levels:
   - id: 0
@@ -523,7 +555,7 @@
     - freight transport
     - gasoline
     - internal combustion engine
-    - international transport
+    - internatioanl transport
     - interurban transport
     - local transport
     - low-carbon transport
@@ -549,7 +581,7 @@
     - refueeling infrastructure
     - road infrasructure
     - transport infrastructure
-- id: 15
+- id: 19
   name: URBAN
   levels:
   - id: 0
@@ -561,7 +593,7 @@
     - urban
     - urban crowding
     - urban infrastructure
-- id: 16
+- id: 20
   name: WASTE
   levels:
   - id: 0
@@ -580,3 +612,10 @@
     - waste incineration
     - wastewater
     - water waste
+- id: 21
+  name: WATER
+  levels:
+  - id: 0
+    name: Water
+    keywords:
+    - water

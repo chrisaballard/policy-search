@@ -35,7 +35,11 @@ def get_unique_keywords(
     """
 
     keywords = level_keywords.unique().tolist()
-    keywords = [k.lower().strip() for k in keywords]
+    keywords = [
+        k.lower().strip() 
+        for k in keywords
+        if not pd.isna(k)
+    ]
 
     return keywords
 
@@ -97,4 +101,4 @@ def main(data_path: Path):
 
 
 if __name__ == '__main__':
-    main(Path('./data'))
+    main(Path('./schema/'))

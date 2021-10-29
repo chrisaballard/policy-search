@@ -2,6 +2,10 @@
   name: CAPACITY BUILDING
   levels:
   - id: 0
+    name: Capacity building (general)
+    keywords:
+    - capacity building
+  - id: 1
     name: Knowledge generation
     keywords:
     - demonstration project
@@ -15,7 +19,7 @@
     - research scheme
     - scientific inquiries
     - technology
-  - id: 1
+  - id: 2
     name: Knowledge sharing and dissemination
     keywords:
     - advice
@@ -30,7 +34,7 @@
     - reporting information
     - technical assistance
     - training
-  - id: 2
+  - id: 3
     name: Structures and processes
     keywords:
     - environmental assessment
@@ -43,9 +47,21 @@
     - stakeholder engagement
     - structures
 - id: 1
+  name: DIRECT INVESMENT
+  levels:
+  - id: 0
+    name: Insurance
+    keywords:
+    - insurance
+- id: 2
   name: DIRECT INVESTMENT
   levels:
   - id: 0
+    name: Ecosystem restoration and nature-based solutions
+    keywords:
+    - ecosystem restoration
+    - nature-based solutions
+  - id: 1
     name: Finance
     keywords:
     - climate fund
@@ -60,7 +76,7 @@
     - international climate finance
     - loan
     - low-carbon finance
-  - id: 1
+  - id: 2
     name: Infrastructure
     keywords:
     - infrastructure
@@ -70,13 +86,13 @@
     - public spending
     - resilience funding
     - social safety nets
-  - id: 2
+  - id: 3
     name: Public goods
     keywords:
     - commons
     - early warning systems
     - public goods
-- id: 2
+- id: 3
   name: GOVERNANCE AND PLANNING
   levels:
   - id: 0
@@ -112,6 +128,26 @@
     - strategy
     - white paper
   - id: 3
+    name: Governance and planning (general)
+    keywords:
+    - governance
+    - planning
+  - id: 4
+    name: International cooperation
+    keywords:
+    - international cooperation
+    - multilateral cooperation
+    - bilerateral cooperation
+    - diplomacy
+  - id: 5
+    name: Monitoring, reporting, verification
+    keywords:
+    - monitoring
+    - reporting
+    - verification
+    - emissions calculation
+    - emissions accounting
+  - id: 6
     name: Multi-level governance
     keywords:
     - local authority
@@ -119,14 +155,14 @@
     - municipal government
     - national government
     - sub-national government
-  - id: 4
+  - id: 7
     name: Setting targets
     keywords:
     - amending target
     - duty to set target
     - legally binding target
     - target
-- id: 3
+- id: 4
   name: INCENTIVES
   levels:
   - id: 0
@@ -150,6 +186,10 @@
     - tax system
     - taxes
   - id: 1
+    name: Incentives (general)
+    keywords:
+    - incentivesincentives
+  - id: 2
     name: Market-based instruments
     keywords:
     - cap and trade
@@ -158,7 +198,7 @@
     - emissions trading
     - market-based instruments
     - permits
-- id: 4
+- id: 5
   name: REGULATION
   levels:
   - id: 0
@@ -192,15 +232,11 @@
     - risk screening
     - site selection
   - id: 3
-    name: Obligations
+    name: Regulation (general)
     keywords:
-    - disclosure
-    - mandates
-    - obligations
-    - responsibility
-    - technical requirements
+    - regulation
   - id: 4
-    name: Standards
+    name: Standards and obligations
     keywords:
     - codes
     - equity in adaptation
@@ -213,3 +249,8 @@
     - resilient infrastructure policy
     - specification of grid standards
     - standards
+    - disclosure
+    - mandates
+    - obligations
+    - responsibility
+    - technical requirements

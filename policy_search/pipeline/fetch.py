@@ -3,10 +3,12 @@
 
 from pathlib import Path
 from typing import List, Dict, Tuple
+from functools import partial
 
 import pandas as pd
 
 from .models.policy import Policy
+from . import transform
 
 
 LINE_SEPARATOR = '\n'
@@ -22,7 +24,6 @@ class DocumentSourceFetcher():
         self._docs = []
         self.n_docs = 0
         self._attribute_mapping = attribute_mapping
-        self._attribute_col_names = self.attribute_col_names(attribute_mapping)
         
         self.fetch_count = fetch_count
 
@@ -43,9 +44,43 @@ class DocumentSourceFetcher():
 
         return filtered_attributes
 
-    def attribute_col_names(self, attribute_mapping):
-        return [a for a in attribute_mapping.keys()]
+    @property
+    def _attribute_col_names(self):
+        """Return column names given in attribute mapping config"""
 
+        return [a for a in self._attribute_mapping.keys()]
+
+    @property
+    def _attribute_target_field_names(self):
+        """Return a mapping between attribute column names and target name"""
+
+        return {a_name: a_settings["name"] for a_name, a_settings in self._attribute_mapping.items()}
+
+    def _transform_attributes(self, docs: Dict[str, Dict[str, str]]):
+        """Transforms attributes in the provided document dictionary using the configured attribute mapping"""
+
+        # Get a dictionary mapping attribute name to a transformation function
+        transform_fields = {}
+        for a_settings in self._attribute_mapping.values():
+            a_transform = a_settings.get("func_transform", None)
+            if a_transform is not None:
+                transform_func_name = a_transform["function"]
+                transform_func_args = a_transform.get("args", {})
+                _func_transform = partial(
+                    getattr(transform, transform_func_name),
+                    **transform_func_args
+                )
+                transform_fields[a_settings["name"]] = _func_transform
+
+        # Process each document and attribute, applying required transformations where required
+        for doc_ix, doc in enumerate(docs):
+            for attribute_name, attribute_value in doc.items():
+                _func_transform = transform_fields.get(attribute_name, None)
+                if _func_transform is not None:
+                    transformed_value = _func_transform(attribute_value)
+                    docs[doc_ix][attribute_name] = transformed_value
+
+        return docs
 
 class CSVDocumentSourceFetcher(DocumentSourceFetcher):
     """Fetches documents from a dataset containing a list of documents and associated pdf files.
@@ -91,7 +126,7 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
         ]
 
         # Map columns in dataframe to attribute keys
-        documents_df.rename(columns=self._attribute_mapping, inplace=True)
+        documents_df.rename(columns=self._attribute_target_field_names, inplace=True)
 
         # Retain at most fetch_count documents if defined
         if self.fetch_count is not None:
@@ -103,6 +138,8 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
             {k: v for k, v in d.items() if pd.notnull(v)}
             for d in self._docs
         ]
+
+        self._docs = self._transform_attributes(self._docs)
 
         self.n_docs = len(self._docs)
 
