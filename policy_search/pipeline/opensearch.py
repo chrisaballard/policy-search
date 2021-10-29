@@ -213,7 +213,11 @@ class OpenSearchIndex(BaseCallback):
                                 "path": "text",
                                 "score_mode": "max",
                                 "inner_hits": {
-                                    "_source": ["text.text_id", "text.text"],
+                                    "_source": [
+                                        "text.text_id",
+                                        "text.text",
+                                        "text.embedding",
+                                    ],
                                     "size": max_passages_per_page,
                                 },
                                 "query": {

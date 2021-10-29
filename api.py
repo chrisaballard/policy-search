@@ -6,6 +6,7 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from elasticsearch import NotFoundError as ElasticNotFoundError
+import numpy as np
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
 from policy_search.pipeline.opensearch import OpenSearchIndex
@@ -76,6 +77,8 @@ async def search_policies(
 ):
     "Search for policies given a specified query"
 
+    INNERPRODUCT_THRESHOLD = 70
+
     if geography:
         kwd_filters = {"country_code.keyword": geography}
     else:
@@ -125,7 +128,11 @@ async def search_policies(
             page_text_hits = []
             # Find the matching text passages and add to results
             for page_inner_hits in hit["inner_hits"]["text"]["hits"]["hits"]:
-                page_text_hits.append(page_inner_hits["_source"]["text"])
+                passage_score = np.dot(
+                    query_emb, page_inner_hits["_source"]["embedding"]
+                )
+                if passage_score >= INNERPRODUCT_THRESHOLD:
+                    page_text_hits.append(page_inner_hits["_source"]["text"])
 
             # Add the page matches for this document
             if len(page_text_hits) > 0:
