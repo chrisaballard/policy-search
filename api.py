@@ -31,8 +31,8 @@ es = OpenSearchIndex(
     es_user=opensearch_user,
     es_password=opensearch_password,
     es_connector_kwargs={
-        "use_ssl": True,
-        "verify_certs": True,
+        "use_ssl": False,
+        "verify_certs": False,
         "ssl_show_warn": False,
         "timeout": 120,
     },
@@ -73,13 +73,37 @@ async def search_policies(
     start: Optional[int] = 0,
     limit: Optional[int] = 100,
     geography: Optional[List[str]] = Query(None),
+    year_start: Optional[int] = Query(None),
+    year_end: Optional[int] = Query(None),
+    sector: Optional[List[str]] = Query(None),
+    instrument: Optional[List[str]] = Query(None),
+    response: Optional[List[str]] = Query(None),
+    hazard: Optional[List[str]] = Query(None),
+    document_type: Optional[List[str]] = Query(None),
+    keyword: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
+    kwd_filters = {}
+    
     if geography:
-        kwd_filters = {"country_code.keyword": geography}
-    else:
-        kwd_filters = None
+        kwd_filters["country_code.keyword"] = geography
+    if sector:
+        kwd_filters["sectors.keyword"] = sector
+    if instrument:
+        kwd_filters["instruments.keyword"] = instrument
+    if response:
+        kwd_filters["responses.keyword"] = response
+    if hazard:
+        kwd_filters["hazards.keyword"] = hazard
+    if document_type:
+        kwd_filters["document_types.keyword"] = document_type        
+    if keyword:
+        kwd_filters["keywords.keyword"] = keyword
+
+    year_range = None
+    if any([year_start, year_end]):
+        year_range = (year_start, year_end)
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
@@ -87,6 +111,7 @@ async def search_policies(
             asc=True,
             num_docs=start + limit,
             keyword_filters=kwd_filters,
+            year_range=year_range,
         )
         ids = [item["policy_id"] for item in titles_ids_alphabetical]
         documents = await read_policies_by_ids(ids)
@@ -109,6 +134,7 @@ async def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
+        year_range=year_range
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
@@ -147,12 +173,18 @@ async def search_policies(
             query_results_by_doc.append(
                 {
                     "policyId": policy_id,
+                    "policyDate": doc_metadata.policy_date,
                     "policyName": doc_metadata.policy_name,
                     "policyType": doc_metadata.policy_type,
+                    "documentTypes": doc_metadata.document_types,
                     "countryCode": doc_metadata.country_code,
                     "sourceName": doc_metadata.source_name,
                     "url": doc_metadata.url,
                     "language": doc_metadata.language,
+                    "sectors": doc_metadata.sectors,
+                    "instruments": doc_metadata.instruments,
+                    "hazards": doc_metadata.hazards,
+                    "responses": doc_metadata.responses,
                     "resultsByPage": document_response,
                 }
             )

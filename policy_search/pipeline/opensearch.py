@@ -2,7 +2,7 @@
 """
 
 
-from typing import List, Optional
+from typing import List, Optional, Tuple
 
 from opensearchpy import OpenSearch, helpers
 
@@ -99,6 +99,10 @@ class OpenSearchIndex(BaseCallback):
                             }
                         },
                     },
+                    "policy_date": {
+                        "type": "date",
+                        "format": "dd/MM/yyyy"
+                    }
                 }
             },
         }
@@ -190,6 +194,7 @@ class OpenSearchIndex(BaseCallback):
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
+        year_range: Tuple[int, int] = None,
         max_pages_per_doc: Optional[int] = 10,
         max_passages_per_page: Optional[int] = 5,
     ) -> List[dict]:
@@ -253,15 +258,43 @@ class OpenSearchIndex(BaseCallback):
         if limit:
             es_query["aggs"]["top_docs"]["terms"]["size"] = limit
 
-        if keyword_filters:
-            terms_clauses = []
+        if keyword_filters is not None:
+            if len(keyword_filters) > 0:
+                terms_clauses = []
 
-            for field, values in keyword_filters.items():
-                terms_clauses.append({"terms": {field: values}})
+                for field, values in keyword_filters.items():
+                    terms_clauses.append({"terms": {field: values}})
 
-            es_query["query"]["bool"]["filter"] = terms_clauses
+                es_query["query"]["bool"]["filter"] = terms_clauses
+
+        if year_range is not None:
+            if "filter" not in es_query["query"]["bool"]:
+                es_query["query"]["bool"]["filter"] = []
+
+            es_query["query"]["bool"]["filter"].append(self._year_range_filter(year_range))
 
         return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
+
+    def _year_range_filter(self, year_range: Tuple[int, int]):
+        """Returns an opensearch filter for year range"""
+
+        start_date = f"01/01/{year_range[0]}" if year_range[0] is not None else None
+        end_date = f"31/12/{year_range[1]}" if year_range[1] is not None else None
+
+        policy_year_conditions = {}
+        if start_date is not None:
+            policy_year_conditions["gte"] = start_date
+        if end_date is not None:
+            policy_year_conditions["lte"] = end_date
+
+        range_filter = {
+            "range": {}
+        }
+
+        range_filter["range"]["policy_date"] = policy_year_conditions
+        
+        return range_filter
+
 
     def get_page_count_for_doc(self, policy_id: int) -> int:
         """Return the total number of pages in the elastic search index for a given document"""
@@ -291,12 +324,20 @@ class OpenSearchIndex(BaseCallback):
             page_docs.append(
                 {
                     "_id": f"{doc.policy_id}_page{page_num}",
-                    "text": page_text,
                     "policy_id": doc.policy_id,
-                    "policy_name": doc.policy_name,
+                    "policy_name": doc.policy_name.strip(),
+                    "policy_date": doc.policy_date,
                     "page_number": page_num,
                     "country_code": doc.country_code,
                     "source_name": doc.source_name,
+                    "sectors": doc.sectors,
+                    "instruments": doc.instruments,
+                    "document_types": doc.document_types,
+                    "hazards": doc.hazards,
+                    "responses": doc.responses,
+                    "language": doc.language,
+                    "keywords": doc.keywords,
+                    "text": page_text,
                 }
             )
 
@@ -320,6 +361,7 @@ class OpenSearchIndex(BaseCallback):
         field_name: str,
         asc: bool = True,
         keyword_filters: Optional[dict] = None,
+        year_range: Tuple[int, int] = None,
         num_docs: int = 10000,
     ) -> List[dict]:
         """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
@@ -347,15 +389,23 @@ class OpenSearchIndex(BaseCallback):
             },
         }
 
+        if any([keyword_filters, year_range]):
+            query["query"] = {}
+            query["query"]["bool"] = {}
+            query["query"]["bool"]["filter"] = []
+        
         if keyword_filters:
             terms_clauses = []
 
             for field, values in keyword_filters.items():
                 terms_clauses.append({"terms": {field: values}})
 
-            query["query"] = {}
-            query["query"]["bool"] = {}
             query["query"]["bool"]["filter"] = terms_clauses
+
+        if year_range is not None:
+            query["query"]["bool"]["filter"].append(
+                self._year_range_filter(year_range)
+            )
 
         query_result = self.es.search(body=query, index=self.index_name)
 

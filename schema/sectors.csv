@@ -1,0 +1,438 @@
+level0,level1,keywords
+ADAPTATION,Adaptation,Adaptation
+ADAPTATION,Adaptation,Agricultural productivity
+ADAPTATION,Adaptation,Coastal erosion
+ADAPTATION,Adaptation,Cold wave
+ADAPTATION,Adaptation,Desertification
+ADAPTATION,Adaptation,Early warning system
+ADAPTATION,Adaptation,Energy availability
+ADAPTATION,Adaptation,Erosion
+ADAPTATION,Adaptation,Frost
+ADAPTATION,Adaptation,Hazard
+ADAPTATION,Adaptation,Heat stress
+ADAPTATION,Adaptation,Infrastructure damage
+ADAPTATION,Adaptation,Insurance
+ADAPTATION,Adaptation,Land degradation
+ADAPTATION,Adaptation,Ocean acidification
+ADAPTATION,Adaptation,Precipitation
+ADAPTATION,Adaptation,Resilience
+ADAPTATION,Adaptation,Resilient infrastructure
+ADAPTATION,Adaptation,Saltwater intrusion
+ADAPTATION,Adaptation,Seal levels
+ADAPTATION,Adaptation,Soil degradation
+ADAPTATION,Adaptation,Temperature variability
+ADAPTATION,Adaptation,Vulnerability
+ADAPTATION,Adaptation,Water availability
+ADAPTATION,Adaptation,Water stress
+ADAPTATION,Adaptation,Wind patterns
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agricultural infrastructure
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agricultural productivity
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agriculture
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agroforestry
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agropastoral
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agrosilvopastoral
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Biochar
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Biomass
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Biosolid
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Crop burning
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Croplands
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Crops
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Farm irrigation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Farming
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Fertilizer
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Fibre
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Food
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Harvesting
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Hay
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Irrigation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Meadow
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Nutrient cycling
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Pasture
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Pest regulation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Pollination
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Silvopasture
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Soils
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Soil quality
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Tillage
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agriculture (general),Agricultural waste burning
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural greenhouse gas emissions,Agricultural carbon dioxide
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural greenhouse gas emissions,Agricultural greenhouse gas emissions
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural greenhouse gas emissions,Agricultural methane
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural greenhouse gas emissions,Agricultural nitrous oxide
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Animal products
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Animal waste
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Breeding
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Buffalo
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Camels and llamas
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Dairy cattle
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Feeding
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Goats
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Grazing
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Horses
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Livestock
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Manure
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Monogastrics
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Mules and asses
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Non-dairy cattle
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Poultry
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Ruminants
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Sheep
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Livestock,Swine
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Agricultural produce
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Cereals
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Pulse
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Rice cultivation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Root
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Sugar
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Agricultural produce,Tuber
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Afforestation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Boreal forest
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest onservation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Deforestation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest conversion
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest management
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest protection
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest rehabilitation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest restoration
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forest tundra
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forestry
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Forests
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Logging
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Natural forest
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Temperate forest
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Trees
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Tropical forest
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Forestry,Woody biomass
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Cropland
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Decomposition
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Ecological interactions
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Grassland
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Hunting
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Land degradation
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Land management
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Land sinks
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Land sinks
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Organic soil
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Peat
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Peatlands
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Rewetting
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Savannah
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Soil
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Tundra
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)",Land use,Wetlands
+"AGRICULTURE, FORESTRY & OTHER LAND USE (AFOLU)","Land use, land use change and forestry (LULUCF)",LULUCF
+BUILDINGS,Buildings (general),Appliances
+BUILDINGS,Buildings (general),Boilers
+BUILDINGS,Buildings (general),Building codes
+BUILDINGS,Buildings (general),Building ownership
+BUILDINGS,Buildings (general),Buildings
+BUILDINGS,Buildings (general),Buildings infrastructure
+BUILDINGS,Buildings (general),Construction
+BUILDINGS,Buildings (general),Cooking
+BUILDINGS,Buildings (general),Cooling
+BUILDINGS,Buildings (general),Cool roofs
+BUILDINGS,Buildings (general),Energy for buildings
+BUILDINGS,Buildings (general),Glass
+BUILDINGS,Buildings (general),Green roofs
+BUILDINGS,Buildings (general),Heating 
+BUILDINGS,Buildings (general),Heat pumps
+BUILDINGS,Buildings (general),Hot water
+BUILDINGS,Buildings (general),Insulation
+BUILDINGS,Buildings (general),Lighting
+BUILDINGS,Buildings (general),Low-carbon concrete
+BUILDINGS,Buildings (general),Net-zero buildings
+BUILDINGS,Buildings (general),New buildings
+BUILDINGS,Buildings (general),Renovation
+BUILDINGS,Buildings (general),Retrofit
+BUILDINGS,Buildings (general),Smart thermostats
+BUILDINGS,Residential buildings,Apartment
+BUILDINGS,Residential buildings,Detached house
+BUILDINGS,Residential buildings,Green homes
+BUILDINGS,Residential buildings,Home insurance
+BUILDINGS,Residential buildings,Homes
+BUILDINGS,Residential buildings,Housing
+BUILDINGS,Residential buildings,Private housing
+BUILDINGS,Residential buildings,Residential buildings
+BUILDINGS,Residential buildings,Semi-detached house
+BUILDINGS,Residential buildings,Social housing
+BUILDINGS,Non-residential buildings,Commercial buildings
+BUILDINGS,Non-residential buildings,Industrial buildings
+BUILDINGS,Non-residential buildings,Municipal buildings
+BUILDINGS,Non-residential buildings,Non-residential buildings
+BUILDINGS,Non-residential buildings,Offices
+BUILDINGS,Non-residential buildings,Public buildings
+COASTAL ZONES,Coastal zones,Coastal zones
+COASTAL ZONES,Coastal zones,Coasts
+COASTAL ZONES,Coastal zones,Fisheries
+COASTAL ZONES,Coastal zones,Marine biodiversity
+COASTAL ZONES,Coastal zones,Oceans
+CROSS-CUTTING AREAS,Cross-cutting areas,Cross-cutting areas
+DISASTER RISK MANAGEMENT,Disaster risk management,Adaptation consultation
+DISASTER RISK MANAGEMENT,Disaster risk management,Avalanche
+DISASTER RISK MANAGEMENT,Disaster risk management,Climate forecasting
+DISASTER RISK MANAGEMENT,Disaster risk management,Climate monitoring
+DISASTER RISK MANAGEMENT,Disaster risk management,Climate-related perils
+DISASTER RISK MANAGEMENT,Disaster risk management,Cyclone
+DISASTER RISK MANAGEMENT,Disaster risk management,Disaster risk management
+DISASTER RISK MANAGEMENT,Disaster risk management,Early warning system
+DISASTER RISK MANAGEMENT,Disaster risk management,Extreme weather events
+DISASTER RISK MANAGEMENT,Disaster risk management,Flooding
+DISASTER RISK MANAGEMENT,Disaster risk management,Hurricane
+DISASTER RISK MANAGEMENT,Disaster risk management,Insurance
+DISASTER RISK MANAGEMENT,Disaster risk management,Landslide
+DISASTER RISK MANAGEMENT,Disaster risk management,Natural disaster
+DISASTER RISK MANAGEMENT,Disaster risk management,Physical risk
+DISASTER RISK MANAGEMENT,Disaster risk management,Storm
+DISASTER RISK MANAGEMENT,Disaster risk management,Tornado
+DISASTER RISK MANAGEMENT,Disaster risk management,Typhoon
+DISASTER RISK MANAGEMENT,Disaster risk management,Wildfire
+ECONOMY-WIDE,Economy-wide,Economy-wide
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Carbon capture
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Energy mix
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Energy research
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Energy technology
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Engineered sinks
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),High-carbon
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Low-carbon
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Renewable energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy (general),Sequestration
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Biodiesel
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Bioenergy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Bioethanol
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Biofuels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Coal
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Combustion
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy combustion activities
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy demand
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy distribution
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy industries
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy production
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Energy production
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Flaring
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fossil fuel fires
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fossil fuel phase-out
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fossil fuels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fuel exploitation
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fuel processing
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fuel transformation
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fuels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Fugitive emissions from fuels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Gas
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Geothermal energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Hydrogen storage
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Hydrogen transportation
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Hydropower
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Hyrodgen production
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Lignite
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Liquefaction
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Low-carbon technology
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Metal ore
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Micro wind turbine
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Mining
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Natural gas
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Nuclear
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Nuclear energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Offshore
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil drilling
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil exploration
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil extraction
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil refinery
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Oil well development
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Onshore
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Petroleum
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Power industry
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Quarrying
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Renewable energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Renewables
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Solar energy
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Solar panels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Solid fuels
+ENERGY & CARBON CAPTURE AND STORAGE,Energy production,Venting
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Cooling
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Electricity
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Electricity distribution
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Electricity subsidies
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Electriciy charges
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Energy efficiency
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Energy performance
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Energy storage
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Energy technology
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Energy use
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Grid flexibility
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Grid modernisation
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Grids
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Heating
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Microgrids
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Power
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Power storage
+ENERGY & CARBON CAPTURE AND STORAGE,Energy use,Smartgrids
+ENERGY & CARBON CAPTURE AND STORAGE,Carbon capture and storage,Carbon capture
+ENERGY & CARBON CAPTURE AND STORAGE,Carbon capture and storage,Carbon storage
+ENERGY & CARBON CAPTURE AND STORAGE,Carbon capture and storage,Direct air capture
+ENVIRONMENT,Environment,Air pollution
+ENVIRONMENT,Environment,Air quality
+ENVIRONMENT,Environment,Biodiversity
+ENVIRONMENT,Environment,Environment
+ENVIRONMENT,Environment,Plastic pollution
+ENVIRONMENT,Environment,Water pollution
+ENVIRONMENT,Environment,Water quality
+FINANCE,Finance,Finance
+FINANCE,Finance,Financial disclosure
+FINANCE,Finance,Financial regulation
+FINANCE,Finance,Green finance
+FINANCE,Finance,Investment
+HEALTH,Health,Disease
+HEALTH,Health,Doctor
+HEALTH,Health,Health
+HEALTH,Health,Healthcare infrastructure
+HEALTH,Health,Hospital
+HEALTH,Health,Illness
+HEALTH,Health,Injury
+HEALTH,Health,Pandemic
+HEALTH,Health,Treatment
+INDUSTRY,Industry (general),Industry
+INDUSTRY,Industrial greenhouse gas emissions,Industrial carbon dioxide
+INDUSTRY,Industrial greenhouse gas emissions,Industrial greenhouse gas emissions
+INDUSTRY,Industrial greenhouse gas emissions,Industrial nitrous oxide
+INDUSTRY,Industrial products,Adipic acid
+INDUSTRY,Industrial products,Aerosols
+INDUSTRY,Industrial products,Aluminium
+INDUSTRY,Industrial products,Anhydrous ammonia
+INDUSTRY,Industrial products,Asphalt
+INDUSTRY,Industrial products,Beverages
+INDUSTRY,Industrial products,Black carbon
+INDUSTRY,Industrial products,Carbide
+INDUSTRY,Industrial products,Cement
+INDUSTRY,Industrial products,Chemicals
+INDUSTRY,Industrial products,Clorine
+INDUSTRY,Industrial products,Dolomite
+INDUSTRY,Industrial products,Ferroalloys
+INDUSTRY,Industrial products,Food
+INDUSTRY,Industrial products,Food processing
+INDUSTRY,Industrial products,Halocarbons
+INDUSTRY,Industrial products,Halocarbons
+INDUSTRY,Industrial products,Industrial products
+INDUSTRY,Industrial products,Iron
+INDUSTRY,Industrial products,Leather
+INDUSTRY,Industrial products,Lime
+INDUSTRY,Industrial products,Limestone
+INDUSTRY,Industrial products,Manufacturing
+INDUSTRY,Industrial products,Metal production
+INDUSTRY,Industrial products,Mineral products
+INDUSTRY,Industrial products,Nitric acid
+INDUSTRY,Industrial products,Non-ferrous metals
+INDUSTRY,Industrial products,Non-metallic minerals production
+INDUSTRY,Industrial products,Paper
+INDUSTRY,Industrial products,Petrochemicals
+INDUSTRY,Industrial products,Plastics manufacturing
+INDUSTRY,Industrial products,Pulp
+INDUSTRY,Industrial products,Soda ash
+INDUSTRY,Industrial products,Solvents
+INDUSTRY,Industrial products,Steel
+INDUSTRY,Industrial products,Sulphur hexafluoride
+INDUSTRY,Industrial products,Textile
+INDUSTRY,Industrial products,Tobacco
+INDUSTRY,Industrial processes,Combustion for manufacturing
+INDUSTRY,Industrial processes,Degreasing
+INDUSTRY,Industrial processes,Dry cleaning
+INDUSTRY,Industrial processes,Fluorinated gases
+INDUSTRY,Industrial processes,Foam blowing
+INDUSTRY,Industrial processes,Industrial energy
+INDUSTRY,Industrial processes,Industrial processes
+INDUSTRY,Industrial processes,Industrial processes
+INDUSTRY,Industrial processes,Machinery
+INDUSTRY,Industrial processes,Negative emissions
+INDUSTRY,Industrial processes,Paint application
+INDUSTRY,Industrial processes,Waste CH4
+INDUSTRY,Industrial processes,Waste heat
+NATURE-BASED SOLUTIONS,Nature-based solutions,Ecosystem-based adaptation
+NATURE-BASED SOLUTIONS,Nature-based solutions,Green infrastructure
+NATURE-BASED SOLUTIONS,Nature-based solutions,Green space management
+NATURE-BASED SOLUTIONS,Nature-based solutions,Living lab
+NATURE-BASED SOLUTIONS,Nature-based solutions,Natural capital
+NATURE-BASED SOLUTIONS,Nature-based solutions,Urban forestry
+NATURE-BASED SOLUTIONS,Nature-based solutions,Urban green infrastructure
+OTHER,Other,
+PUBLIC SECTOR,Public sector,Public sector
+PUBLIC SECTOR,Public sector,Government procurement
+PUBLIC SECTOR,Public sector,Government fleet
+RURAL,Rural,Rural
+SOCIAL DEVELOPMENT,Social development,Social development
+TOURISM,Tourism,Tourism
+TRANSPORT,Transport (general),Diesel engine
+TRANSPORT,Transport (general),Domestic transport
+TRANSPORT,Transport (general),Freight transport
+TRANSPORT,Transport (general),Gasoline
+TRANSPORT,Transport (general),Internal combustion engine
+TRANSPORT,Transport (general),Internatioanl transport
+TRANSPORT,Transport (general),Interurban transport
+TRANSPORT,Transport (general),Local transport
+TRANSPORT,Transport (general),Low-carbon transport
+TRANSPORT,Transport (general),Low-emission vehicle
+TRANSPORT,Transport (general),Off-road transport
+TRANSPORT,Transport (general),Passenger transport
+TRANSPORT,Transport (general),Personal mobility
+TRANSPORT,Transport (general),Petrol engine
+TRANSPORT,Transport (general),Pipeline transport
+TRANSPORT,Transport (general),Rapid transit
+TRANSPORT,Transport (general),Transport
+TRANSPORT,Transport (general),Transport demand
+TRANSPORT,Transport (general),Vehicle emissions
+TRANSPORT,Transport (general),Vehicles
+TRANSPORT,Transport (general),Zero-emission vehicle
+TRANSPORT,Road transport,Buses
+TRANSPORT,Road transport,Cars
+TRANSPORT,Road transport,Cycling
+TRANSPORT,Road transport,Electric bicyle
+TRANSPORT,Road transport,Electric cars
+TRANSPORT,Road transport,Lorries
+TRANSPORT,Road transport,Minibuses
+TRANSPORT,Road transport,Motorcycles
+TRANSPORT,Road transport,Road transport
+TRANSPORT,Road transport,Trucks
+TRANSPORT,Rail transport,High-speed rail
+TRANSPORT,Rail transport,Intercity rail
+TRANSPORT,Rail transport,Locomotive
+TRANSPORT,Rail transport,Rail transport
+TRANSPORT,Rail transport,Railways
+TRANSPORT,Rail transport,Trains
+TRANSPORT,Air transport,Aeroplane
+TRANSPORT,Air transport,Air transport
+TRANSPORT,Air transport,Airport
+TRANSPORT,Air transport,Civil aviation
+TRANSPORT,Air transport,International aviation
+TRANSPORT,Air transport,Jet fuel
+TRANSPORT,Maritime transport,Boat
+TRANSPORT,Maritime transport,Maritime transport
+TRANSPORT,Maritime transport,Navigation
+TRANSPORT,Maritime transport,Ship 
+TRANSPORT,Maritime transport,Shipping
+TRANSPORT,Transport infrastructure,Airport infrastructure
+TRANSPORT,Transport infrastructure,Charging infrastructure
+TRANSPORT,Transport infrastructure,Cycling infrastructure
+TRANSPORT,Transport infrastructure,Public transport
+TRANSPORT,Transport infrastructure,Refueeling infrastructure
+TRANSPORT,Transport infrastructure,Road infrasructure
+TRANSPORT,Transport infrastructure,Transport infrastructure
+URBAN,Urban,Cities
+URBAN,Urban,Human settlements
+URBAN,Urban,Smart cities
+URBAN,Urban,Urban
+URBAN,Urban,Urban crowding
+URBAN,Urban,Urban infrastructure
+WASTE,Waste,Chemical waste
+WASTE,Waste,Domestic waste
+WASTE,Waste,Dumps
+WASTE,Waste,Food waste
+WASTE,Waste,Industrial waste
+WASTE,Waste,Landfills
+WASTE,Waste,Sewerage
+WASTE,Waste,Tips
+WASTE,Waste,Waste
+WASTE,Waste,Waste disposal
+WASTE,Waste,Waste incineration
+WASTE,Waste,Wastewater
+WASTE,Waste,Water waste
+WATER,Water,Water
