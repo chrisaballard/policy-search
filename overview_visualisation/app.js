@@ -1,3 +1,5 @@
+const BASE_URL = 'http://localhost:3001';
+
 function color(){
     return d3.scaleLinear()
     .domain([0, 5])
@@ -54,12 +56,6 @@ async function renderVisualisation() {
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-        // .attr("y", d => {
-        //     // console.log(d)
-        //     if(d.children) {
-        //         return -d.r - 10
-        //     }
-        // })
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
         .style("fill", "black")
@@ -69,6 +65,7 @@ async function renderVisualisation() {
     zoomTo([root.x, root.y, root.r * 2]);
 
     function zoomTo(v) {
+
         const k = width / v[2];
 
         view = v;
@@ -101,7 +98,39 @@ async function renderVisualisation() {
             .on("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
             .on("end", function (d) { if (d.parent !== focus) this.style.display = "none"; });
     }
+    init();
 
 }
 
-renderVisualisation()
+function addListeners(elementsArray) {
+
+    Array.prototype.forEach.call(elementsArray, (elem, index) => {
+        if(elem.textContent === 'Food & water (369)') {
+            elem.style.pointerEvents = 'auto';
+            elem.addEventListener("click", function() {
+                window.open(BASE_URL + '?search1', '_parent');
+            });
+        }
+        if(elem.textContent === 'Gender (43)') {
+            elem.style.pointerEvents = 'auto';
+            elem.addEventListener("click", function() {
+                window.open(BASE_URL + '?search2', '_parent');
+            });
+        }
+      });
+}
+
+function init() {
+    let c = 0;
+    const checkingDom = setInterval(() => {
+        c += 1;
+        if(document.getElementsByTagName('text').length || c > 10000) {
+            clearInterval(checkingDom);
+            addListeners(document.getElementsByTagName('text'))
+        }
+    }, 500)
+}
+
+
+renderVisualisation();
+
