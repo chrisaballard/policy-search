@@ -5,7 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
-from elasticsearch import NotFoundError as ElasticNotFoundError
+from opensearchpy import NotFoundError as OpenSearchNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
 from policy_search.pipeline.opensearch import OpenSearchIndex
@@ -13,7 +13,6 @@ from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchRes
 from policy_search.pipeline.semantic_search import SBERTEncoder
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
 from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
-
 
 POLICIES_TABLE = "Policies"
 
@@ -31,8 +30,8 @@ es = OpenSearchIndex(
     es_user=opensearch_user,
     es_password=opensearch_password,
     es_connector_kwargs={
-        "use_ssl": True,
-        "verify_certs": True,
+        "use_ssl": False,
+        "verify_certs": False,
         "ssl_show_warn": False,
         "timeout": 120,
     },
@@ -62,9 +61,11 @@ async def read_policies(
     return policy_table.scan(start, limit)
 
 
-async def read_policies_by_ids(ids: List[int]):
+@app.get("/policies/multiple/", response_model=List[Policy])
+async def read_policies_by_ids(id: List[int] = Query([])):
     """Get policy metadata from a list of IDs"""
-    return [policy_table.get_document(_id) for _id in ids]
+
+    return [policy_table.get_document(_id) for _id in id]
 
 
 @app.get("/policies/search/", response_model=PolicySearchResponse)
@@ -73,17 +74,45 @@ async def search_policies(
     start: Optional[int] = 0,
     limit: Optional[int] = 100,
     geography: Optional[List[str]] = Query(None),
+    year_start: Optional[int] = Query(None),
+    year_end: Optional[int] = Query(None),
+    sector: Optional[List[str]] = Query(None),
+    instrument: Optional[List[str]] = Query(None),
+    response: Optional[List[str]] = Query(None),
+    hazard: Optional[List[str]] = Query(None),
+    document_type: Optional[List[str]] = Query(None),
+    keyword: Optional[List[str]] = Query(None),
 ):
     "Search for policies given a specified query"
 
+    kwd_filters = {}
+    
     if geography:
-        kwd_filters = {"country_code.keyword": geography}
-    else:
-        kwd_filters = None
+        kwd_filters["country_code.keyword"] = geography
+    if sector:
+        kwd_filters["sectors.keyword"] = sector
+    if instrument:
+        kwd_filters["instruments.keyword"] = instrument
+    if response:
+        kwd_filters["responses.keyword"] = response
+    if hazard:
+        kwd_filters["hazards.keyword"] = hazard
+    if document_type:
+        kwd_filters["document_types.keyword"] = document_type        
+    if keyword:
+        kwd_filters["keywords.keyword"] = keyword
+
+    year_range = None
+    if any([year_start, year_end]):
+        year_range = (year_start, year_end)
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
-            "policy_name", asc=True, num_docs=start + limit, keyword_filters=kwd_filters
+            "policy_name.normalized",
+            asc=True,
+            num_docs=start + limit,
+            keyword_filters=kwd_filters,
+            year_range=year_range,
         )
         ids = [item["policy_id"] for item in titles_ids_alphabetical]
         documents = await read_policies_by_ids(ids)
@@ -106,6 +135,7 @@ async def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
+        year_range=year_range
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
@@ -144,12 +174,18 @@ async def search_policies(
             query_results_by_doc.append(
                 {
                     "policyId": policy_id,
+                    "policyDate": doc_metadata.policy_date,
                     "policyName": doc_metadata.policy_name,
                     "policyType": doc_metadata.policy_type,
+                    "documentTypes": doc_metadata.document_types,
                     "countryCode": doc_metadata.country_code,
                     "sourceName": doc_metadata.source_name,
                     "url": doc_metadata.url,
                     "language": doc_metadata.language,
+                    "sectors": doc_metadata.sectors,
+                    "instruments": doc_metadata.instruments,
+                    "hazards": doc_metadata.hazards,
+                    "responses": doc_metadata.responses,
                     "resultsByPage": document_response,
                 }
             )
@@ -187,17 +223,19 @@ def get_policy_text_by_page(
         es_doc = es.get_doc_by_id(doc_id, _source=["text.text_id", "text.text"])
         page_text = [item["text"] for item in es_doc["_source"]["text"]]
 
+    except OpenSearchNotFoundError:
+        page_text = []
+
+    finally:
         # Get the total page count for the document
         page_count = es.get_page_count_for_doc(policy_id)
-        return {
-            "documentMetadata": {"pageCount": page_count},
-            "pageText": page_text,
-        }
-
-    except ElasticNotFoundError:
-        raise HTTPException(
-            status_code=404, detail="Policy document or page within it not found"
-        )
+        if page_count:
+            return {
+                "documentMetadata": {"pageCount": page_count},
+                "pageText": page_text,
+            }
+        else:
+            raise HTTPException(404, "Document does not exist in OpenSearch database.")
 
 
 @app.get("/geographies", response_model=List[Geography])

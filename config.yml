@@ -3,10 +3,58 @@ sources:
     type: text/csv
     attributes:
       # Maps columns in data source csv to attributes
-      source_name: sourceName
-      source_policy_id: sourcePolicyId
-      policy_name: policyName
-      policy_type: policyType
-      country_code: countryCode
-      url: url
-      language: language
+      source_name: 
+        name: sourceName
+      source_policy_id: 
+        name: sourcePolicyId
+      policy_name: 
+        name: policyName
+      policy_date: 
+        name: policyDate
+      policy_description: 
+        name: policyDescription
+      policy_type: 
+        name: policyType
+      country_code: 
+        name: countryCode
+      url: 
+        name: url
+      language: 
+        name: language
+      sector_list: 
+        name: sectors
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      instrument_list: 
+        name: instruments
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      hazard_list: 
+        name: hazards
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      responses_list: 
+        name: responses
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      document_type_list: 
+        name: documentTypes
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      keyword_list: 
+        name: keywords
+        func_transform:
+          function: delimited_string_to_list
+          args:
+            delim: ";"
+      
