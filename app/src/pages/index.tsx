@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchNavigation, SearchResults } from '../components/search';
@@ -31,9 +32,10 @@ const Home = React.memo((): JSX.Element => {
   const [ next, setNext ] = useState(0);
 
   const containerRef = useRef();
+  const router = useRouter();
   
   // custom hooks
-  const [ searchResult, getResult, clearResult ] = useGetSearchResult();
+  const [ searchResult, getResult, clearResult, getMultiple ] = useGetSearchResult();
   const setGeographies = useGeographies();
   const [ removeFilters, updateFilters, checkForFilters, replaceFiltersObj ] = useFilters();
   const setSectors = useSectors();
@@ -87,6 +89,12 @@ const Home = React.memo((): JSX.Element => {
 
   useDidUpdateEffect(() => {
     if(geographyList.length) {
+      const urlQueryString = router.query;
+      console.log(router)
+      if(router.asPath.indexOf('search1') > 1) {
+        getMultiple('id=2&id=3');
+        return;
+      }
       newSearch('');
     }
   }, [geographyList])

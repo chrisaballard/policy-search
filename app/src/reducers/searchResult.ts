@@ -8,9 +8,13 @@ const searchResultReducer = (state: SearchResult = initialState.searchResult, ac
     switch (action.type) {
       case ActionTypes.getSearchResult:
         const { searchQuery, metadata, resultsByDocument, endOfList } = action.payload;
+        let docs = resultsByDocument;
         draft.searchQuery = searchQuery;
         draft.endOfList = endOfList;
-        draft.resultsByDocument = [...draft.resultsByDocument, ...resultsByDocument]
+        if(!resultsByDocument) {
+          docs = [];
+        }
+        draft.resultsByDocument = [...draft.resultsByDocument, ...docs]
         draft.metadata = metadata;
         break;
       case ActionTypes.clearSearchResult:
