@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useRouter } from 'next/router';
 import useBuildQueryString from '../../hooks/useBuildQueryString';
 import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
@@ -9,9 +8,8 @@ interface SearchInputProps {
   searchTerms: string;
 }
 const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): JSX.Element => {
-  const [ searchOpen, setSearchOpen ] = useState(false);
+  const [ searchActivated, setSearchActivated ] = useState(false);
   const [ input, setInput ] = useState(searchTerms);
-  const router = useRouter();
   const [ buildQueryString ] = useBuildQueryString();
   
   const searchButton = useRef<HTMLButtonElement>(null);
@@ -20,32 +18,49 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
 
   const handleClick = (e: React.FormEvent<HTMLButtonElement> ): void => {
     e.preventDefault();
-    setSearchOpen(!searchOpen);
-    // clearResult();
-    // setInput('');
+    
+    if(!searchActivated) {
+      setSearchActivated(true);
+    }
+    else {
+      clearResult();
+      setInput('');
+    }
   }
   const handleChange = () => {
     setInput(searchInput.current.value)
   }
+  const newQuery = () => {
+    const qStr = buildQueryString(input);
+    newSearch(qStr);
+  }
+
+  useEffect(() => {
+    if(input?.length) {
+      setSearchActivated(true)
+    }
+  }, []);
  
   useDidUpdateEffect(() => {
+    if(!input.length) {
+      newQuery();
+      searchInput.current.focus();
+      return;
+    }
+    
     // handle change event only after user
     // has stopped typing
     const timeOutId = setTimeout(() => {
-      const qStr = buildQueryString(input);
-      newSearch(qStr);
+      newQuery();
     }, 800);
     return () => clearTimeout(timeOutId);
   }, [input]);
 
-  useEffect(() => {
-    // toggle open/close of search field
-      setTimeout(() => {
-        if(searchInput.current && searchOpen) {
-          searchInput.current.focus();
-        }
-      }, 800);
-  }, [searchOpen]);
+  useDidUpdateEffect(() => {
+    if(searchInput.current && searchActivated) {
+      searchInput.current.focus();
+    }
+  }, [searchActivated]);
 
 
   return (
@@ -58,11 +73,11 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchOpen ? 'opacity-0': 'opacity-100'}`}>
+            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
-            className={`md:ml-64 search-input-wrapper transition-all duration-300 ${searchOpen ? 'expanded' : ''}`}>
+            className={`md:ml-64 search-input-wrapper transition-all duration-300 ${searchActivated ? 'expanded' : ''}`}>
               <input 
                 id="search-input"
                 ref={searchInput}
@@ -75,15 +90,15 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
           <button
             type="button"
             onClick={handleClick} ref={searchButton}
-            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchOpen ? 'collapsed' : ''}`}>
+            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
               <img 
                 src="/images/close.svg" 
                 alt="Close icon"
-                className={`search-btn-close ${searchOpen ? 'opacity-100': 'opacity-0'}`} />
+                className={`search-btn-close ${input?.length ? 'opacity-100': 'opacity-0'}`} />
               <img 
                 src="/images/search.svg" 
                 alt="Search icon" 
-                className={`search-btn-search ${searchOpen ? 'opacity-0': 'opacity-100'}`} />
+                className={`-mt-2 search-btn-search ${!input?.length ? 'opacity-100': 'opacity-0'}`} />
           </button>
         </form>
       </div>

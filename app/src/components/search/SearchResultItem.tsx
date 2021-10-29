@@ -39,7 +39,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
         <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
         <div className="font-normal text-xs text-primary-dark-500 mt-2 leading-tight">{country}</div>
       </div>
-      <div className="col-span-5 sm:col-span-6 md:col-span-5 flex items-start">
+      <div className="col-span-5 sm:col-span-6 md:col-span-5 md:pl-2 flex items-start">
         <div className="leading-tight">
           {policy.policyName}
           <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">2021</div>
@@ -55,7 +55,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
               </button> in this policy.
             </>
             : 
-              <span className="">{texts.length} page matches.</span> 
+              null
             }
           </div>
 
@@ -80,8 +80,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
               </Circle>
             </a>
           </Link> 
-          {/* <a href={policy.url} target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center"> */}
-          <a href="https://climate-laws.org/rails/active_storage/blobs/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBa3NJIiwiZXhwIjpudWxsLCJwdXIiOiJibG9iX2lkIn19--8e23ad17764007871a3dd0b2e410764d6a82e124/f" target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center">
+          <a href={policy.url} target="_blank" rel="noopener noreferrer" className="ml-4 flex flex-col justify-center items-center">
             <span className="sr-only">View PDF</span>
             <Circle
               title="View PDF"

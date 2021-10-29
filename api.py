@@ -107,7 +107,11 @@ async def search_policies(
 
     if query is None:
         titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
-            "policy_name", asc=True, num_docs=start + limit, keyword_filters=kwd_filters, year_range=year_range
+            "policy_name.normalized",
+            asc=True,
+            num_docs=start + limit,
+            keyword_filters=kwd_filters,
+            year_range=year_range,
         )
         ids = [item["policy_id"] for item in titles_ids_alphabetical]
         documents = await read_policies_by_ids(ids)

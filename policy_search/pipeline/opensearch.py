@@ -91,8 +91,13 @@ class OpenSearchIndex(BaseCallback):
                         },
                     },
                     "policy_name": {
-                        "type": "keyword",
-                        "normalizer": "lowercase_asciifold",
+                        "type": "text",
+                        "fields": {
+                            "normalized": {
+                                "type": "keyword",
+                                "normalizer": "lowercase_asciifold",
+                            }
+                        },
                     },
                     "policy_date": {
                         "type": "date",
