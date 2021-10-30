@@ -51,15 +51,25 @@ async function renderVisualisation() {
     const label = svg.append("g")
         .style("font", "12px sans-serif")
         .style("font-weight", "bold")
-        .attr("pointer-events", "none")
+        
         .attr("text-anchor", "middle")
         .selectAll("text")
         .data(root.descendants())
         .join("text")
+        .attr("pointer-events", d => d.data.name !== "Food & water" && d.data.name !== "Gender" ? "none" : "auto")
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
         .style("fill", "black")
         .text(d => d.data.value ? d.data.name + " (" + d.data.value + ")" : d.data.name + '')
+        .on("click", (event, d) => {
+            
+            if(d.data.name === "Food & water") {
+                window.open(BASE_URL + '?search1', '_parent');
+            }
+            else if(d.data.name === "Gender") {
+                window.open(BASE_URL + '?search2', '_parent');
+            }
+        })
 
 
     zoomTo([root.x, root.y, root.r * 2]);
@@ -98,39 +108,7 @@ async function renderVisualisation() {
             .on("start", function (d) { if (d.parent === focus) this.style.display = "inline"; })
             .on("end", function (d) { if (d.parent !== focus) this.style.display = "none"; });
     }
-    init();
-
 }
-
-function addListeners(elementsArray) {
-
-    Array.prototype.forEach.call(elementsArray, (elem, index) => {
-        if(elem.textContent === 'Food & water (369)') {
-            elem.style.pointerEvents = 'auto';
-            elem.addEventListener("click", function() {
-                window.open(BASE_URL + '?search1', '_parent');
-            });
-        }
-        if(elem.textContent === 'Gender (43)') {
-            elem.style.pointerEvents = 'auto';
-            elem.addEventListener("click", function() {
-                window.open(BASE_URL + '?search2', '_parent');
-            });
-        }
-      });
-}
-
-function init() {
-    let c = 0;
-    const checkingDom = setInterval(() => {
-        c += 1;
-        if(document.getElementsByTagName('text').length || c > 10000) {
-            clearInterval(checkingDom);
-            addListeners(document.getElementsByTagName('text'))
-        }
-    }, 500)
-}
-
 
 renderVisualisation();
 
