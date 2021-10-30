@@ -96,7 +96,6 @@ async function renderVisualisation() {
         const transition = svg.transition()
             .duration(event.altKey ? 7500 : 750)
             .tween("zoom", d => {
-                console.log(focus)
                 const i = d3.interpolateZoom(view, [focus.x, focus.y, focus.r * 2]);
                 return t => zoomTo(i(t));
             });
