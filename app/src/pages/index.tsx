@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { SearchInput, SearchNavigation, SearchResults } from '../components/search';
 import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
-import { PER_PAGE } from '../constants';
+import { PER_PAGE, SEARCH1, SEARCH2 } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGeographies from '../hooks/useGeographies';
 import useSectors from '../hooks/useSectors';
@@ -81,6 +81,14 @@ const Home = React.memo((): JSX.Element => {
     
   }
 
+  const buildMultiIdQuery = (arr) => {
+    let qs = ''
+    arr.forEach((id, index) => {
+      qs += index < arr.length - 1 ? `id=${id}&` : `id=${id}`;
+    })
+    return qs;
+  }
+
   useEffect(() => {
     if(!geographyList.length) setGeographies();
     if(!sectorList.length) setSectors();
@@ -90,9 +98,16 @@ const Home = React.memo((): JSX.Element => {
   useDidUpdateEffect(() => {
     if(geographyList.length) {
       const urlQueryString = router.query;
-      console.log(router)
+      // const qs1 = buildMultiIdQuery(SEARCH1);
+      const qs1 = 'id=115&id=104&id=294&id=481&id=119';
+      const qs2 = buildMultiIdQuery(SEARCH2);
+
       if(router.asPath.indexOf('search1') > 1) {
-        getMultiple('id=2&id=3');
+        getMultiple(qs1);
+        return;
+      }
+      if(router.asPath.indexOf('search2') > 1) {
+        getMultiple(qs2);
         return;
       }
       newSearch('');

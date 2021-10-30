@@ -42,10 +42,10 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
       <div className="col-span-5 sm:col-span-6 md:col-span-5 md:pl-2 flex items-start">
         <div className="leading-tight">
           {policy.policyName}
-          <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">2021</div>
+          <div className="md:hidden w-full mt-2 font-normal text-primary-dark-500">{policy?.policyDate?.substr(policy?.policyDate?.length - 4)}</div>
 
           <div className="font-normal text-sm mt-2 text-primary-dark-400">
-          {texts.length > 0 ?
+          {texts?.length > 0 ?
             <>
               <button
                 onClick={toggleExtracts}
@@ -61,7 +61,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
 
         </div>
       </div>
-      <div className="hidden md:block text-center font-normal text-primary-dark-500 md:col-span-2">2021</div>
+      <div className="hidden md:block text-center font-normal text-primary-dark-500 md:col-span-2">{policy?.policyDate?.substr(policy?.policyDate?.length - 4)}</div>
       <div className="col-span-3 sm:col-span-2 md:col-span-1">
         <div className="md:hidden mb-6 flex flex-col items-end">
           <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
@@ -99,7 +99,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
     
 
     <div className={`${!showExtracts ? 'hidden' : ''}`}>
-      {texts.map((item, index) => (
+      {texts?.map((item, index) => (
         <TextExtract
           key={`${index}_${item.pageNumber}`}
           texts={item.text}

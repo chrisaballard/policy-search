@@ -16,6 +16,11 @@ export interface clearSearchResultAction {
   payload: SearchResult;
 }
 
+export interface getMultipleAction {
+  type: ActionTypes.getMultiple;
+  payload: SearchResult;
+}
+
 export const getSearchResult = (queryString: string) => async (dispatch: Dispatch, getState) => {
   const searchTerms = getParameterByName('query', `${API_BASE_URL}/?${queryString}`)
 
@@ -36,15 +41,19 @@ export const getSearchResult = (queryString: string) => async (dispatch: Dispatc
 export const getMultipleById = (queryString: string) => async (dispatch: Dispatch, getState) => {
   
   const data = await multipleIds(queryString);
-  let docs = [];
-  if(data?.resultsByDocument?.length) {
-    docs = data.resultsByDocument;
-  }
-  const endOfList = docs.length < PER_PAGE;
+  
+  const endOfList = data.length < PER_PAGE;
 
   dispatch<getSearchResultAction>({
     type: ActionTypes.getSearchResult,
-    payload: {...data, searchQuery: '', endOfList}
+    payload: {
+      metadata: {
+        numDocsReturned: data.length
+      },
+      searchQuery: '',
+      resultsByDocument: data, 
+      endOfList
+    }
   })
   dispatch<SetStatusAction>({
     type: ActionTypes.setStatus,
