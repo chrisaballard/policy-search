@@ -62,12 +62,8 @@ async function renderVisualisation() {
         .style("fill", "black")
         .text(d => d.data.value ? d.data.name + " (" + d.data.value + ")" : d.data.name + '')
         .on("click", (event, d) => {
-            
-            if(d.data.name === "Food & water") {
-                window.open(BASE_URL + '?search1', '_parent');
-            }
-            else if(d.data.name === "Gender") {
-                window.open(BASE_URL + '?search2', '_parent');
+            if(d.data.link) {
+                window.open(BASE_URL + d.data.link, '_parent');
             }
         })
 

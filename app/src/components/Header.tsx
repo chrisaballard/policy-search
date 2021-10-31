@@ -4,9 +4,6 @@ import Navigation from './Navigation';
 const Header = ({ pageTitle }) => {
   return (
     <header>
-      {/* <div className="container flex justify-center my-6 lg:my-12">
-        <img className="logo" src="/images/cpr-logo-primary.svg" alt="Climate Policy Radar Logo" />
-      </div> */}
       <div className="container md:flex mt-6 lg:mt-12">
         <div className="w-full flex flex-col justify-center md:justify-start mb-4 md:mb-0 md:w-1/4 px-4 md:pl-0">
           <Link href="/">
@@ -16,7 +13,7 @@ const Header = ({ pageTitle }) => {
             <Navigation />
           </div>
         </div>
-        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase text-center md:pl-8 mx-auto">{pageTitle}</h1>
+        <h1 className="text-4xl md:text-6xl font-bold transform-uppercase md:pl-8">{pageTitle}</h1>
       </div>
     </header>
   )
