@@ -41,8 +41,8 @@ const TextExtract = ({ texts, page, id }: TextExtractProps): JSX.Element => {
         
         <p className="text-sm mt-4 text-primary-dark-400 italic">{renderSummary()}</p>
 
-      <div className="flex justify-between items-center mt-4">
-        <div>
+      <div className="text-right md:text-left md:flex justify-between items-center mt-4">
+        <div className="mb-2 md:mb-0">
           <button className="text-primary-dark-500 hover:text-primary-light focus:outline-none" onClick={() => { setVoteState('yes')}}>
             <UpvoteIcon width="20" height="20" color={`${voteState === 'yes' ? '#1f93ff' : 'currentColor'}`}  />
           </button>

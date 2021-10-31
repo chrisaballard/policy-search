@@ -38,7 +38,7 @@ const SearchResults = ({
     }
     else {
       return (
-        <div className="text-2xl  mt-6 md:mt-0">
+        <div className="text-center md:text-left text-2xl mt-6 md:mt-0">
           Latest Policies:
         </div>
       )
@@ -47,13 +47,13 @@ const SearchResults = ({
   return (
     <section className="w-full">
         <div className="pt-8 md:pt-0 md:pl-4">
-          <div className="flex justify-between items-start">
+          <div className="md:flex justify-between items-center">
             {!processing ?
               renderMessage()
             :
             null}
             {!processing && policies.length ?
-            <div className="w-1/4 flex-shrink-0">
+            <div className="mt-4 flex justify-center lg:w-1/4 flex-shrink-0">
               <Button>Download results</Button>
             </div>
             :

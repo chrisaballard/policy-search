@@ -73,7 +73,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
+            className={`text-center md:text-left block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
