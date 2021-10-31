@@ -43,10 +43,10 @@ const TextExtract = ({ texts, page, id }: TextExtractProps): JSX.Element => {
 
       <div className="flex justify-between items-center mt-4">
         <div>
-          <button className="hover:text-primary-light focus:outline-none" onClick={() => { setVoteState('yes')}}>
+          <button className="text-primary-dark-500 hover:text-primary-light focus:outline-none" onClick={() => { setVoteState('yes')}}>
             <UpvoteIcon width="20" height="20" color={`${voteState === 'yes' ? '#1f93ff' : 'currentColor'}`}  />
           </button>
-          <button className="hover:text-primary-light ml-2 focus:outline-none" onClick={() => { setVoteState('no')}}>
+          <button className="text-primary-dark-500 hover:text-primary-light ml-2 focus:outline-none" onClick={() => { setVoteState('no')}}>
             <DownvoteIcon width="20" height="20" color={`${voteState === 'no' ? '#1f93ff' : 'currentColor'}`} />
           </button>
           <p className="text-xs">Is this result helpful?</p>
