@@ -83,7 +83,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
                 ref={searchInput}
                 onChange={handleChange}
                 value={input}
-                className={`search-input h-full w-full text-xl md:text-3xl text-primary-dark-500 outline-none focus:outline-none`} 
+                className={`search-input pr-12 h-full w-full text-xl md:text-3xl text-primary-dark-500 outline-none focus:outline-none`} 
               />
           </div>
           

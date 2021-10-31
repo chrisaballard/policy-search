@@ -1,5 +1,5 @@
 interface ButtonProps {
-  onClick(event: React.FormEvent<HTMLButtonElement>): void;
+  onClick?(event: React.FormEvent<HTMLButtonElement>): void;
   size?: string;
   children: any;
 }
