@@ -20,11 +20,19 @@ const BySelections = ({ type, clickable, onClick, filters, updateFilters}: BySel
   }
   return (
     <section>
-      <FilterHeading
+      {/* <FilterHeading
         type={type}
         clickable={clickable}
         onClick={onClick}
-      >
+      > */}
+      {/* <button className="focus:outline-none flex justify-between items-center w-full transition duration-300 hover:opacity-50">
+        <label className="text-sm block mt-2 pointer-events-none">Income group</label>
+        <div>
+          <Circle bgClass="bg-primary" textClass="text-white" padding="1">
+            <CheckListIcon height="10" width="10" color="white" />
+          </Circle>
+        </div>
+      </button> */}
         {filters.length ? 
           <div className="mt-2 mb-8 flex flex-wrap">
             {filters.map((item) => (
@@ -32,7 +40,7 @@ const BySelections = ({ type, clickable, onClick, filters, updateFilters}: BySel
             ))}
           </div>
         : null}
-      </FilterHeading>
+      {/* </FilterHeading> */}
 
     </section>
   )

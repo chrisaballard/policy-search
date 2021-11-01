@@ -7,6 +7,13 @@ import Circle from '../Circle';
 import ByRange from './ByRange';
 import BySelections from './BySelections';
 import ByTextInput from './ByTextInput';
+import CountryFilters from './CountryFilters';
+import Country from './CountryFilters';
+import DocumentFilters from './DocumentFilters';
+import Document from './DocumentFilters';
+import FilterSection from './FilterSection';
+import PassageFilters from './PassageFilters';
+import Passage from './PassageFilters';
  
 interface FiltersProps {
   geographyList: Geography[];
@@ -63,8 +70,37 @@ const FiltersColumn = React.memo(({
           
         </div>
         
+        <FilterSection
+          type="country"
+          title="Country"
+        >
+          <CountryFilters 
+            list={geographyList}
+            filters={filters.geographyFilters}
+            updateFilters={updateFilters}
+          />
+        </FilterSection>
 
-        <ByTextInput
+        <hr className="mt-6" />
+
+        <FilterSection
+          type="document"
+          title="Document Level"
+        >
+          <DocumentFilters />
+        </FilterSection>
+
+        <hr className="mt-6" />
+
+        <FilterSection
+          type="passage"
+          title="Passage Level"
+        >
+          <PassageFilters />
+        </FilterSection>
+
+
+        {/* <ByTextInput
           type="geography"
           list={geographyList}
           filters={filters.geographyFilters}
@@ -96,7 +132,7 @@ const FiltersColumn = React.memo(({
           clickable={false}
           filters={filters.yearFilters}
           replaceFiltersObj={replaceFiltersObj}
-        />
+        /> */}
         
       </div>
     </>

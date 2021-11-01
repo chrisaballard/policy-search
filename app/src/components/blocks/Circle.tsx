@@ -3,11 +3,12 @@ interface CircleProps {
   title?: string;
   bgClass: string;
   textClass: string;
+  padding?: string;
 }
 
-const Circle = ({children, title = '', bgClass, textClass}: CircleProps) => {
+const Circle = ({children, title = '', bgClass, textClass, padding}: CircleProps) => {
   return (
-    <div title={title} className={`inline-block p-2 rounded-full transition duration-300 hover:opacity-70 ${bgClass} ${textClass}`}>
+    <div title={title} className={`inline-block rounded-full transition duration-300 hover:opacity-70 ${padding ? `p-${padding}` : 'p-2'} ${bgClass} ${textClass}`}>
       { children }
     </div>
   )
