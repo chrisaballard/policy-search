@@ -215,7 +215,7 @@ class OpenSearchIndex(BaseCallback):
         BOOST_TITLE_MATCH_PHRASE = 1.2
 
         es_query = {
-            "_source": {"excludes": ["text.embedding"]},
+            "size": 0,
             "query": {
                 "bool": {
                     "must": [
