@@ -73,7 +73,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
         >
           <label 
             ref={searchLabel}
-            className={`block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl text-center md:text-left md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
+            className={`text-center md:text-left block pr-16 absolute top-0 left-0 right-0 text-primary-dark-400 text-xl md:text-2xl lg:text-3xl md:pl-8 z-10 pointer-events-none transition duration-300 ${searchActivated ? 'opacity-0': 'opacity-100'}`}>
               What are you looking for?
           </label>
           <div 
@@ -83,7 +83,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
                 ref={searchInput}
                 onChange={handleChange}
                 value={input}
-                className={`search-input h-full w-full text-xl md:text-3xl text-primary-dark-500 outline-none focus:outline-none`} 
+                className={`search-input pr-12 h-full w-full text-xl md:text-3xl text-primary-dark-500 outline-none focus:outline-none`} 
               />
           </div>
           

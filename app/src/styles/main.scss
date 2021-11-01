@@ -60,7 +60,7 @@ body {
         height: 50px;
         width: 100%;
         &.collapsed {
-          width: 40%;
+          width: 60px;
         }
         img {
           @apply transition duration-300 absolute right-0 top-0;

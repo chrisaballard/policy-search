@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
 import MainLayout from '../components/layouts/MainLayout'
 import Head from 'next/head';
 import { SearchInput, SearchNavigation, SearchResults } from '../components/search';
 import FiltersColumn from '../components/blocks/filters/FiltersColumn';
 import Overlay from '../components/Overlay';
-import { PER_PAGE } from '../constants';
+import { PER_PAGE, SEARCH1, SEARCH2 } from '../constants';
 import useGetSearchResult from '../hooks/useSetSearchResult';
 import useGeographies from '../hooks/useGeographies';
 import useSectors from '../hooks/useSectors';
@@ -31,9 +32,10 @@ const Home = React.memo((): JSX.Element => {
   const [ next, setNext ] = useState(0);
 
   const containerRef = useRef();
+  const router = useRouter();
   
   // custom hooks
-  const [ searchResult, getResult, clearResult ] = useGetSearchResult();
+  const [ searchResult, getResult, clearResult, getMultiple ] = useGetSearchResult();
   const setGeographies = useGeographies();
   const [ removeFilters, updateFilters, checkForFilters, replaceFiltersObj ] = useFilters();
   const setSectors = useSectors();
@@ -79,6 +81,14 @@ const Home = React.memo((): JSX.Element => {
     
   }
 
+  const buildMultiIdQuery = (arr) => {
+    let qs = ''
+    arr.forEach((id, index) => {
+      qs += index < arr.length - 1 ? `id=${id}&` : `id=${id}`;
+    })
+    return qs;
+  }
+
   useEffect(() => {
     if(!geographyList.length) setGeographies();
     if(!sectorList.length) setSectors();
@@ -87,6 +97,18 @@ const Home = React.memo((): JSX.Element => {
 
   useDidUpdateEffect(() => {
     if(geographyList.length) {
+      const urlQueryString = router.query;
+      const qs1 = buildMultiIdQuery(SEARCH1);
+      const qs2 = buildMultiIdQuery(SEARCH2);
+
+      if(router.asPath.indexOf('search1') > 1) {
+        getMultiple(qs1);
+        return;
+      }
+      if(router.asPath.indexOf('search2') > 1) {
+        getMultiple(qs2);
+        return;
+      }
       newSearch('');
     }
   }, [geographyList])
@@ -121,7 +143,7 @@ const Home = React.memo((): JSX.Element => {
       active={slideOutActive}
       onClick={() => { setSlideOutActive(false)}}
     />
-    <MainLayout>
+    <MainLayout pageTitle={'Policy Search'}>
       <SearchInput 
         newSearch={newSearch}
         clearResult={clearResult}

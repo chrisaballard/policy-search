@@ -13,6 +13,8 @@ const searchResultReducer = (state: SearchResult = initialState.searchResult, ac
         draft.resultsByDocument = [...draft.resultsByDocument, ...resultsByDocument]
         draft.metadata = metadata;
         break;
+      case ActionTypes.getMultiple:
+       return draft = action.payload;
       case ActionTypes.clearSearchResult:
         return draft = action.payload;
       default:

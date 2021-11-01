@@ -7,6 +7,7 @@ import { getPolicyPageAction, clearPolicyPageAction } from './policyPage';
 import { getSectorsAction } from "./sectors";
 import { getInstrumentsAction } from "./instruments";
 import { filtersAction } from './filters';
+import { getMultipleAction } from ".";
 
 export enum ActionTypes {
   getPolicies, // 0
@@ -19,7 +20,8 @@ export enum ActionTypes {
   getPolicy, // 7
   getSectors, // 8
   getInstruments, // 9
-  setNewFilters // 10
+  setNewFilters, // 10
+  getMultiple // 11
 }
 
-export type Action = getPoliciesAction | getSearchResultAction | clearSearchResultAction | getGeographiesAction | SetStatusAction | getPolicyPageAction | clearPolicyPageAction | getPolicyAction | getSectorsAction | getInstrumentsAction | filtersAction;
+export type Action = getPoliciesAction | getSearchResultAction | clearSearchResultAction | getGeographiesAction | SetStatusAction | getPolicyPageAction | clearPolicyPageAction | getPolicyAction | getSectorsAction | getInstrumentsAction | filtersAction | getMultipleAction;

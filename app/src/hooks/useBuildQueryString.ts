@@ -28,14 +28,12 @@ const useBuildQueryString = () => {
     }
 
     // years
-    str += `&yearMin=${filters.yearFilters.min}&yearMax=${filters.yearFilters.max}`
+    str += `${str.length ? '&': ''}year_start=${filters.yearFilters.min}&year_end=${filters.yearFilters.max}`
     return str;
     
   }
 
   const getSearchInput = (queryString) => {
-    // don't run search unless there is a search query
-    // only need this temporarily until search api will return all items when query is empty
     const end = queryString.indexOf('&') > - 1 ? queryString.indexOf('&') : queryString.length;
     return queryString.substring(queryString.indexOf('=') + 1, end)
   }

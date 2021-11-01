@@ -1,0 +1,357 @@
+{
+  "name": "flare",
+  "children": [
+    {
+      "name": "Instruments",
+      "children": [
+        {
+          "name": "Capacity building",
+          "value": 836,
+          "color": "#FDDA0D"
+        },
+        {
+          "name": "Direct investment",
+          "value": 249,
+          "color": "#FFEA00"
+        },
+        {
+          "name": "Governance and planning",
+          "value": 1175,
+          "color": "#FFFF8F"
+        },
+        {
+          "name": "Incentives",
+          "value": 389,
+          "color": "#E4D00A"
+        },
+        {
+          "name": "Regulation",
+          "value": 450,
+          "color": "#FFD700"
+        }
+      ]
+    },
+    {
+      "name": "Sectors",
+      "children": [
+        {
+          "name": "Adaptation",
+          "value": 105,
+          "color": "#89CFF0"
+        },
+        {
+          "name": "Agriculture, forestry and other land use (AFOLU)",
+          "value": 592,
+          "color": "#7393B3"
+        },
+        {
+          "name": "Buildings",
+          "value": 70,
+          "color": "#0096FF"
+        },
+        {
+          "name": "Coastal zones",
+          "value": 34,
+          "color": "#7DF9FF"
+        },
+        {
+          "name": "Economy-wide",
+          "value": 403,
+          "color": "#6495ED"
+        },
+        {
+          "name": "Energy & carbon capture and storage",
+          "value": 1192,
+          "color": "#B6D0E2"
+        },
+        {
+          "name": "Finance",
+          "value": 13,
+          "color": "#40E0D0"
+        },
+        {
+          "name": "Health",
+          "value": 165,
+          "color": "#6082B6"
+        },
+        {
+          "name": "Industry",
+          "value": 250,
+          "color": "#87CEEB"
+        },
+        {
+          "name": "Nature-based solutions",
+          "value": 8,
+          "color": "#ADD8E6"
+        },
+        {
+          "name": "Rural",
+          "value": 22,
+          "color": "#B6D0E2"
+        },
+        {
+          "name": "Tourism",
+          "value": 55,
+          "color": "#00FFFF"
+        },
+        {
+          "name": "Transport",
+          "value": 793,
+          "color": "#4169E1"
+        },
+        {
+          "name": "Urban",
+          "value": 78,
+          "color": "#0F52BA"
+        },
+        {
+          "name": "Waste",
+          "value": 179,
+          "color": "#87CEEB"
+        },
+        {
+          "name": "Water",
+          "value": 300,
+          "color": "#4682B4"
+        }
+      ]
+    },
+    {
+      "name": "Core needs",
+      "children": [
+        {
+          "name": "Shelter & safety",
+          "value": 125,
+          "color": "#DA70D6"
+        },
+        {
+          "name": "Mobility",
+          "value": 52,
+          "color": "#CF9FFF"
+        },
+        {
+          "name": "Food & water",
+          "value": 369,
+          "link": "/?search1",
+          "color": "#915F6D"
+        },
+        {
+          "name": "Leisure",
+          "value": 7,
+          "color": "#C3B1E1"
+        },
+        {
+          "name": "Clothing",
+          "value": 5,
+          "color": "#BF40BF"
+        },
+        {
+          "name": "Education",
+          "value": 134,
+          "color": "#A95C68"
+        },
+        {
+          "name": "Community",
+          "value": 87,
+          "color": "#953553"
+        }
+      ]
+    },
+    {
+      "name": "Objectives",
+      "children": [
+        {
+          "name": "Climate change mitigation",
+          "value": 354,
+          "color": "#4F7942"
+        },
+        {
+          "name": "Climate change adaptation",
+          "value": 414,
+          "color": "#8A9A5B"
+        },
+        {
+          "name": "Protection of water and marine resources",
+          "value": 76,
+          "color": "#808000"
+        },
+        {
+          "name": "Circular economy",
+          "value": 13,
+          "color": "#C9CC3F"
+        },
+        {
+          "name": "Pollution prevention and control",
+          "value": 2,
+          "color": "#8A9A5B"
+        },
+        {
+          "name": "Biodiversity and ecosystems",
+          "value": 227,
+          "color": "#C4B454"
+        },
+        {
+          "name": "Just transition",
+          "value": 3,
+          "color": "#B4C424"
+        },
+        {
+          "name": "Loss and damage",
+          "value": 7,
+          "color": "#DFFF00"
+        }
+      ]
+    },
+    {
+      "name": "Target setting",
+      "children": [
+        {
+          "name": "Emission reductions / Net Zero targets",
+          "value": 9,
+          "color": "#EADDCA"
+        },
+        {
+          "name": "Adaptation targets",
+          "value": 81,
+          "color": "#DAA06D"
+        },
+        {
+          "name": "Technology phase out targets",
+          "value": 50,
+          "color": "#C19A6B"
+        }
+      ]
+    },
+    {
+      "name": "People",
+      "children": [
+        {
+          "name": "Women",
+          "value": 17,
+          "color": "#F3CFC6"
+        },
+        {
+          "name": "Young people & children",
+          "value": 7,
+          "color": "#D70040"
+        },
+        {
+          "name": "Indigenous peoples",
+          "value": 5,
+          "color": "#C41E3A"
+        },
+        {
+          "name": "Workers",
+          "value": 12,
+          "color": "#FFB6C1"
+        }
+      ]
+    },
+    {
+      "name": "Physical impacts",
+      "children": [
+        {
+          "name": "Sea-level rise",
+          "value": 19,
+          "color": "#FFBF00"
+        },
+        {
+          "name": "Floods",
+          "value": 84,
+          "color": "#FFAC1C"
+        },
+        {
+          "name": "Droughts",
+          "value": 47,
+          "color": "#CD7F32"
+        },
+        {
+          "name": "Heatwaves and heat stress",
+          "value": 3,
+          "color": "#CC5500"
+        },
+        {
+          "name": "Storms, hurricanes, tsunamis",
+          "value": 22,
+          "color": "#F28C28"
+        },
+        {
+          "name": "Wildfires",
+          "value": 4,
+          "color": "#FF7F50"
+        },
+        {
+          "name": "Biodiversity loss",
+          "value": 9,
+          "color": "#FAD5A5"
+        },
+        {
+          "name": "Desertification",
+          "value": 18,
+          "color": "#FF7518"
+        },
+        {
+          "name": "Snow, glacial, and permafrost melting",
+          "value": 11,
+          "color": "#E49B0F"
+        },
+        {
+          "name": "Coastal erosion",
+          "value": 8,
+          "color": "#C04000"
+        },
+        {
+          "name": "Ocean acidification",
+          "value": 0,
+          "color": "#F4BB44"
+        }
+      ]
+    },
+    {
+      "name": "Non-physical risks",
+      "children": [
+        {
+          "name": "Economic instability",
+          "value": 10,
+          "color": "#DE3163"
+        },
+        {
+          "name": "Geopolitical conflict and social unrest",
+          "value": 4,
+          "color": "#F88379"
+        },
+        {
+          "name": "Statelessness ",
+          "value": 7,
+          "color": "#F3CFC6"
+        },
+        {
+          "name": "Loss of cultural identity",
+          "value": 3,
+          "color": "#FF69B4"
+        },
+        {
+          "name": "Homelessness",
+          "value": 6,
+          "color": "#DA70D6"
+        }
+      ]
+    },
+    {
+      "name": "Concepts",
+      "children": [
+        {
+          "name": "Gender",
+          "value": 43,
+          "link": "/?search2",
+          "color": "#478778"
+        },
+        {
+          "name": "Equity & justice",
+          "value": 35,
+          "color": "#9FE2BF"
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-import { searchQuery } from '../api';
+import { multipleIds, searchQuery } from '../api';
 import { API_BASE_URL, PER_PAGE } from '../constants';
 import { Dispatch } from 'redux' // hit cmd click to see type definition file
 import { SearchResult } from '../model/searchResult';
@@ -16,6 +16,11 @@ export interface clearSearchResultAction {
   payload: SearchResult;
 }
 
+export interface getMultipleAction {
+  type: ActionTypes.getMultiple;
+  payload: SearchResult;
+}
+
 export const getSearchResult = (queryString: string) => async (dispatch: Dispatch, getState) => {
   const searchTerms = getParameterByName('query', `${API_BASE_URL}/?${queryString}`)
 
@@ -24,6 +29,31 @@ export const getSearchResult = (queryString: string) => async (dispatch: Dispatc
   dispatch<getSearchResultAction>({
     type: ActionTypes.getSearchResult,
     payload: {...data, searchQuery: searchTerms, endOfList}
+  })
+  dispatch<SetStatusAction>({
+    type: ActionTypes.setStatus,
+    payload: {
+      processing: false
+    }
+  })
+}
+
+export const getMultipleById = (queryString: string) => async (dispatch: Dispatch, getState) => {
+  
+  const data = await multipleIds(queryString);
+  
+  const endOfList = data.length < PER_PAGE;
+
+  dispatch<getSearchResultAction>({
+    type: ActionTypes.getSearchResult,
+    payload: {
+      metadata: {
+        numDocsReturned: data.length
+      },
+      searchQuery: '',
+      resultsByDocument: data, 
+      endOfList
+    }
   })
   dispatch<SetStatusAction>({
     type: ActionTypes.setStatus,

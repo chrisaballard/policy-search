@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from 'react-redux';
-import { getSearchResult, clearSearchResult } from '../actions';
+import { getSearchResult, clearSearchResult, getMultipleById } from '../actions';
 import { State } from '../store/initialState'
 
 const useGetSearchResult = () => {
@@ -10,9 +10,12 @@ const useGetSearchResult = () => {
   const getResult = (queryString: string): void => {
     dispatch(getSearchResult(queryString))
   }
+  const getMultiple = (queryString: string): void => {
+    dispatch(getMultipleById(queryString))
+  }
   const clearResult = (): void => {
     dispatch(clearSearchResult())
   }
-  return [searchResult, getResult, clearResult] as const;
+  return [searchResult, getResult, clearResult, getMultiple] as const;
 }
 export default useGetSearchResult;

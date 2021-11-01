@@ -2,6 +2,7 @@ import { Geography } from "../../model/geography";
 import { ResultByDocument } from "../../model/resultByDocument";
 import SearchResultItem from "./SearchResultItem";
 import { Policy } from '../../model/policy';
+import Button from "../elements/buttons/Button";
 
 interface SearchResultsProps {
   policies: ResultByDocument[] | Policy[];
@@ -19,10 +20,12 @@ const SearchResults = ({
 }: SearchResultsProps) => {
 
   const renderMessage = () => {
-    if(searchTerms?.length) {
+    if(searchTerms?.length && policies.length) {
       return (
-        <div className="text-2xl  mt-6 md:mt-0">
+        <div className="text-2xl  mt-6 md:mt-0 pr-4">
           Results for <span className="font-bold">"{searchTerms}"</span>:
+          <br/>
+          <p className="mt-2 italic text-base leading-tight text-primary-dark-600">We're also showing results containing terms related to your query.</p>
         </div>
       )
     }
@@ -35,7 +38,7 @@ const SearchResults = ({
     }
     else {
       return (
-        <div className="text-2xl  mt-6 md:mt-0">
+        <div className="text-center md:text-left text-2xl mt-6 md:mt-0">
           Latest Policies:
         </div>
       )
@@ -44,11 +47,19 @@ const SearchResults = ({
   return (
     <section className="w-full">
         <div className="pt-8 md:pt-0 md:pl-4">
-
-        {!processing ?
-          renderMessage()
-        :
-        null}
+          <div className="md:flex justify-between items-center">
+            {!processing ?
+              renderMessage()
+            :
+            null}
+            {!processing && policies.length ?
+            <div className="mt-4 flex justify-center lg:w-1/4 flex-shrink-0">
+              <Button>Download results</Button>
+            </div>
+            :
+            null }
+          </div>
+        
           
             {policies.length ? 
               <>

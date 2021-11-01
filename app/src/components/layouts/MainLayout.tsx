@@ -2,13 +2,14 @@ import Footer from "../Footer";
 import Header from "../Header";
 
 interface LayoutProps {
-  children
+  children,
+  pageTitle: string
 }
 
-const Layout = ({children}: LayoutProps): JSX.Element => {
+const Layout = ({children, pageTitle}: LayoutProps): JSX.Element => {
   return (
     <div className="flex flex-col justify-start min-h-screen">
-      <Header />
+      <Header pageTitle={pageTitle} />
       <div className="flex-grow flex flex-col">
         {children}
       </div>

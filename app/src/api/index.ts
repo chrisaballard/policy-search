@@ -32,6 +32,13 @@ export const searchQuery = async (queryString: string) => {
   return await fetchData(req);
 }
 
+export const multipleIds = async (queryString: string) => {
+  // query=[keywords]&geography=geocode1&geography=geocode2
+  let req = `${API_BASE_URL}/policies/multiple/?${queryString}`;
+  req += queryString.length ? `&limit=${PER_PAGE}` : `limit=${PER_PAGE}`
+  return await fetchData(req);
+}
+
 export const loadGeographies = async () => {
   return await fetchData(`${API_BASE_URL}/geographies`)
 }
