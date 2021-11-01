@@ -1,6 +1,6 @@
 export const PER_PAGE = 20;
-// export const API_BASE_URL = 'http://ec2-18-170-60-178.eu-west-2.compute.amazonaws.com:8001';
-export const API_BASE_URL = 'http://localhost:8001';
+export const API_BASE_URL = 'http://ec2-18-170-60-178.eu-west-2.compute.amazonaws.com:8001';
+// export const API_BASE_URL = 'http://localhost:8001';
 export const SEARCH1 = [82, 425, 96, 1439, 283, 764, 934, 187, 117, 256, 40, 708, 59, 178, 777, 924, 8, 172, 933];
 export const SEARCH2 = [760, 842, 777, 921, 39, 724, 568, 779, 168, 573, 934, 711, 933, 756, 242, 608, 251];
 export const STOP_WORDS = 
