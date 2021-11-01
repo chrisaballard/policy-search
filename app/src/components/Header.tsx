@@ -4,7 +4,7 @@ import Navigation from './Navigation';
 const Header = ({ pageTitle }) => {
   return (
     <header>
-      <div className="container md:flex mt-6 lg:mt-12">
+      <div className="container md:flex mt-6 lg:mt-12 relative z-10">
         <div className="w-full flex flex-col justify-center items-center md:justify-start mb-4 md:mb-0 md:w-1/4 px-4 md:pl-0">
           <Link href="/">
             <img className="logo cursor-pointer" src="/images/cpr-logo-primary.svg" alt="Climate Policy Radar Logo" />

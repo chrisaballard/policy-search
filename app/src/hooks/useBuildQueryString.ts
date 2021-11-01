@@ -28,7 +28,7 @@ const useBuildQueryString = () => {
     }
 
     // years
-    str += `${str.length ? '&': ''}start_year=${filters.yearFilters.min}&end_year=${filters.yearFilters.max}`
+    str += `${str.length ? '&': ''}year_start=${filters.yearFilters.min}&year_end=${filters.yearFilters.max}`
     return str;
     
   }
