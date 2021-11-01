@@ -30,8 +30,10 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
   }
   
   useEffect(() => {
-    getCountryName();
-  }, [])
+    if(geographyList.length && policy.countryCode.length) {
+      getCountryName();
+    }
+  }, [geographyList, policy])
   return (
     <>
     <div className="font-bold grid grid-cols-8 md:grid-cols-9 gap-x-4 md:py-2">
