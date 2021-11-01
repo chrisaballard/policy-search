@@ -152,12 +152,13 @@ class PolicyDynamoDBTable(DynamoDBTable):
 
         return table
 
-    def get_document(self, key):
-        policy = Policy(
-            **super().get_document(key)
-        )
+    def get_document(self, key):        
+        policy_dict = super().get_document(key)
 
-        return policy
+        if len(policy_dict) > 0:
+            policy = Policy(**policy_dict)
+
+            return policy
 
     def scan(self, start: int=None, limit: int=100):
         items, last_key, count = super().scan(start, limit)
