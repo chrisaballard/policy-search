@@ -9,8 +9,8 @@ const Overview = () => {
     </Head>
     <MainLayout pageTitle={'Overview'}>
       <section className="w-full">
-        <div className="-mt-10 container">
-        <iframe style={{overflowX: 'hidden'}} width="100%" height="1256" frameBorder="0" src="http://localhost:8002"></iframe>
+        <div className="-mt-10 max-w-screen-lg mx-auto">
+        <iframe style={{overflow: 'hidden'}} width="100%" height="1256" frameBorder="0" src="/overview/index.html"></iframe>
         </div>
       </section>
     </MainLayout>

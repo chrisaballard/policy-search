@@ -1,5 +1,3 @@
-const BASE_URL = 'http://localhost:3001';
-
 function color(){
     return d3.scaleLinear()
     .domain([0, 5])
@@ -63,7 +61,7 @@ async function renderVisualisation() {
         .text(d => d.data.value ? d.data.name + " (" + d.data.value + ")" : d.data.name + '')
         .on("click", (event, d) => {
             if(d.data.link) {
-                window.open(BASE_URL + d.data.link, '_parent');
+                window.open(d.data.link, '_parent');
             }
         })
 
