@@ -102,6 +102,7 @@ async def search_policies(
     if keyword:
         kwd_filters["keywords.keyword"] = keyword
 
+    # TODO: this is a short-term fix to filter searches down to CCLW data only.
     kwd_filters["source_name.keyword"] = ["cclw"]
 
     year_range = None
