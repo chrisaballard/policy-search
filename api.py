@@ -86,7 +86,7 @@ async def search_policies(
     "Search for policies given a specified query"
 
     kwd_filters = {}
-    
+
     if geography:
         kwd_filters["country_code.keyword"] = geography
     if sector:
@@ -98,7 +98,7 @@ async def search_policies(
     if hazard:
         kwd_filters["hazards.keyword"] = hazard
     if document_type:
-        kwd_filters["document_types.keyword"] = document_type        
+        kwd_filters["document_types.keyword"] = document_type
     if keyword:
         kwd_filters["keywords.keyword"] = keyword
 
@@ -107,9 +107,9 @@ async def search_policies(
         year_range = (year_start, year_end)
 
     if query is None:
-        titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
-            "policy_name.normalized",
-            asc=True,
+        titles_ids_alphabetical = es.get_docs_sorted(
+            "policy_date",
+            asc=False,
             num_docs=start + limit,
             keyword_filters=kwd_filters,
             year_range=year_range,
@@ -135,7 +135,7 @@ async def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
-        year_range=year_range
+        year_range=year_range,
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]

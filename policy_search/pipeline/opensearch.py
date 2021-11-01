@@ -99,10 +99,7 @@ class OpenSearchIndex(BaseCallback):
                             }
                         },
                     },
-                    "policy_date": {
-                        "type": "date",
-                        "format": "dd/MM/yyyy"
-                    }
+                    "policy_date": {"type": "date", "format": "dd/MM/yyyy"},
                 }
             },
         }
@@ -271,7 +268,9 @@ class OpenSearchIndex(BaseCallback):
             if "filter" not in es_query["query"]["bool"]:
                 es_query["query"]["bool"]["filter"] = []
 
-            es_query["query"]["bool"]["filter"].append(self._year_range_filter(year_range))
+            es_query["query"]["bool"]["filter"].append(
+                self._year_range_filter(year_range)
+            )
 
         return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
 
@@ -287,14 +286,11 @@ class OpenSearchIndex(BaseCallback):
         if end_date is not None:
             policy_year_conditions["lte"] = end_date
 
-        range_filter = {
-            "range": {}
-        }
+        range_filter = {"range": {}}
 
         range_filter["range"]["policy_date"] = policy_year_conditions
-        
-        return range_filter
 
+        return range_filter
 
     def get_page_count_for_doc(self, policy_id: int) -> int:
         """Return the total number of pages in the elastic search index for a given document"""
@@ -356,7 +352,7 @@ class OpenSearchIndex(BaseCallback):
             "source_name": doc.source_name,
         }
 
-    def get_docs_sorted_alphabetically(
+    def get_docs_sorted(
         self,
         field_name: str,
         asc: bool = True,
@@ -367,7 +363,7 @@ class OpenSearchIndex(BaseCallback):
         """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
 
         Args:
-            field_name (str): name of a text field, in dot notation
+            field_name (str): name of a field, in dot notation. A `_term` sort will be used on this field.
             asc (bool, optional): sort the results ascending (/descending). Defaults to True.
             num_docs (int, optional): the number of documents to return
             keyword_filters (dict, optional): each key is a field to be filtered, and each value is a list of strings to filter on.
@@ -393,7 +389,7 @@ class OpenSearchIndex(BaseCallback):
             query["query"] = {}
             query["query"]["bool"] = {}
             query["query"]["bool"]["filter"] = []
-        
+
         if keyword_filters:
             terms_clauses = []
 
@@ -403,9 +399,7 @@ class OpenSearchIndex(BaseCallback):
             query["query"]["bool"]["filter"] = terms_clauses
 
         if year_range is not None:
-            query["query"]["bool"]["filter"].append(
-                self._year_range_filter(year_range)
-            )
+            query["query"]["bool"]["filter"].append(self._year_range_filter(year_range))
 
         query_result = self.es.search(body=query, index=self.index_name)
 
