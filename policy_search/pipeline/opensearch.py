@@ -99,10 +99,7 @@ class OpenSearchIndex(BaseCallback):
                             }
                         },
                     },
-                    "policy_date": {
-                        "type": "date",
-                        "format": "dd/MM/yyyy"
-                    }
+                    "policy_date": {"type": "date", "format": "dd/MM/yyyy"},
                 }
             },
         }
@@ -194,8 +191,8 @@ class OpenSearchIndex(BaseCallback):
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
+        max_pages_per_doc: Optional[int] = 20,
         year_range: Tuple[int, int] = None,
-        max_pages_per_doc: Optional[int] = 10,
         max_passages_per_page: Optional[int] = 5,
     ) -> List[dict]:
         """
@@ -208,29 +205,69 @@ class OpenSearchIndex(BaseCallback):
         If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
         """
 
-        # fields_to_search = ["text", "policy_name"]
+        BOOST_TEXT_MATCH = 1.2
+        BOOST_TEXT_MATCH_PHRASE = 2
+        BOOST_TEXT_KNN = 1
+        BOOST_TITLE_MATCH_PHRASE = 1.2
 
         es_query = {
             "_source": {"excludes": ["text.embedding"]},
             "query": {
                 "bool": {
-                    "should": [
+                    "must": [
                         {
                             "nested": {
                                 "path": "text",
                                 "score_mode": "max",
                                 "inner_hits": {
-                                    "_source": ["text.text_id", "text.text"],
+                                    "_source": [
+                                        "text.text_id",
+                                        "text.text",
+                                        "text.embedding",
+                                    ],
                                     "size": max_passages_per_page,
                                 },
                                 "query": {
-                                    "knn": {
-                                        "text.embedding": {
-                                            "vector": query_embedding,
-                                            "k": max_passages_per_page,
-                                        },
+                                    "bool": {
+                                        "should": [
+                                            {
+                                                "match": {
+                                                    "text.text": {
+                                                        "query": query,
+                                                        "boost": BOOST_TEXT_MATCH,
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                "match_phrase": {
+                                                    "text.text": {
+                                                        "query": query,
+                                                        "boost": BOOST_TEXT_MATCH_PHRASE,
+                                                    },
+                                                }
+                                            },
+                                            {
+                                                "knn": {
+                                                    "text.embedding": {
+                                                        "vector": query_embedding,
+                                                        "k": max_passages_per_page,
+                                                        "boost": BOOST_TEXT_KNN,
+                                                    },
+                                                },
+                                            },
+                                        ]
                                     }
                                 },
+                            }
+                        },
+                    ],
+                    "should": [
+                        {
+                            "match_phrase": {
+                                "policy_name": {
+                                    "query": query,
+                                    "boost": BOOST_TITLE_MATCH_PHRASE,
+                                }
                             }
                         }
                     ],
@@ -271,7 +308,9 @@ class OpenSearchIndex(BaseCallback):
             if "filter" not in es_query["query"]["bool"]:
                 es_query["query"]["bool"]["filter"] = []
 
-            es_query["query"]["bool"]["filter"].append(self._year_range_filter(year_range))
+            es_query["query"]["bool"]["filter"].append(
+                self._year_range_filter(year_range)
+            )
 
         return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
 
@@ -287,14 +326,11 @@ class OpenSearchIndex(BaseCallback):
         if end_date is not None:
             policy_year_conditions["lte"] = end_date
 
-        range_filter = {
-            "range": {}
-        }
+        range_filter = {"range": {}}
 
         range_filter["range"]["policy_date"] = policy_year_conditions
-        
-        return range_filter
 
+        return range_filter
 
     def get_page_count_for_doc(self, policy_id: int) -> int:
         """Return the total number of pages in the elastic search index for a given document"""
@@ -393,7 +429,7 @@ class OpenSearchIndex(BaseCallback):
             query["query"] = {}
             query["query"]["bool"] = {}
             query["query"]["bool"]["filter"] = []
-        
+
         if keyword_filters:
             terms_clauses = []
 
@@ -403,9 +439,7 @@ class OpenSearchIndex(BaseCallback):
             query["query"]["bool"]["filter"] = terms_clauses
 
         if year_range is not None:
-            query["query"]["bool"]["filter"].append(
-                self._year_range_filter(year_range)
-            )
+            query["query"]["bool"]["filter"].append(self._year_range_filter(year_range))
 
         query_result = self.es.search(body=query, index=self.index_name)
 

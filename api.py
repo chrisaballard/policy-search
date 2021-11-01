@@ -5,6 +5,7 @@ from pathlib import Path
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
+import numpy as np
 from opensearchpy import NotFoundError as OpenSearchNotFoundError
 
 from policy_search.pipeline.dynamo import PolicyDynamoDBTable, PolicyList, Policy
@@ -30,8 +31,8 @@ es = OpenSearchIndex(
     es_user=opensearch_user,
     es_password=opensearch_password,
     es_connector_kwargs={
-        "use_ssl": False,
-        "verify_certs": False,
+        "use_ssl": True,
+        "verify_certs": True,
         "ssl_show_warn": False,
         "timeout": 120,
     },
@@ -85,8 +86,10 @@ async def search_policies(
 ):
     "Search for policies given a specified query"
 
+    INNERPRODUCT_THRESHOLD = 70
+
     kwd_filters = {}
-    
+
     if geography:
         kwd_filters["country_code.keyword"] = geography
     if sector:
@@ -98,7 +101,7 @@ async def search_policies(
     if hazard:
         kwd_filters["hazards.keyword"] = hazard
     if document_type:
-        kwd_filters["document_types.keyword"] = document_type        
+        kwd_filters["document_types.keyword"] = document_type
     if keyword:
         kwd_filters["keywords.keyword"] = keyword
 
@@ -135,7 +138,7 @@ async def search_policies(
         query_emb,
         limit=start + limit,
         keyword_filters=kwd_filters,
-        year_range=year_range
+        year_range=year_range,
     )
 
     results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
@@ -155,7 +158,11 @@ async def search_policies(
             page_text_hits = []
             # Find the matching text passages and add to results
             for page_inner_hits in hit["inner_hits"]["text"]["hits"]["hits"]:
-                page_text_hits.append(page_inner_hits["_source"]["text"])
+                passage_score = np.dot(
+                    query_emb, page_inner_hits["_source"]["embedding"]
+                )
+                if passage_score >= INNERPRODUCT_THRESHOLD:
+                    page_text_hits.append(page_inner_hits["_source"]["text"])
 
             # Add the page matches for this document
             if len(page_text_hits) > 0:
