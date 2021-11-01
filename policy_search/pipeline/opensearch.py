@@ -191,10 +191,10 @@ class OpenSearchIndex(BaseCallback):
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
-        max_pages_per_doc: Optional[int] = 20,
+        max_pages_per_doc: Optional[int] = 10,
         year_range: Tuple[int, int] = None,
         max_passages_per_page: Optional[int] = 5,
-        sampler_top_docs_to_filter_per_shard: Optional[int] = 100,
+        sampler_top_docs_to_filter_per_shard: Optional[int] = 150,
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
