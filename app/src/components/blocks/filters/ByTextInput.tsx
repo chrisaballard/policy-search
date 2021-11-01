@@ -6,6 +6,7 @@ import FilterTag from './FilterTag';
 import FilterHeading from './FilterHeading';
 
 interface ByTextInputProps {
+  title: string;
   type: string;
   // full list of available filters
   list: any[]; // need generic type
@@ -14,6 +15,7 @@ interface ByTextInputProps {
 }
 
 const ByTextInput = React.memo(({
+  title,
   type,
   list,
   filters,
@@ -77,6 +79,7 @@ const ByTextInput = React.memo(({
   
   return (
     <div className="relative my-2">
+      <label className="text-sm block mb-2">{title}</label>
       <input
         className="h-12 w-full rounded-lg bg-primary-dark-200 focus:outline-none px-2 text-primary-dark-600 placeholder-primary-dark-400"
         type="text"

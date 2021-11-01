@@ -4,11 +4,11 @@ import Circle from '../Circle';
 
 const StaticFilter = ({title}) => {
   return (
-    <button className="mb-4 border-b border-dotted pb-4 focus:outline-none flex justify-between items-center w-full transition duration-300 hover:opacity-50">
+    <button className="mb-4 focus:outline-none flex justify-between items-center w-full transition duration-300 hover:opacity-50">
       <label className="text-left text-sm block pointer-events-none">{title}</label>
       <div className="w-1/6 flex-shrink-0">
-        <Circle bgClass="bg-primary" textClass="text-white" padding="1">
-          <CheckListIcon height="10" width="10" color="white" />
+        <Circle bgClass="bg-white" textClass="text-primary" outlineClass="border-primary" padding="1">
+          <CheckListIcon height="10" width="10" />
         </Circle>
       </div>
     </button>
