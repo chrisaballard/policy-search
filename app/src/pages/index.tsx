@@ -93,6 +93,9 @@ const Home = React.memo((): JSX.Element => {
     if(!geographyList.length) setGeographies();
     if(!sectorList.length) setSectors();
     if(!instrumentList.length) setInstruments();
+    if(!searchQuery?.length) {
+      newSearch('')
+    }
   }, []);
 
   useDidUpdateEffect(() => {
@@ -109,7 +112,6 @@ const Home = React.memo((): JSX.Element => {
         getMultiple(qs2);
         return;
       }
-      newSearch('');
     }
   }, [geographyList])
   

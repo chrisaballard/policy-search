@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import useGetPolicyPage from '../../hooks/useGetPolicyPage';
 import useGetPolicies from '../../hooks/useGetPolicies';
 import useSetStatus from '../../hooks/useSetStatus';
+import useGeographies from '../../hooks/useGeographies';
 import MainLayout from '../../components/layouts/MainLayout';
 import Button from '../../components/elements/buttons/Button';
 import Head from 'next/head';
@@ -13,15 +14,18 @@ import { State } from '../../store/initialState';
 import HalfButton from '../../components/elements/buttons/HalfButton';
 import { DownloadPDFIcon } from '../../components/elements/images/SVG';
 import { getCountryNameFromCode } from '../../helpers/geography';
+import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
 const Policy = () => {
   const inputRef = useRef<HTMLInputElement>();
   const router = useRouter();
-  const [ pageInput, setPageInput ] = useState('')
+  const [ pageInput, setPageInput ] = useState('');
+  const [ country, setCountry ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
   const [ pageText, setPageText ] = useState('')
   const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
+  const setGeographies = useGeographies();
 
   const { pid, page } = router.query;
   const state = useSelector((state: State ) => state)
@@ -32,6 +36,14 @@ const Policy = () => {
     setProcessing(true);
     getPolicy(pid);
     getPage(pid, page);
+  }
+  const getCountryName = () => {
+    if (policy.countryCode === 'EUE') {
+      setCountry('European Union');
+      return;
+    }
+    const name = getCountryNameFromCode(policy.countryCode, geographyList);
+    setCountry(name);
   }
 
   const changePageNumber = (action: string): void => {
@@ -80,7 +92,17 @@ const Policy = () => {
     if(policyPage.pageText) {
       setPageText(policyPage.pageText.join(','));
     }
-  }, [policyPage])
+  }, [policyPage]);
+
+  useEffect(() => {
+    if(!geographyList.length) setGeographies();
+  }, []);
+
+  useDidUpdateEffect(() => {
+    if(geographyList.length && policy.countryCode.length) {
+      getCountryName();
+    }
+  }, [geographyList, policy])
 
   return (
     <MainLayout pageTitle="Full Policy Text">
@@ -150,7 +172,7 @@ const Policy = () => {
             
             <div className="my-8 text-primary-light flex flex-wrap justify-between items-end">
               <div>
-                {policy.policyDate.length ?
+                {policy.policyDate?.length ?
                   <span className="text-primary-dark-500"><span className="font-bold text-primary">Policy date:</span> {policy.policyDate}</span>
                 :
                 null}
@@ -162,7 +184,7 @@ const Policy = () => {
 
             <div className="flex justify-start items-center">
               <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
-              <div className="ml-2">{getCountryNameFromCode(policy.countryCode, geographyList)}</div>
+              <div className="ml-2">{country}</div>
             </div>
 
             {pageText.length ? 
