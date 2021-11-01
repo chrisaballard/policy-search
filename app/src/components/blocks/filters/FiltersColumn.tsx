@@ -4,16 +4,10 @@ import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
 import { FiltersIcon } from '../../elements/images/SVG';
 import Circle from '../Circle';
-import ByRange from './ByRange';
-import BySelections from './BySelections';
-import ByTextInput from './ByTextInput';
 import CountryFilters from './CountryFilters';
-import Country from './CountryFilters';
 import DocumentFilters from './DocumentFilters';
-import Document from './DocumentFilters';
 import FilterSection from './FilterSection';
 import PassageFilters from './PassageFilters';
-import Passage from './PassageFilters';
  
 interface FiltersProps {
   geographyList: Geography[];
@@ -106,16 +100,6 @@ const FiltersColumn = React.memo(({
           />
         </FilterSection>
 
-
-        {/* 
-
-        <ByRange
-          type="years"
-          clickable={false}
-          filters={filters.yearFilters}
-          replaceFiltersObj={replaceFiltersObj}
-        /> */}
-        
       </div>
     </>
   )
