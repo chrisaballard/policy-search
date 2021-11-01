@@ -191,9 +191,10 @@ class OpenSearchIndex(BaseCallback):
         limit: Optional[int] = None,
         # start: Optional[int] = 0,
         keyword_filters: Optional[dict] = None,
-        max_pages_per_doc: Optional[int] = 20,
+        max_pages_per_doc: Optional[int] = 10,
         year_range: Tuple[int, int] = None,
         max_passages_per_page: Optional[int] = 5,
+        sampler_top_docs_to_filter_per_shard: Optional[int] = 120,
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
@@ -203,6 +204,9 @@ class OpenSearchIndex(BaseCallback):
 
         If `limit` is not provided, the index default will be used.
         If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
+
+        `sampler_top_docs_to_filter_per_shard` (Optional[int]): when running aggregation, only aggregate over the top N documents per shard. By default in Elasticsearch
+        there are 5 shards, so the default of 100 means aggregating over 100*5 = 500 documents.
         """
 
         BOOST_TEXT_MATCH = 1.2
@@ -211,7 +215,7 @@ class OpenSearchIndex(BaseCallback):
         BOOST_TITLE_MATCH_PHRASE = 1.2
 
         es_query = {
-            "_source": {"excludes": ["text.embedding"]},
+            "size": 0,
             "query": {
                 "bool": {
                     "must": [
@@ -274,26 +278,31 @@ class OpenSearchIndex(BaseCallback):
                 }
             },
             "aggs": {
-                "top_docs": {
-                    "terms": {
-                        "field": "policy_id",
-                        "order": {"top_hit": "desc"},
-                    },
+                "sample": {
+                    "sampler": {"shard_size": sampler_top_docs_to_filter_per_shard},
                     "aggs": {
-                        "top_passage_hits": {
-                            "top_hits": {
-                                "_source": {"excludes": ["text.embedding"]},
-                                "size": max_pages_per_doc,
-                            }
-                        },
-                        "top_hit": {"max": {"script": {"source": "_score"}}},
+                        "top_docs": {
+                            "terms": {
+                                "field": "policy_id",
+                                "order": {"top_hit": "desc"},
+                            },
+                            "aggs": {
+                                "top_passage_hits": {
+                                    "top_hits": {
+                                        "_source": {"excludes": ["text.embedding"]},
+                                        "size": max_pages_per_doc,
+                                    }
+                                },
+                                "top_hit": {"max": {"script": {"source": "_score"}}},
+                            },
+                        }
                     },
-                }
+                },
             },
         }
 
         if limit:
-            es_query["aggs"]["top_docs"]["terms"]["size"] = limit
+            es_query["aggs"]["sample"]["aggs"]["top_docs"]["terms"]["size"] = limit
 
         if keyword_filters is not None:
             if len(keyword_filters) > 0:
@@ -312,7 +321,12 @@ class OpenSearchIndex(BaseCallback):
                 self._year_range_filter(year_range)
             )
 
-        return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
+        return self.es.search(
+            body=es_query,
+            index=self.index_name,
+            request_timeout=30,
+            preference="prototype_user",
+        )
 
     def _year_range_filter(self, year_range: Tuple[int, int]):
         """Returns an opensearch filter for year range"""
