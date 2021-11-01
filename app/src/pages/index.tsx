@@ -98,8 +98,7 @@ const Home = React.memo((): JSX.Element => {
   useDidUpdateEffect(() => {
     if(geographyList.length) {
       const urlQueryString = router.query;
-      // const qs1 = buildMultiIdQuery(SEARCH1);
-      const qs1 = 'id=115&id=104&id=294&id=481&id=119';
+      const qs1 = buildMultiIdQuery(SEARCH1);
       const qs2 = buildMultiIdQuery(SEARCH2);
 
       if(router.asPath.indexOf('search1') > 1) {
