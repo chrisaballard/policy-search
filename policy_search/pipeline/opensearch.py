@@ -194,6 +194,7 @@ class OpenSearchIndex(BaseCallback):
         max_pages_per_doc: Optional[int] = 20,
         year_range: Tuple[int, int] = None,
         max_passages_per_page: Optional[int] = 5,
+        sampler_top_docs_to_filter_per_shard: Optional[int] = 100,
     ) -> List[dict]:
         """
         Search for `query`, starting at result `start` and returning up to `limit` results.
@@ -203,6 +204,9 @@ class OpenSearchIndex(BaseCallback):
 
         If `limit` is not provided, the index default will be used.
         If `max_pages_per_doc` is not provided, the top 10 pages for each document will be returned.
+
+        `sampler_top_docs_to_filter_per_shard` (Optional[int]): when running aggregation, only aggregate over the top N documents per shard. By default in Elasticsearch
+        there are 5 shards, so the default of 100 means aggregating over 100*5 = 500 documents.
         """
 
         BOOST_TEXT_MATCH = 1.2
@@ -274,26 +278,31 @@ class OpenSearchIndex(BaseCallback):
                 }
             },
             "aggs": {
-                "top_docs": {
-                    "terms": {
-                        "field": "policy_id",
-                        "order": {"top_hit": "desc"},
-                    },
+                "sample": {
+                    "sampler": {"shard_size": sampler_top_docs_to_filter_per_shard},
                     "aggs": {
-                        "top_passage_hits": {
-                            "top_hits": {
-                                "_source": {"excludes": ["text.embedding"]},
-                                "size": max_pages_per_doc,
-                            }
-                        },
-                        "top_hit": {"max": {"script": {"source": "_score"}}},
+                        "top_docs": {
+                            "terms": {
+                                "field": "policy_id",
+                                "order": {"top_hit": "desc"},
+                            },
+                            "aggs": {
+                                "top_passage_hits": {
+                                    "top_hits": {
+                                        "_source": {"excludes": ["text.embedding"]},
+                                        "size": max_pages_per_doc,
+                                    }
+                                },
+                                "top_hit": {"max": {"script": {"source": "_score"}}},
+                            },
+                        }
                     },
-                }
+                },
             },
         }
 
         if limit:
-            es_query["aggs"]["top_docs"]["terms"]["size"] = limit
+            es_query["aggs"]["sample"]["aggs"]["top_docs"]["terms"]["size"] = limit
 
         if keyword_filters is not None:
             if len(keyword_filters) > 0:

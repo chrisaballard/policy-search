@@ -156,7 +156,7 @@ async def search_policies(
         year_range=year_range,
     )
 
-    results_by_doc = search_result["aggregations"]["top_docs"]["buckets"]
+    results_by_doc = search_result["aggregations"]["sample"]["top_docs"]["buckets"]
 
     query_results_by_doc = []
 
