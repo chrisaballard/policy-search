@@ -321,7 +321,12 @@ class OpenSearchIndex(BaseCallback):
                 self._year_range_filter(year_range)
             )
 
-        return self.es.search(body=es_query, index=self.index_name, request_timeout=30)
+        return self.es.search(
+            body=es_query,
+            index=self.index_name,
+            request_timeout=30,
+            preference="prototype_user",
+        )
 
     def _year_range_filter(self, year_range: Tuple[int, int]):
         """Returns an opensearch filter for year range"""
