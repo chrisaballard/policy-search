@@ -156,7 +156,7 @@ const Home = React.memo((): JSX.Element => {
           updateFilters={updateFilters}
           removeFilters={removeFilters}
           filters={filters}
-          headingClick={openSlideOut}
+          openSlideOut={openSlideOut}
           checkForFilters={checkForFilters}
           replaceFiltersObj={replaceFiltersObj}
         />

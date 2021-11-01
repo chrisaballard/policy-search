@@ -18,7 +18,7 @@ import Passage from './PassageFilters';
 interface FiltersProps {
   geographyList: Geography[];
   updateFilters(action: string, type: string, name: string): void;
-  headingClick(type: string): void;
+  openSlideOut(type: string): void;
   filters: Filters;
   removeFilters(): void;
   checkForFilters(): boolean;
@@ -27,7 +27,7 @@ interface FiltersProps {
 
 const FiltersColumn = React.memo(({
   geographyList,
-  headingClick,
+  openSlideOut,
   updateFilters,
   filters,
   removeFilters,
@@ -87,7 +87,10 @@ const FiltersColumn = React.memo(({
           type="document"
           title="Document Level"
         >
-          <DocumentFilters />
+          <DocumentFilters 
+            filters={filters}
+            replaceFiltersObj={replaceFiltersObj}
+          />
         </FilterSection>
 
         <hr className="mt-6" />
@@ -96,36 +99,15 @@ const FiltersColumn = React.memo(({
           type="passage"
           title="Passage Level"
         >
-          <PassageFilters />
+          <PassageFilters 
+            onClick={openSlideOut}
+            filters={filters}
+            updateFilters={updateFilters}
+          />
         </FilterSection>
 
 
-        {/* <ByTextInput
-          type="geography"
-          list={geographyList}
-          filters={filters.geographyFilters}
-          updateFilters={updateFilters}
-        />
-
-        <BySelections
-          type="sector"
-          clickable={true}
-          onClick={() => { headingClick('sector') }}
-          filters={filters.sectorFilters}
-          updateFilters={updateFilters}
-        />
-
-        <hr className="mt-6" />
-
-        <BySelections
-          type="instrument"
-          clickable={true}
-          onClick={() => { headingClick('instrument') }}
-          filters={filters.instrumentFilters}
-          updateFilters={updateFilters}
-        />
-
-        <hr className="mt-6" />
+        {/* 
 
         <ByRange
           type="years"

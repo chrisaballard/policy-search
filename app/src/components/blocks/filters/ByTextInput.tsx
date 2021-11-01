@@ -99,7 +99,7 @@ const ByTextInput = React.memo(({
       null
       }
       {filters.length ? 
-      <div className="mt-2 mb-8 flex flex-wrap">
+      <div className="mt-2 mb-4 flex flex-wrap">
         {filters.map((item) => (
           <FilterTag onClick={handleFilterRemove} key={item.code} text={item.name} />
         ))}
