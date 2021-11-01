@@ -392,7 +392,7 @@ class OpenSearchIndex(BaseCallback):
             "source_name": doc.source_name,
         }
 
-    def get_docs_sorted_alphabetically(
+    def get_docs_sorted(
         self,
         field_name: str,
         asc: bool = True,
@@ -403,7 +403,7 @@ class OpenSearchIndex(BaseCallback):
         """Get document IDs (`policy_id`) and field values, sorted by the values of `field_name`.
 
         Args:
-            field_name (str): name of a text field, in dot notation
+            field_name (str): name of a field, in dot notation. A `_term` sort will be used on this field.
             asc (bool, optional): sort the results ascending (/descending). Defaults to True.
             num_docs (int, optional): the number of documents to return
             keyword_filters (dict, optional): each key is a field to be filtered, and each value is a list of strings to filter on.

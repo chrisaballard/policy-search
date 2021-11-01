@@ -105,14 +105,17 @@ async def search_policies(
     if keyword:
         kwd_filters["keywords.keyword"] = keyword
 
+    # TODO: this is a short-term fix to filter searches down to CCLW data only.
+    kwd_filters["source_name.keyword"] = ["cclw"]
+
     year_range = None
     if any([year_start, year_end]):
         year_range = (year_start, year_end)
 
     if query is None:
-        titles_ids_alphabetical = es.get_docs_sorted_alphabetically(
-            "policy_name.normalized",
-            asc=True,
+        titles_ids_alphabetical = es.get_docs_sorted(
+            "policy_date",
+            asc=False,
             num_docs=start + limit,
             keyword_filters=kwd_filters,
             year_range=year_range,
