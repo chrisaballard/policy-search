@@ -93,7 +93,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
           <button
             type="button"
             onClick={handleClick} ref={searchButton}
-            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
+            className={`p-1 search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
               <img 
                 src="/images/close.svg" 
                 alt="Close icon"

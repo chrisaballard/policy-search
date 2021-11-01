@@ -8,22 +8,21 @@ const useBuildQueryString = () => {
   const { searchQuery } = searchResult;
 
   const buildQueryString = (query?: string) => {
-    let str = query ? `query=${query}&` : ``
-    // should go through each set of filters when we have them
-    // for now, only geography
+    let str = query ? `query=${query}` : ``
+
     if(filters.geographyFilters.length) {
       filters.geographyFilters.forEach((item, index) => {
-        str += `${index > 0 ? '&' : ''}geography=${item.code}`
+        str += `${str.length ? '&': ''}geography=${item.code}`
       })
     }
     if(filters.sectorFilters.length) {
       filters.sectorFilters.forEach((item) => {
-        // TODO: build query string when API ready
+        str += `${str.length ? '&': ''}sector=${item.name}`
       })
     }
     if(filters.instrumentFilters.length) {
       filters.instrumentFilters.forEach((item) => {
-        // TODO: build query string when API ready
+        str += `${str.length ? '&': ''}instrument=${item.name}`
       })
     }
 
