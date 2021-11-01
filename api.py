@@ -102,6 +102,8 @@ async def search_policies(
     if keyword:
         kwd_filters["keywords.keyword"] = keyword
 
+    kwd_filters["source_name.keyword"] = ["cclw"]
+
     year_range = None
     if any([year_start, year_end]):
         year_range = (year_start, year_end)
