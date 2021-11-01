@@ -13,10 +13,14 @@ from policy_search.pipeline.opensearch import OpenSearchIndex
 from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchResponse
 from policy_search.pipeline.semantic_search import SBERTEncoder
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
-from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
+from schema.schema_helpers import Schema, get_schema_dict_from_path, SchemaTopLevel
 from policy_search.logging import get_logger
 
 logger = get_logger("api")
+
+# Get sector and instrument schemas
+instrument_schema = Schema.from_yaml_path("./schema/instruments.yml")
+sector_schema = Schema.from_yaml_path("./schema/sectors.yml")
 
 POLICIES_TABLE = "Policies"
 
@@ -105,9 +109,9 @@ async def search_policies(
     if geography:
         kwd_filters["country_code.keyword"] = geography
     if sector:
-        kwd_filters["sectors.keyword"] = sector
+        kwd_filters["sectors.keyword"] = sector_schema.get_leaf_levels(sector)
     if instrument:
-        kwd_filters["instruments.keyword"] = instrument
+        kwd_filters["instruments.keyword"] = instrument_schema.get_leaf_levels(instrument)
     if response:
         kwd_filters["responses.keyword"] = response
     if hazard:
@@ -271,12 +275,12 @@ def get_geographies():
 
 @app.get("/instruments", response_model=List[SchemaTopLevel])
 def get_instruments():
-    return get_schema_dict_from_path("./schema/instruments.yml")
+    return instrument_schema.to_dict()
 
 
 @app.get("/sectors", response_model=List[SchemaTopLevel])
 def get_sectors():
-    return get_schema_dict_from_path("./schema/sectors.yml")
+    return sector_schema.to_dict()
 
 
 if __name__ == "__main__":
