@@ -14,6 +14,9 @@ from policy_search.pipeline.models.policy import PolicyPageText, PolicySearchRes
 from policy_search.pipeline.semantic_search import SBERTEncoder
 from temp_geographies.load_geographies_data import Geography, load_geographies_data
 from schema.schema_helpers import get_schema_dict_from_path, SchemaTopLevel
+from policy_search.logging import get_logger
+
+logger = get_logger("api")
 
 POLICIES_TABLE = "Policies"
 
@@ -66,7 +69,16 @@ async def read_policies(
 async def read_policies_by_ids(id: List[int] = Query([])):
     """Get policy metadata from a list of IDs"""
 
-    return [policy_table.get_document(_id) for _id in id]
+    policies = []
+
+    for _id in id:
+        policy = policy_table.get_document(_id)
+        if policy is not None:
+            policies.append(policy)
+        else:
+            logger.error(f"Policy {_id} missing in call to /policies/multiple")
+
+    return policies
 
 
 @app.get("/policies/search/", response_model=PolicySearchResponse)
