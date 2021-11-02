@@ -47,13 +47,6 @@
     - stakeholder engagement
     - structures
 - id: 1
-  name: DIRECT INVESMENT
-  levels:
-  - id: 0
-    name: Insurance
-    keywords:
-    - insurance
-- id: 2
   name: DIRECT INVESTMENT
   levels:
   - id: 0
@@ -87,12 +80,16 @@
     - resilience funding
     - social safety nets
   - id: 3
+    name: Insurance
+    keywords:
+    - insurance
+  - id: 4
     name: Public goods
     keywords:
     - commons
     - early warning systems
     - public goods
-- id: 3
+- id: 2
   name: GOVERNANCE AND PLANNING
   levels:
   - id: 0
@@ -162,7 +159,7 @@
     - duty to set target
     - legally binding target
     - target
-- id: 4
+- id: 3
   name: INCENTIVES
   levels:
   - id: 0
@@ -198,7 +195,7 @@
     - emissions trading
     - market-based instruments
     - permits
-- id: 5
+- id: 4
   name: REGULATION
   levels:
   - id: 0

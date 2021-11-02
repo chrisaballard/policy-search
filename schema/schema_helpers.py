@@ -58,6 +58,45 @@ class Schema:
 
         return data_no_keywords
 
+    def _leaf_mapping(self):
+        """Return a dictionary mapping a top level schema node to corresponding lower levels"""
+        
+        mapping = {}
+        for level in self.to_dict():
+            mapping[level["name"]] = [sublevel["name"] for sublevel in level["levels"]]
+
+        return mapping
+
+    def _get_leaf_levels(self):
+        leaf_levels = []
+        for levels in self._leaf_mapping().values():
+            leaf_levels += levels
+
+        return leaf_levels
+    
+    def _get_leaf_levels_for_node(self, name):
+        """For a given top level node, return a list of lower levels assigned to that node"""
+
+        # Lookup level in dictionary, unless a leaf level has been passed
+        if name not in self._get_leaf_levels():
+            # return the leaf levels assigned to the top level
+            return self._leaf_mapping().get(name, [])
+
+        # Otherwise, if this is a leaf level, return the leaf level as there are no further leaf levels
+        return [name]
+
+    def get_leaf_levels(self, levels_list: List[str]):
+        """For a given schema, remaps a list of top levels to a list of leaf levels in the schema"""
+
+        schema_leaf_levels = []
+        for level_name in levels_list:
+            schema_leaf_levels += self._get_leaf_levels_for_node(level_name)
+
+        return schema_leaf_levels
+
+
+
+
 
 def get_schema_dict_from_path(path: Path) -> dict:
     schema = Schema.from_yaml_path(path)
