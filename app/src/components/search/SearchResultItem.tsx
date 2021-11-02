@@ -53,7 +53,7 @@ const SearchResultItem = ({policy, geographyList, texts}: SearchResultItemProps)
                 onClick={toggleExtracts}
                 className="focus:outline-none underline text-primary-dark-600 hover:text-primary-light transition duration-300"
               >
-                {texts.length} page match{`${texts.length > 1 ? 'es' : ''}`} 
+                Top {texts.length > 1 ? texts.length : ''} page match{`${texts.length > 1 ? 'es' : ''}`} 
               </button> in this policy.
             </>
             : 
