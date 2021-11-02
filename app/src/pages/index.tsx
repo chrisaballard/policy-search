@@ -93,22 +93,26 @@ const Home = React.memo((): JSX.Element => {
     if(!geographyList.length) setGeographies();
     if(!sectorList.length) setSectors();
     if(!instrumentList.length) setInstruments();
-    if(!searchQuery?.length) {
-      newSearch('')
-    }
+    
   }, []);
 
-  useDidUpdateEffect(() => {
+  useEffect(() => {
+    if(!searchQuery?.length && router.asPath === '/') {
+      newSearch('');
+      return;
+    }
+  }, [router])
+
+  useEffect(() => {
     if(geographyList.length) {
-      const urlQueryString = router.query;
       const qs1 = buildMultiIdQuery(SEARCH1);
       const qs2 = buildMultiIdQuery(SEARCH2);
 
-      if(router.asPath.indexOf('search1') > 1) {
+      if(router.asPath.indexOf('search1') > -1) {
         getMultiple(qs1);
         return;
       }
-      if(router.asPath.indexOf('search2') > 1) {
+      if(router.asPath.indexOf('search2') > -1) {
         getMultiple(qs2);
         return;
       }
