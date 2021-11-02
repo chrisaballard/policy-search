@@ -4,14 +4,15 @@ import { Geography } from "../../../model/geography";
 import Close from '../../elements/buttons/Close';
 import { FiltersIcon } from '../../elements/images/SVG';
 import Circle from '../Circle';
-import ByRange from './ByRange';
-import BySelections from './BySelections';
-import ByTextInput from './ByTextInput';
+import CountryFilters from './CountryFilters';
+import DocumentFilters from './DocumentFilters';
+import FilterSection from './FilterSection';
+import PassageFilters from './PassageFilters';
  
 interface FiltersProps {
   geographyList: Geography[];
   updateFilters(action: string, type: string, name: string): void;
-  headingClick(type: string): void;
+  openSlideOut(type: string): void;
   filters: Filters;
   removeFilters(): void;
   checkForFilters(): boolean;
@@ -20,7 +21,7 @@ interface FiltersProps {
 
 const FiltersColumn = React.memo(({
   geographyList,
-  headingClick,
+  openSlideOut,
   updateFilters,
   filters,
   removeFilters,
@@ -63,41 +64,42 @@ const FiltersColumn = React.memo(({
           
         </div>
         
-
-        <ByTextInput
-          type="geography"
-          list={geographyList}
-          filters={filters.geographyFilters}
-          updateFilters={updateFilters}
-        />
-
-        <BySelections
-          type="sector"
-          clickable={true}
-          onClick={() => { headingClick('sector') }}
-          filters={filters.sectorFilters}
-          updateFilters={updateFilters}
-        />
+        <FilterSection
+          type="country"
+          title="Country"
+        >
+          <CountryFilters 
+            list={geographyList}
+            filters={filters.geographyFilters}
+            updateFilters={updateFilters}
+          />
+        </FilterSection>
 
         <hr className="mt-6" />
 
-        <BySelections
-          type="instrument"
-          clickable={true}
-          onClick={() => { headingClick('instrument') }}
-          filters={filters.instrumentFilters}
-          updateFilters={updateFilters}
-        />
+        <FilterSection
+          type="document"
+          title="Document Level"
+        >
+          <DocumentFilters 
+            filters={filters}
+            replaceFiltersObj={replaceFiltersObj}
+          />
+        </FilterSection>
 
         <hr className="mt-6" />
 
-        <ByRange
-          type="years"
-          clickable={false}
-          filters={filters.yearFilters}
-          replaceFiltersObj={replaceFiltersObj}
-        />
-        
+        <FilterSection
+          type="passage"
+          title="Passage Level"
+        >
+          <PassageFilters 
+            onClick={openSlideOut}
+            filters={filters}
+            updateFilters={updateFilters}
+          />
+        </FilterSection>
+
       </div>
     </>
   )

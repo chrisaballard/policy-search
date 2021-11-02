@@ -54,7 +54,7 @@ const SearchResults = ({
             null}
             {!processing && policies.length ?
             <div className="mt-4 flex justify-center lg:w-1/4 flex-shrink-0">
-              <Button>Download results</Button>
+              <Button onClick={() => {}}>Download results</Button>
             </div>
             :
             null }

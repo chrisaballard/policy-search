@@ -50,10 +50,10 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
     
     // handle change event only after user
     // has stopped typing
-    const timeOutId = setTimeout(() => {
-      newQuery();
-    }, 800);
-    return () => clearTimeout(timeOutId);
+    // const timeOutId = setTimeout(() => {
+    //   newQuery();
+    // }, 800);
+    // return () => clearTimeout(timeOutId);
   }, [input]);
 
   useDidUpdateEffect(() => {
@@ -68,7 +68,10 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
       <div className="search-area container flex justify-center items-center relative">
         <div className="hidden md:block w-full md:w-1/4 md:pl-0 md:pr-4 flex-shrink-0"></div>
         <form 
-          onSubmit={e => { e.preventDefault() }}
+          onSubmit={e => { 
+            e.preventDefault();
+            newQuery() 
+          }}
           className="w-full relative mt-6 lg:mt-10 h-20 md:h-24 md:flex-grow mx-auto"
         >
           <label 
@@ -90,7 +93,7 @@ const SearchInput = ({newSearch, clearResult, searchTerms}: SearchInputProps): J
           <button
             type="button"
             onClick={handleClick} ref={searchButton}
-            className={`search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
+            className={`p-1 search-btn outline-none focus:outline-none flex items-center justify-end ${searchActivated ? 'collapsed' : ''}`}>
               <img 
                 src="/images/close.svg" 
                 alt="Close icon"

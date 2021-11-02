@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 import useGetPolicyPage from '../../hooks/useGetPolicyPage';
 import useGetPolicies from '../../hooks/useGetPolicies';
 import useSetStatus from '../../hooks/useSetStatus';
+import useGeographies from '../../hooks/useGeographies';
 import MainLayout from '../../components/layouts/MainLayout';
 import Button from '../../components/elements/buttons/Button';
 import Head from 'next/head';
@@ -12,25 +13,37 @@ import Loader from '../../components/Loader';
 import { State } from '../../store/initialState';
 import HalfButton from '../../components/elements/buttons/HalfButton';
 import { DownloadPDFIcon } from '../../components/elements/images/SVG';
+import { getCountryNameFromCode } from '../../helpers/geography';
+import { useDidUpdateEffect } from '../../hooks/useDidUpdateEffect';
 
 const Policy = () => {
   const inputRef = useRef<HTMLInputElement>();
   const router = useRouter();
-  const [ pageInput, setPageInput ] = useState('')
+  const [ pageInput, setPageInput ] = useState('');
+  const [ country, setCountry ] = useState('')
   const [ policyPage, getPage, clearPage ] = useGetPolicyPage();
   const [ pageText, setPageText ] = useState('')
   const [ policy, policy_db, getPolicy, getPolicies ] = useGetPolicies();
   const setProcessing = useSetStatus();
+  const setGeographies = useGeographies();
 
   const { pid, page } = router.query;
   const state = useSelector((state: State ) => state)
-  const { searchResult: { searchQuery }, status: { processing } } = state;
+  const { searchResult: { searchQuery }, status: { processing }, geographyList } = state;
 
 
   const loadPolicyPage = () => {
     setProcessing(true);
     getPolicy(pid);
     getPage(pid, page);
+  }
+  const getCountryName = () => {
+    if (policy.countryCode === 'EUE') {
+      setCountry('European Union');
+      return;
+    }
+    const name = getCountryNameFromCode(policy.countryCode, geographyList);
+    setCountry(name);
   }
 
   const changePageNumber = (action: string): void => {
@@ -79,10 +92,20 @@ const Policy = () => {
     if(policyPage.pageText) {
       setPageText(policyPage.pageText.join(','));
     }
-  }, [policyPage])
+  }, [policyPage]);
+
+  useEffect(() => {
+    if(!geographyList.length) setGeographies();
+  }, []);
+
+  useDidUpdateEffect(() => {
+    if(geographyList.length && policy.countryCode.length) {
+      getCountryName();
+    }
+  }, [geographyList, policy])
 
   return (
-    <MainLayout>
+    <MainLayout pageTitle="Full Policy Text">
       <Head>
         <title>Climate Policy Document: {policy.policyName}</title>
       </Head>
@@ -147,14 +170,23 @@ const Policy = () => {
               </a>
             </div>
             
-            <div className="my-4 text-primary-light flex justify-between items-end">
+            <div className="my-8 text-primary-light flex flex-wrap justify-between items-end">
               <div>
-                {/* country flag, country name */}
+                {policy.policyDate?.length ?
+                  <span className="text-primary-dark-500"><span className="font-bold text-primary">Policy date:</span> {policy.policyDate}</span>
+                :
+                null}
               </div>
               <div className="text-primary-dark-500">
                 Page <span className="font-bold">{page}</span> of <span>{policyPage.documentMetadata.pageCount}</span>
               </div>
             </div>
+
+            <div className="flex justify-start items-center">
+              <div className={`rounded border border-black flag-icon-background flag-icon-${policy.countryCode.toLowerCase()}`} />
+              <div className="ml-2">{country}</div>
+            </div>
+
             {pageText.length ? 
             <div className="mt-6 text-primary-dark-600" dangerouslySetInnerHTML={{__html: pageText}} />
             : 

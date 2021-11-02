@@ -65,7 +65,7 @@ input[type='number'] {
   display: grid;
   grid-template-rows: max-content $h;
   grid-template: repeat(2, max-content) #{$h}/ 1fr 1fr;
-  margin: 1em auto;
+  margin: 0 auto;
   width: $w;
   overflow: hidden; // in case <label> elements overflow
   position: relative;
@@ -152,7 +152,7 @@ input[type='number'] {
     &::after {
       counter-reset: c var(--c);
       content: counter(c);
-      @apply text-sm;
+      @apply text-sm text-primary-dark-500;
     }
   }
 }

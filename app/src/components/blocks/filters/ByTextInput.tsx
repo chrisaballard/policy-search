@@ -6,6 +6,7 @@ import FilterTag from './FilterTag';
 import FilterHeading from './FilterHeading';
 
 interface ByTextInputProps {
+  title: string;
   type: string;
   // full list of available filters
   list: any[]; // need generic type
@@ -14,6 +15,7 @@ interface ByTextInputProps {
 }
 
 const ByTextInput = React.memo(({
+  title,
   type,
   list,
   filters,
@@ -76,42 +78,39 @@ const ByTextInput = React.memo(({
   }, [filters, filtersRemoved])
   
   return (
-    <section>
-      <FilterHeading type={type}>
-      <div className="relative my-2 mt-4">
-        <input
-          className="h-12 w-full rounded-lg bg-primary-dark-200 focus:outline-none px-2 text-primary-dark-600 placeholder-primary-dark-400"
-          type="text"
-          value={value}
-          placeholder='Start typing...'
-          onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
-        />
-        {suggestList.length ?
-          <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded-b-lg z-10">
-            {suggestList.map((item) => (
-              <li key={item.code}>
-                <button 
-                  type="button"
-                  onClick={handleFilterSelect}
-                  className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-light-200">{item.name}</button>
-              </li>
-            ))}
-          </ul>
-        :
-        null
-        }
-        {filters.length ? 
-        <div className="mt-2 mb-8 flex flex-wrap">
-          {filters.map((item) => (
-            <FilterTag onClick={handleFilterRemove} key={item.code} text={item.name} />
+    <div className="relative my-2">
+      <label className="text-sm block mb-2">{title}</label>
+      <input
+        className="h-12 w-full rounded-lg bg-primary-dark-200 focus:outline-none px-2 text-primary-dark-600 placeholder-primary-dark-400"
+        type="text"
+        value={value}
+        placeholder='Start typing...'
+        onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
+      />
+      {suggestList.length ?
+        <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-16 bg-white border-l border-r border-b rounded-b-lg z-10">
+          {suggestList.map((item) => (
+            <li key={item.code}>
+              <button 
+                type="button"
+                onClick={handleFilterSelect}
+                className="block text-left w-full p-2 focus:outline-dotted hover:bg-primary-light-200">{item.name}</button>
+            </li>
           ))}
-        </div>
-        :
-        null}
-        
+        </ul>
+      :
+      null
+      }
+      {filters.length ? 
+      <div className="mt-2 mb-4 flex flex-wrap">
+        {filters.map((item) => (
+          <FilterTag onClick={handleFilterRemove} key={item.code} text={item.name} />
+        ))}
       </div>
-      </FilterHeading>
-    </section>
+      :
+      null}
+      
+    </div>
   )
 });
 
