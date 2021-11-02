@@ -71,7 +71,7 @@ class PassageParser(BaseParser):
 
             doc_structure = defaultdict(list)
             for page_id, passage in policy_passages.iterrows():
-                doc_structure[page_id].append(
+                doc_structure[page_id + 1].append(
                     {
                         "text_id": passage["text_id"],
                         "text": passage["text"],
