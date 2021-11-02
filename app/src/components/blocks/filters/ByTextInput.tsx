@@ -88,7 +88,7 @@ const ByTextInput = React.memo(({
         onChange={(event: React.FormEvent<HTMLInputElement>): void => setValue((event.target as HTMLInputElement).value)}
       />
       {suggestList.length ?
-        <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-10 bg-white border-l border-r border-b rounded-b-lg z-10">
+        <ul ref={listRef} id="filter-list" className="absolute top-0 left-0 w-full mt-16 bg-white border-l border-r border-b rounded-b-lg z-10">
           {suggestList.map((item) => (
             <li key={item.code}>
               <button 
