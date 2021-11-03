@@ -104,13 +104,13 @@ class OpenSearchIndex(BaseCallback):
             },
         }
 
-    def delete_and_create_index(self):
+    def create_index(self):
         """
-        Creates index. Deletes any existing index of the same name first.
+        Creates the index if it doesn't already exist
         """
 
-        self.es.indices.delete(index=self.index_name, ignore=[400, 404])
-        self.es.indices.create(index=self.index_name, body=self._index_body())
+        if self.index_name not in self.es.indices.get('*'):
+            self.es.indices.create(index=self.index_name, body=self._index_body())
 
     def add(
         self,
@@ -128,7 +128,7 @@ class OpenSearchIndex(BaseCallback):
         if not self._is_connected_to_elasticsearch():
             self._connect_to_elasticsearch()
 
-        self.delete_and_create_index()
+        self.create_index()
 
     def process_batch(self):
         """
