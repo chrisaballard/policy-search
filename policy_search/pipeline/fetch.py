@@ -112,10 +112,13 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
 
         documents_df = pd.read_csv(
             self._csv_filename,
-            dtype={'source_policy_id': int}
+            dtype={
+                "id": int,
+                "source_policy_id": int
+            }
         )
 
-        selected_cols = [self._csv_filename_col]
+        selected_cols = ["id", self._csv_filename_col]
         if self._attribute_mapping is not None:
             selected_cols += list(self._attribute_col_names)
 
@@ -157,8 +160,10 @@ class CSVDocumentSourceFetcher(DocumentSourceFetcher):
         if len(self._docs) == 0:
             self.get_docs()
 
-        for doc_ix, doc in enumerate(self._docs):
+        for doc in self._docs:
             doc_filename = Path(doc[self._csv_filename_col])
+            doc_ix = doc["id"]
+
             doc_structure, text_filename = doc_parser.extract_text(
                 doc_ix=doc_ix, 
                 doc_filename=doc_filename, 
