@@ -44,7 +44,6 @@ def cli():
 @click.argument("document-filename", type=str)
 @click.argument("embeddings-mapping-filename", type=str)
 @click.argument("embeddings-filename", type=str)
-@click.argument("predictions-filename", type=str)
 @click.argument("embedding-dim", type=int)
 @click.option(
     "-d",
@@ -63,7 +62,6 @@ def load(
     document_filename: str,
     embeddings_mapping_filename: str,
     embeddings_filename: str,
-    predictions_filename: str,
     doc_filename_attribute: str,
     embedding_dim: int,
     num_docs: int,
@@ -88,7 +86,6 @@ def load(
         data_path,
         embeddings_mapping_filename,
         embeddings_filename,
-        predictions_filename,
         embedding_dim,
     )
 
@@ -105,8 +102,8 @@ def load(
         es_user=opensearch_user,
         es_password=opensearch_password,
         es_connector_kwargs={
-            "use_ssl": True,
-            "verify_certs": True,
+            "use_ssl": False,
+            "verify_certs": False,
             "ssl_show_warn": False,
             "retry_on_timeout": True,
             "timeout": 60,

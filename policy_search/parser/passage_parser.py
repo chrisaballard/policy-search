@@ -20,7 +20,6 @@ class PassageParser(BaseParser):
         data_path: Path,
         embeddings_mapping_filename: str,
         embeddings_filename: str,
-        predictions_filename: str,
         embedding_dim: int,
     ):
         super().__init__(data_path)
@@ -29,7 +28,6 @@ class PassageParser(BaseParser):
         self._embeddings_mapping_filename = embeddings_mapping_filename
         self._embeddings_filename = embeddings_filename
         self._embedding_dim = embedding_dim
-        self.predictions_filename = predictions_filename
 
         self.mapping = None
         self.embeddings = None
@@ -49,10 +47,6 @@ class PassageParser(BaseParser):
         self.embeddings = np.memmap(
             self._data_path / self._embeddings_filename, dtype="float32", mode="r+"
         ).reshape((-1, self._embedding_dim))
-
-        logging.debug("Loading predictions file...")
-        with gzip.open(self._data_path / self.predictions_filename) as pred_f:
-            self.predictions = pd.read_csv(pred_f)
 
     def extract_text(self, **kwargs) -> Tuple[Dict[int, List[str]], str]:
         """Reads each text passage and returns a list of dictionaries containing
