@@ -40,32 +40,58 @@ async function renderVisualisation() {
         .selectAll("circle")
         .data(root.descendants().slice(1))
         .join("circle")
-        .attr("fill", d => d.data.color || "white")
+        .attr("fill", d => {
+            if(d.data.value === 0) {
+                d.r = '5';
+                return "white"
+            }
+            
+            return d.data.color || "white"
+        })
+        .attr("stroke", d => {
+            if(d.data.value === 0) {
+                return d.data.color;
+            }
+        })
+        .attr("opacity", d => {
+            if(d.data.value === 0) {
+                return 0.5;
+            }
+        })
         .attr("pointer-events", d => !d.children ? "none" : null)
         .on("mouseover", function () { d3.select(this).attr("opacity", 0.5); })
         .on("mouseout", function () { d3.select(this).attr("opacity", 1); })
         .on("click", (event, d) => focus !== d && (zoom(event, d)));
         
     const label = svg.append("g")
-        .style("font", "12px sans-serif")
+        .style("font", "14px sans-serif")
         .style("font-weight", "bold")
-        
         .attr("text-anchor", "middle")
         .selectAll("text")
         .data(root.descendants())
         .join("text")
-        .attr("pointer-events", d => d.data.name !== "Food & water" && d.data.name !== "Gender" ? "none" : "auto")
+        .attr("pointer-events", d => d.data.link ? "auto" : "none")
         .style("fill-opacity", d => d.parent === root ? 1 : 0)
         .style("display", d => d.parent === root ? "inline" : "none")
         .style("fill", "black")
-        .text(d => d.data.value ? d.data.name + " (" + d.data.value + ")" : d.data.name + '')
+        .text(d => d.data.name)
         .on("click", (event, d) => {
             if(d.data.link) {
                 window.open(d.data.link, '_parent');
             }
         })
 
+        label.append('tspan')
+            .text(d => d.data.name2 ? d.data.name2 : '')
+            .attr('x', '0')
+            .attr("dy", "1.2em")
+            .append('tspan')
+                .text(d => d.data.value !== undefined ? "(" + d.data.value + ")" : '')
+                .attr('x', '0')
+                .attr("dy", "1.2em")
 
+
+    
     zoomTo([root.x, root.y, root.r * 2]);
 
     function zoomTo(v) {

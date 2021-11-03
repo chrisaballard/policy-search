@@ -40,7 +40,8 @@
           "color": "#89CFF0"
         },
         {
-          "name": "Agriculture, forestry and other land use (AFOLU)",
+          "name": "Agriculture, forestry and",
+          "name2": "other land use (AFOLU)",
           "value": 592,
           "color": "#7393B3"
         },
@@ -80,7 +81,8 @@
           "color": "#87CEEB"
         },
         {
-          "name": "Nature-based solutions",
+          "name": "Nature-based",
+          "name2": "solutions",
           "value": 8,
           "color": "#ADD8E6"
         },
@@ -171,7 +173,8 @@
           "color": "#8A9A5B"
         },
         {
-          "name": "Protection of water and marine resources",
+          "name": "Protection of water",
+          "name2": "and marine resources",
           "value": 76,
           "color": "#808000"
         },
@@ -206,7 +209,8 @@
       "name": "Target setting",
       "children": [
         {
-          "name": "Emission reductions / Net Zero targets",
+          "name": "Emission reductions /",
+          "name2": "Net Zero targets",
           "value": 9,
           "color": "#EADDCA"
         },
@@ -266,7 +270,8 @@
           "color": "#CD7F32"
         },
         {
-          "name": "Heatwaves and heat stress",
+          "name": "Heatwaves",
+          "name2": "and heat stress",
           "value": 3,
           "color": "#CC5500"
         },
@@ -291,7 +296,8 @@
           "color": "#FF7518"
         },
         {
-          "name": "Snow, glacial, and permafrost melting",
+          "name": "Snow, glacial, and",
+          "name2": "permafrost melting",
           "value": 11,
           "color": "#E49B0F"
         },
@@ -301,22 +307,25 @@
           "color": "#C04000"
         },
         {
-          "name": "Ocean acidification",
+          "name": "Ocean",
+          "name2": "acidification",
           "value": 0,
           "color": "#F4BB44"
         }
       ]
     },
     {
-      "name": "Non-physical risks",
+      "name": "Non-physical",
+      "name2": "risks",
       "children": [
         {
           "name": "Economic instability",
           "value": 10,
-          "color": "#DE3163"
+          "color": "#FFC0CB"
         },
         {
-          "name": "Geopolitical conflict and social unrest",
+          "name": "Geopolitical conflict",
+          "name2": "and social unrest",
           "value": 4,
           "color": "#F88379"
         },
