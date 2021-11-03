@@ -26,9 +26,6 @@ const PassageFilters = ({onClick, filters, updateFilters}) => {
         <StaticFilter title="Targets" />
       </div>
       <div className="pt-4">
-        <StaticFilter title="Targets" />
-      </div>
-      <div className="pt-4">
         <StaticFilter title="Technologies" />
       </div>
       <div className="pt-4">
