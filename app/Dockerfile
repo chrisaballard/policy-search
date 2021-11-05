@@ -2,7 +2,6 @@
 
 FROM node:16-alpine3.11
 
-ENV PORT 3001
 
 # Create the directory on the node image
 # where our Next.js app will live

@@ -44,6 +44,5 @@ services:
     build:
       context: ./app
       dockerfile: Dockerfile
-    command: ash -c "npm install && npm run dev"
     ports:
       - 3001:3001
