@@ -3,6 +3,7 @@ import ViewSDKClient from '../../api/pdf';
 import Head from 'next/head';
 import MainLayout from '../../components/layouts/MainLayout'
 import Script from 'next/script';
+import { annotations } from '../../constants';
 
 const PDFView = () => {
   const containerRef = useRef();
@@ -17,6 +18,16 @@ const PDFView = () => {
       viewSDKClient.ready().then(() => {
         /* Invoke the file preview and get the Promise object */
         const previewFilePromise = viewSDKClient.previewFile("pdf-div", viewerConfig);
+        previewFilePromise.then(adobeViewer => {
+          /* API to add annotations */
+          annotationManager.addAnnotations(annotations)
+          .then(() => {
+              console.log("Annotations added through API successfully");
+          })
+          .catch(error => {
+              console.log(error);
+          });
+        })
       })
     }
   }, [containerRef])
